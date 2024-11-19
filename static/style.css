@@ -12,6 +12,39 @@
     z-index: 150;
 }
 
+
+
+.useful-links{
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+    position: relative;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    height: 100%;
+}
+
+.link{
+    display: flex;
+    text-align: center;
+    -webkit-box-align: center;
+    align-items: center;
+    position: relative;
+    height: 100%;
+    margin-left: 24px;
+}
+
+.profile-picture{
+    display: flex;
+    text-align: center;
+    -webkit-box-align: center;
+    align-items: center;
+    position: relative;
+    height: 100%;
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
 :root{
     --primary: #82C26E; /*rgb primary (130, 194, 110)*/
     --secondary: #0A85ED; /*rgb secondary (10, 133, 237)*/
