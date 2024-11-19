@@ -12,6 +12,30 @@
     z-index: 150;
 }
 
+:root{
+    --primary: #82C26E; /*rgb primary (130, 194, 110)*/
+    --secondary: #0A85ED; /*rgb secondary (10, 133, 237)*/
+    --background-dark: #050418;
+    --text-dark-mode: #e8e6fb;
+    --background-light: #eae9fb;
+    --text-light-mode:#06041a;
+}
+
 body{
     background-color: #f0f0f0;
+}
+
+.reg-form{
+    display: flex;
+    flex-direction: column;
+    border: 2px var(--text-light-mode) solid;
+    width: 25%;
+    height: 50vh;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+}
+
+.reg-form input{
+    width: 15rem;
 }
