@@ -1,5 +1,5 @@
 .header {
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(224, 221, 221);
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -9,4 +9,8 @@
     left: 0;
     width: 100%;
     z-index: 150;
+}
+
+body{
+    background-color: #f0f0f0;
 }
