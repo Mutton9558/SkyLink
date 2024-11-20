@@ -65,7 +65,7 @@
     margin-right: 24px;
 }
 
-.Login{
+.Login-text{
     display: inline-flex;
     color: var(--text-light-mode);
     outline: none;
