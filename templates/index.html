@@ -9,24 +9,38 @@
 <body>
     <!-- Navbar with menu items -->
     <header class="header">
-        <div class="logo">
-            <a class="navbar-brand" href="#">
-                <img src="{{url_for('static', filename='logo.png')}}" width="30" height="30" alt="SkyLink" href="/">
-            </a>
-        </div>
-        <div class="useful-links">
-            <a class="nav-link" href="#">
-                <p>Purchases</p>
-            </a>
-            <a class="nav-link" href="#">
-                <p>Check-in</p>
-            </a>
-        </div>
-        <div class="profile-section">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-            </svg>
+        <div class="header-container">
+            <div class="logo">
+                <a class="navbar-brand" href="#">
+                    <img src="{{url_for('static', filename='logo.png')}}" height="80" alt="SkyLink" href="/">
+                </a>
+            </div>
+            <div class="useful-links">
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Purchases</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Check-in</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Flight Status</p>
+                    </a>
+                </div>
+                <div class="profile">
+                    <a class="nav-link" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" display="flex" width="25" fill=currentColor class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                        <p class="Login-text">Log in/Sign up</p>
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

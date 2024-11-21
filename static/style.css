@@ -12,6 +12,69 @@
     z-index: 150;
 }
 
+.header-container{
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+    padding: 0 80px;
+    height: 64px;
+    width: 100%;
+}
+
+.logo{
+    position: relative;
+    -webkit-box-align: center;
+    align-items: center;
+    display: flex;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+    flex: 1 1 0%;
+    height: 100%;
+}
+
+.useful-links{
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+    position: relative;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    height: 100%;
+}
+
+.link{
+    display: flex;
+    text-align: center;
+    -webkit-box-align: center;
+    align-items: center;
+    position: relative;
+    height: 100%;
+    margin-left: 24px;
+}
+
+.nav-link{
+    display: inline-flex;
+    color: var(--text-light-mode);
+    text-decoration: none;
+}
+
+.profile{
+    display: flex;
+    text-align: center;
+    -webkit-box-align: center;
+    align-items: center;
+    position: relative;
+    height: 100%;
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+.Login-text{
+    padding-left: 2px;
+}
+
 :root{
     --primary: #82C26E; /*rgb primary (130, 194, 110)*/
     --secondary: #0A85ED; /*rgb secondary (10, 133, 237)*/
