@@ -7,6 +7,13 @@
     <title>Login</title>
 </head>
 <body>
+    <form method="POST", name="login-form">
+        <label>Username: </label>
+        <input type="text" id="login-user" name="login-username" required>
+        <label>Password: </label>
+        <input type="password" id="login-pass" name="login-password" required>
+        <input type="submit" id="login-submit">
+    </form>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
