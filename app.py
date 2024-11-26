@@ -65,10 +65,14 @@ def register():
             if email_domain not in valid_emails:
                 flash("Invalid email!")
             else:
-                new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password)
-                db.session.add(new_user)
-                db.session.commit()   
-                return redirect(url_for("login"))
+                isCode = new_hpNo[0]
+                if isCode == "+":
+                    new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password)
+                    db.session.add(new_user)
+                    db.session.commit()   
+                    return redirect(url_for("login"))
+                else:
+                    flash("Please include country calling code!")
     return render_template("register.html")
 
 @app.route('/login', methods = ["POST", "GET"])
@@ -84,6 +88,12 @@ def login():
         else:
             flash("Invalid Username or Password!")
     return render_template("login.html")
+
+@app.route('/logout')
+def logout():
+    if "user" in session and session["user"] != "":
+        session.pop("user", None)
+    return redirect(url_for("login"))
 
 if __name__ == "__main__":
     with app.app_context():
