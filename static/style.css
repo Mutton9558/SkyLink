@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Press+Start+2P&family=Roboto&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 @font-face {
     font-family: 'Trueno-Round';
     src:url('Trueno-Round.ttf.woff') format('woff'),
@@ -6,6 +7,15 @@
         url('Trueno-Round.ttf.eot?#iefix') format('embedded-opentype'); 
     font-weight: normal;
     font-style: normal;
+}
+
+body{
+    background-color: #f0f0f0;
+    margin: 0;
+    font-family: 'Roboto', serif;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0.2ch;
 }
 
 .header {
@@ -125,21 +135,75 @@
     --text-light-mode:#06041a;
 }
 
-body{
-    background-color: #f0f0f0;
+#register-page{
+    display: flex;
+    flex-direction: row;
+}
+
+#image-area{
+    width: 50%;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    animation: changeBackground 12s infinite;
+    overflow: hidden;
+}
+
+@keyframes changeBackground {
+    0% {
+        background-image: url('img/japan1.jpg');
+    }
+    25% {
+        background-image: url('img/paris1.jpg');
+    }
+    50% {
+        background-image: url('img/egypt1.jpg');
+    }
+    75%{
+        background-image: url('img/riodejaneiro1.jpg')
+    }
+    100% {
+        background-image: url('img/japan1.jpg'); /* Loop back to the first image */
+    }
+}
+
+#reg-area{
+    box-shadow: -5px 0 15px rgba(10, 133, 237, 0.2);
+    overflow-y: auto;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    right: 0;
+    width: 50%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+#reg-cont{
+    background-color: white;
+    width: 60%;
+    height: 60%;
+    box-shadow: 0 0 5px var(--text-light-mode);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;   
+    justify-content: center;
+    align-items: center;
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    margin: 2ch;
 }
 
 .reg-form{
     display: flex;
-    flex-direction: column;
-    border: 2px var(--text-light-mode) solid;
-    width: 25%;
-    height: 50vh;
+    flex-direction: column;   
     justify-content: center;
     align-items: center;
-    border-radius: 20px;
 }
 
 .reg-form input{
     width: 15rem;
+    margin: 0.8ch;
 }

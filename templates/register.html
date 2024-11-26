@@ -7,37 +7,34 @@
     <title>Register New User</title>
 </head>
 <body>
-    <div id="reg-area">
-        <div id="reg-title">
-            <h1>New to SkyLink? Register Now!</h1>
-        </div>
-        <div id="reg-cont">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for msg in messages %}
-                        <p>*{{ msg }}</p>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            <form name="register-form" method="POST" class="reg-form">
-                <label id="ic-no">Identification Card Number (I.C. Number): </label>
-                <input type="text" name="reg-ic" placeholder="e.g. 011111111111" required>
-                <label id="full-name">Full Name (according to I.C.): </label>
-                <input type="text" name="reg-full-name" placeholder="e.g. Shawn Huang Qi Yang" required>
-                <label id="phone-no">Mobile Phone Number: </label>
-                <input type="text" name="reg-hp-no" placeholder="e.g. +60XXXXXXXXX (Include country code, example: Malaysia is +60!)" required>
-                <label id="email">Email Address: </label>
-                <input type="text" name="reg-email" placeholder="e.g. shawn@gmail.com" required>
-                <label id="username">Username: </label>
-                <input type="text" name="reg-username" placeholder="e.g. User101" required>
-                <label id="password">Password: </label>
-                <input type="password" name="reg-password" required>
-                <input type="submit" name="submit" id="submit">
-            </form>
-        </div>
-        <div id="redirect-cont">
-            <p>Already have an account? Click here:</p>
-            <a href="/login" id="redirectBtn">Login</a>
+    <div id="register-page">
+        <div id="image-area"></div>
+        <div id="reg-area">
+            <div id="reg-title">
+                <h1>New to SkyLink? Register Now!</h1>
+            </div>
+            <div id="reg-cont">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <p>*{{ msg }}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <form name="register-form" method="POST" class="reg-form">
+                    <input type="text" name="reg-ic" placeholder="Identification Card Number (I.C. Number)" required>
+                    <input type="text" name="reg-full-name" placeholder="Full Name (according to I.C.)" required>
+                    <input type="text" name="reg-hp-no" placeholder="Phone Number (Include Country Calling Code)" required>
+                    <input type="text" name="reg-email" placeholder="Email Address" required>
+                    <input type="text" name="reg-username" placeholder="Username" required>
+                    <input type="password" name="reg-password" placeholder="Password" required>
+                    <input type="submit" name="submit" id="submit">
+                </form>
+            </div>
+            <div id="redirect-cont">
+                <p>Already have an account? Click here:</p>
+                <a href="/login" id="redirectBtn">Login</a>
+            </div>
         </div>
     </div>
 </body>
