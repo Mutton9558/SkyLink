@@ -81,7 +81,7 @@ body{
 }
 
 .profile{
-    display: flex;
+    display: inline-block;
     text-align: center;
     -webkit-box-align: center;
     align-items: center;
@@ -89,10 +89,41 @@ body{
     height: 100%;
     margin-left: 24px;
     margin-right: 24px;
+    margin-top: 13px;
 }
 
-.Login-text{
-    padding-left: 2px;
+.profile-text{
+    padding-left: 5px;
+    font-family: Trueno-Round;
+}
+
+.dropdown{
+    display: none; /* Hide dropdown by default */
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.profile:hover .dropdown {
+    display: block; /* Show dropdown on hover */
 }
 
 :root{

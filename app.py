@@ -95,6 +95,18 @@ def logout():
         session.pop("user", None)
     return redirect(url_for("login"))
 
+@app.route('/support', methods=["GET", "POST"])
+def support():
+    if request.method == "POST":
+        name = request.form.get("name")
+        email = request.form.get("email")
+        message = request.form.get("message")
+        
+        flash("Your inquiry has been submitted successfully. We'll get back to you soon!", "success")
+        return redirect(url_for("support"))
+    
+    return render_template("support.html")
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
