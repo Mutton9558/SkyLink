@@ -12,21 +12,32 @@
             <h1>New to SkyLink? Register Now!</h1>
         </div>
         <div id="reg-cont">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <p>*{{ msg }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             <form name="register-form" class="reg-form">
                 <label id="ic-no">Identification Card Number (I.C. Number): </label>
-                <input type="text" name="ic" required>
+                <input type="text" name="reg-ic" required>
                 <label id="full-name">Full Name (according to I.C.): </label>
-                <input type="text" name="full-name" required>
+                <input type="text" name="reg-full-name" required>
                 <label id="phone-no">Mobile Phone Number: </label>
-                <input type="text" name="hp-no" required>
+                <input type="text" name="reg-hp-no" required>
                 <label id="email">Email Address: </label>
-                <input type="text" name="email" required>
+                <input type="text" name="reg-email" required>
                 <label id="username">Username: </label>
-                <input type="text" name="username" required>
+                <input type="text" name="reg-username" required>
                 <label id="password">Password: </label>
-                <input type="password" name="password" required>
+                <input type="password" name="reg-password" required>
                 <input type="submit" name="submit" id="submit">
             </form>
+        </div>
+        <div id="redirect-cont">
+            <p>Already have an account? Click here:</p>
+            <a href="/login" id="redirectBtn">Login</a>
         </div>
     </div>
 </body>
