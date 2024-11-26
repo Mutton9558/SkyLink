@@ -1,9 +1,15 @@
 from flask import *
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+import os
+from datetime import timedelta, datetime
 
+load_dotenv('.env')
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///skylink.db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.secret_key = os.getenv('APP_SECRET_KEY')
+app.permanent_session_lifetime = timedelta(days=30)
 
 db = SQLAlchemy(app)
 
@@ -54,10 +60,15 @@ def register():
         if users.query.filter_by(phoneNumber = new_hpNo).first():
             flash("That phone number is already registered!")
         else:
-            new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password)
-            db.session.add(new_user)
-            db.session.commit()   
-            return redirect(url_for("login"))
+            email_domain = ''.join(new_email.split("@")[1])
+            valid_emails = ['gmail.com', 'yahoo.com', 'hotmail.com', 'mmu.edu.my', 'live.com'] # Only these for now
+            if email_domain not in valid_emails:
+                flash("Invalid email!")
+            else:
+                new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password)
+                db.session.add(new_user)
+                db.session.commit()   
+                return redirect(url_for("login"))
     return render_template("register.html")
 
 @app.route('/login', methods = ["POST", "GET"])
