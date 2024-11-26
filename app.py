@@ -8,8 +8,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 class users(db.Model):
-    id = db.Column("id", db.Integer, primary_key = True, nullable = False)
-    icNumber = db.Column("icNumber", db.String(12), nullable = False)
+    id = db.Column("id", db.Integer, primary_key = True, nullable = False, unique=True)
+    icNumber = db.Column("icNumber", db.String(12), nullable = False, unique=True)
     name = db.Column("name", db.String(255), nullable = False)
     phoneNumber = db.Column("phoneNumber", db.String(15), nullable=False) # The International Telecommunication Union's (ITU) E.164 standard recommends that phone numbers be no longer than 15 digits
     email = db.Column("email", db.String(100), nullable=False) # we do check to find valid email by splitting end domain
