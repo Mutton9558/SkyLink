@@ -8,7 +8,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 class users(db.Model):
-    id = db.Column("id", db.Integer, pirmary_key = True, nullable = False)
+    id = db.Column("id", db.Integer, primary_key = True, nullable = False)
     icNumber = db.Column("icNumber", db.String(12), nullable = False)
     name = db.Column("name", db.String(255), nullable = False)
     phoneNumber = db.Column("phoneNumber", db.String(15), nullable=False) # The International Telecommunication Union's (ITU) E.164 standard recommends that phone numbers be no longer than 15 digits
