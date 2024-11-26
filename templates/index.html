@@ -37,16 +37,21 @@
                             <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                             <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
                         </svg>
-                        <span class="Login-text">
-                            <a class="Login-text" href="/login" font-family= Truendo-Round>Log in</p>
-                            <span font-family= Truendo-Round> | </span>
-                            <a class="Login-text" href="/register" font-family= Truendo-Round>Register</p>
-                        </span>
+                        <p class="profile-text">Profile</p>
                     </a>
+                    <div class="dropdown">
+                        <div class="dropdown-content">
+                            <a href="#">Edit Profile</a>
+                            <a href="#">History Purchase</a>
+                            <a href="#">Logout</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
+
+    
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
