@@ -8,12 +8,12 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 class users(db.Model):
-    id = db.Column("id", db.Integer, pirmary_key = True, nullable = False)
-    icNumber = db.Column("icNumber", db.String(12), nullable = False)
+    id = db.Column("id", db.Integer, primary_key = True, nullable = False, unique=True)
+    icNumber = db.Column("icNumber", db.String(12), nullable = False, unique=True)
     name = db.Column("name", db.String(255), nullable = False)
-    phoneNumber = db.Column("phoneNumber", db.String(15), nullable=False) # The International Telecommunication Union's (ITU) E.164 standard recommends that phone numbers be no longer than 15 digits
-    email = db.Column("email", db.String(100), nullable=False) # we do check to find valid email by splitting end domain
-    username = db.Column("username", db.String(20), nullable=False)
+    phoneNumber = db.Column("phoneNumber", db.String(15), nullable=False, unique=True) # The International Telecommunication Union's (ITU) E.164 standard recommends that phone numbers be no longer than 15 digits
+    email = db.Column("email", db.String(100), nullable=False, unique=True) # we do check to find valid email by splitting end domain
+    username = db.Column("username", db.String(20), nullable=False, unique=True)
     password = db.Column("password", db.String(18), nullable=False)
 
     def __init__(self, icNumber, name, phoneNumber, email, username, password):
@@ -26,7 +26,10 @@ class users(db.Model):
 
 @app.route('/')
 def home():
-    return render_template("index.html")
+    if "user" in session and session["user"] != "":
+        return render_template("index.html")
+    else:
+        return redirect(url_for("register"))
 
 @app.route('/home')
 def redirectToDefault():
@@ -34,6 +37,8 @@ def redirectToDefault():
 
 @app.route('/register', methods = ["POST", "GET"])
 def register():
+    if "user" in session and session["user"] != "":
+        return redirect(url_for("home"))
     if request.method == "POST":
         new_ic = request.form["reg-ic"]
         new_name = request.form["reg-full-name"]
@@ -42,18 +47,31 @@ def register():
         new_username = request.form["reg-username"]
         new_password = request.form["reg-password"]
         
+        if users.query.filter_by(icNumber = new_ic).first():
+            flash(f"User with IC number {new_ic} already exists!")
         if users.query.filter_by(email = new_email).first() or users.query.filter_by(username = new_username).first():
             flash("Email or Username already exists!")
+        if users.query.filter_by(phoneNumber = new_hpNo).first():
+            flash("That phone number is already registered!")
         else:
             new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password)
             db.session.add(new_user)
             db.session.commit()   
             return redirect(url_for("login"))
-
     return render_template("register.html")
 
-@app.route('/login')
+@app.route('/login', methods = ["POST", "GET"])
 def login():
+    if request.method == "POST":
+        usernameInput = request.form["login-username"]
+        passwordInput = request.form["login-password"]
+
+        if users.query.filter_by(username = usernameInput).first() and users.query.filter_by(username = usernameInput).first().password == passwordInput:
+            session.permanent = True
+            session["user"] = usernameInput
+            return redirect(url_for("home"))
+        else:
+            flash("Invalid Username or Password!")
     return render_template("login.html")
 
 if __name__ == "__main__":
