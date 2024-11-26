@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'Trueno-Round';
+    src:url('Trueno-Round.ttf.woff') format('woff'),
+        url('Trueno-Round.ttf.svg#Trueno-Round') format('svg'),
+        url('Trueno-Round.ttf.eot'),
+        url('Trueno-Round.ttf.eot?#iefix') format('embedded-opentype'); 
+    font-weight: normal;
+    font-style: normal;
+
 .header {
     background-color: rgb(224, 221, 221);
     border-radius: 6px;
