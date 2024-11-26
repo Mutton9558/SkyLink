@@ -19,17 +19,17 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
-            <form name="register-form" class="reg-form">
+            <form name="register-form" method="POST" class="reg-form">
                 <label id="ic-no">Identification Card Number (I.C. Number): </label>
-                <input type="text" name="reg-ic" required>
+                <input type="text" name="reg-ic" placeholder="e.g. 011111111111" required>
                 <label id="full-name">Full Name (according to I.C.): </label>
-                <input type="text" name="reg-full-name" required>
+                <input type="text" name="reg-full-name" placeholder="e.g. Shawn Huang Qi Yang" required>
                 <label id="phone-no">Mobile Phone Number: </label>
-                <input type="text" name="reg-hp-no" required>
+                <input type="text" name="reg-hp-no" placeholder="e.g. +60XXXXXXXXX (Include country code, example: Malaysia is +60!)" required>
                 <label id="email">Email Address: </label>
-                <input type="text" name="reg-email" required>
+                <input type="text" name="reg-email" placeholder="e.g. shawn@gmail.com" required>
                 <label id="username">Username: </label>
-                <input type="text" name="reg-username" required>
+                <input type="text" name="reg-username" placeholder="e.g. User101" required>
                 <label id="password">Password: </label>
                 <input type="password" name="reg-password" required>
                 <input type="submit" name="submit" id="submit">
