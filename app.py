@@ -60,18 +60,17 @@ def register():
         if users.query.filter_by(phoneNumber = new_hpNo).first():
             flash("That phone number is already registered!")
         else:
-            email_domain = ''.join(new_email.split("@")[1])
+            new_email = new_email.split("@")
             valid_emails = ['gmail.com', 'yahoo.com', 'hotmail.com', 'mmu.edu.my', 'live.com'] # Only these for now
-            if email_domain not in valid_emails:
+            if (len(new_email) == 1) or new_email[1] not in valid_emails:
                 flash("Invalid email!")
+            isCode = new_hpNo[0]
+            if isCode == "+":
+                new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password)
+                db.session.add(new_user)
+                db.session.commit()   
+                return redirect(url_for("login"))
             else:
-                isCode = new_hpNo[0]
-                if isCode == "+":
-                    new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password)
-                    db.session.add(new_user)
-                    db.session.commit()   
-                    return redirect(url_for("login"))
-                else:
                     flash("Please include country calling code!")
     return render_template("register.html")
 
