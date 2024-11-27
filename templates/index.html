@@ -55,7 +55,32 @@
         </div>
     </header>
 
-    
+    <main>
+        <div class="booking-form">
+            <form>
+              <div class="trip-options">
+                <label><input type="radio" name="trip" checked> Return</label>
+                <label><input type="radio" name="trip"> One way</label>
+                <label><input type="radio" name="trip"> Multi-city</label>
+              </div>
+              <div class="fields">
+                <input type="text" placeholder="From" required>
+                <input type="text" placeholder="To" required>
+                <input type="date" placeholder="Departure" required>
+                <input type="date" placeholder="Return" required>
+                <select>
+                  <option>1 Passenger Economy</option>
+                  <option>2 Passengers Economy</option>
+                  <option>1 Passenger Business</option>
+                </select>
+              </div>
+              <div class="actions">
+                <input type="text" placeholder="Add promo code">
+                <button type="submit">Search flights</button>
+              </div>
+            </form>
+        </div>
+    </main>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
