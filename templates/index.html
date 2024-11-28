@@ -42,11 +42,12 @@
                             <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                             <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
                         </svg>
-                        <p class="profile-text">Profile</p>
+                        <p class="profile-text">{{ profile_Name }}</p>
                     </a>
                     <div class="dropdown">
                         <div class="dropdown-content">
                             <a href="#">Edit Profile</a>
+                            <a href="#">Settings</a>
                             <a href="/logout">Logout</a>
                         </div>
                     </div>
@@ -71,7 +72,8 @@
               <div class="trip-options">
                 <label><input type="radio" name="trip" class="round-trip" checked> Return</label>
                 <label><input type="radio" name="trip" class="one-trip"> One way</label>
-                <label><input type="radio" name="trip" class="multi-city"> Multi-city</label>
+                <label><input type="radio" name="trip" class="multi-city"> Multi-city return</label>
+                <label><input type="radio" name="trip" class="multi-city-one-trip"> Multi-city one way</label>
               </div>
               <div class="fields">
                 <input type="text" placeholder="From" required>
@@ -92,7 +94,7 @@
               </div>
               <div class="actions">
                 <input type="text" placeholder="Add promo code">
-                <button type="submit">Search flights</button>
+                <button type="submit">Search Flights</button>
               </div>
             </form>
         </div>

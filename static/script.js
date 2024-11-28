@@ -1,6 +1,16 @@
-document.querySelector('.profile').addEventListener('click', function() {
+// Toggle dropdown visibility when the profile button is clicked
+document.querySelector('.profile').addEventListener('click', function (event) {
+  event.stopPropagation(); // Prevent click from propagating to the document
   const dropdown = this.querySelector('.dropdown');
   dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+});
+
+// Hide the dropdown when clicking outside
+document.addEventListener('click', function () {
+  const dropdown = document.querySelector('.dropdown');
+  if (dropdown) {
+      dropdown.style.display = 'none';
+  }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,9 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Function to update visibility of the return element based on selected trip type
   function updatereturnVisibility() {
-    const tripType = [...tripOptions].find(option => option.checked).value;
+    const tripType = [...tripOptions].find(option => option.checked).className;
+    console.log(tripType)
 
-    if (tripType === 'one-way') {
+    if (tripType === 'one-trip' || tripType === 'multi-city-one-trip') {
       returnElement.style.display = 'none'; // Hide return for one-way
     } else {
       returnElement.style.display = 'block'; // Show return for round trip
