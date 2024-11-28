@@ -56,22 +56,38 @@
     </header>
 
     <main>
+        <div class="carousel">
+            <button class="prev">❮</button>
+            <div class="carousel-images">
+              <img src="image1.jpg" alt="Image 1">
+              <img src="image2.jpg" alt="Image 2">
+              <img src="image3.jpg" alt="Image 3">
+            </div>
+            <button class="next">❯</button>
+        </div>
+
         <div class="booking-form">
             <form>
               <div class="trip-options">
-                <label><input type="radio" name="trip" checked> Return</label>
-                <label><input type="radio" name="trip"> One way</label>
-                <label><input type="radio" name="trip"> Multi-city</label>
+                <label><input type="radio" name="trip" class="round-trip" checked> Return</label>
+                <label><input type="radio" name="trip" class="one-trip"> One way</label>
+                <label><input type="radio" name="trip" class="multi-city"> Multi-city</label>
               </div>
               <div class="fields">
                 <input type="text" placeholder="From" required>
                 <input type="text" placeholder="To" required>
-                <input type="date" placeholder="Departure" required>
-                <input type="date" placeholder="Return" required>
+                <div class="departure">
+                    <p>Departure date</p>
+                    <input type="date" required>
+                </div>
+                <div class="return">
+                    <p>Return Date</p>
+                    <input type="date"class="Return" required>
+                </div>
+                
                 <select>
                   <option>1 Passenger Economy</option>
                   <option>2 Passengers Economy</option>
-                  <option>1 Passenger Business</option>
                 </select>
               </div>
               <div class="actions">

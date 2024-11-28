@@ -29,7 +29,6 @@ body{
     left: 0;
     width: 100%;
     height: fit-content;
-    z-index: 150;
 }
 
 .header-container{
@@ -103,7 +102,7 @@ body{
     background-color: #f9f9f9;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+    z-index: 2;
 }
 
 .dropdown-content {
@@ -126,14 +125,79 @@ body{
     display: block; /* Show dropdown on hover */
 }
 
+.carousel {
+    position: relative;
+    width: 100%;
+    max-width: 1920px;
+    height: 100%;
+    max-height: 1080px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin: 15em 0 0 0;
+    z-index: 1;
+}
+  
+.carousel-images {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+  
+  .carousel-images img {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.prev {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 50%;
+    left: 10px;
+}
+  
+.next{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 50%;
+    right: 10px;
+}
+  
+.prev:hover{
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.next:hover{
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
 .booking-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     background-color: white;
     padding: 20px;
     border-radius: 8px;
+    box-sizing: border-box;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    width: 55em;
+    height: 100%;
+    width: 70%;
     max-width: 100%;
-    margin: 25rem 91.500px 0 91.500px;
+    z-index: 3;
+    margin: 0 11rem 0 10rem;
 }
   
 .trip-options {
@@ -142,6 +206,16 @@ body{
     margin-bottom: 20px;
 }
   
+.departure p{
+    margin: 0 0 5px 0;
+    font-size: small;
+}
+
+.return p{
+    margin: 0 0 5px 0;
+    font-size: small;
+}
+
 .fields {
     display: flex;
     gap: 10px;
@@ -151,31 +225,41 @@ body{
 .fields input,
 .fields select {
     flex: 1;
-    padding: 10px;
+    padding: 0 10px 0 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
   
-.actions {
+.actions{
     display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
     gap: 10px;
     align-items: center;
 }
   
-.actions input {
-    flex: 1;
+.actions input{
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
   
-.actions button {
+.actions button{
     padding: 10px 20px;
-    background-color: var(--secondary);
-    color: white;
+    background-color: var(--primary);
+    color: var(--text-light-mode);
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.actions button:hover{
+    background-color: var(--secondary);
 }
 
 :root{
