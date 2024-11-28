@@ -33,7 +33,7 @@ class users(db.Model):
 @app.route('/')
 def home():
     if "user" in session and session["user"] != "":
-        return render_template("index.html")
+        return render_template("index.html", profile_Name = session["user"])
     else:
         return redirect(url_for("register"))
 

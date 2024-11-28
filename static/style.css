@@ -411,4 +411,9 @@ body{
     padding-top: 5px;
     border-radius: 10px;
     background-color: lightgreen;
+    transition: 0.2s ease;
+}
+
+#redirect-cont a:hover{
+    background-color: var(--secondary);
 }
