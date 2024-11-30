@@ -166,7 +166,7 @@ def support():
 
             return redirect(url_for("support"))
 
-        return render_template("support.html")
+        return render_template("support.html", profile_Name = session["user"])
 
 if __name__ == "__main__":
     with app.app_context():
