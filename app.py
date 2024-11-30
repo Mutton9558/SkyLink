@@ -3,6 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 from datetime import timedelta, datetime
+from email.mime.text import MIMEText 
+from email.mime.image import MIMEImage 
+from email.mime.multipart import MIMEMultipart 
+import smtplib 
 
 load_dotenv('.env')
 app = Flask(__name__)
@@ -29,6 +33,40 @@ class users(db.Model):
         self.email = email
         self.username = username
         self.password = password
+
+def automatedEmail(issue, username):
+    msg = MIMEMultipart()
+    msg['Subject'] = "Response to issue."
+
+    text = f'''
+<html>
+<body>
+    <p>Dear <b>{username}</b>,</p>
+    <p>We have received your inquiry regarding the following issue:</p>
+    <p><i>"{issue}"</i></p>
+    <p>
+        Our staff will contact you within <b>1-3 business days</b> 
+        to assist you with your issue.
+    </p>
+    <p>
+        Thank you for being patient while we address this matter!
+    </p>
+    <p>
+        Regards,<br>
+        <b><i>SkyLink Co.</i><b>
+    </p>
+</body>
+</html>
+'''
+    msg.attach(MIMEText(text, "html"))
+
+    image_path = os.path.join(current_app.root_path, 'static', 'img', 'logo.png')
+    if image_path and os.path.isfile(image_path):
+        with open(image_path, "rb") as img_file:
+            img = MIMEImage(img_file.read(), name=os.path.basename(image_path))
+            msg.attach(img)
+
+    return msg
 
 @app.route('/')
 def home():
@@ -60,9 +98,9 @@ def register():
         if users.query.filter_by(phoneNumber = new_hpNo).first():
             flash("That phone number is already registered!")
         else:
-            new_email = new_email.split("@")
+            test_email = new_email.split("@")
             valid_emails = ['gmail.com', 'yahoo.com', 'hotmail.com', 'mmu.edu.my', 'live.com'] # Only these for now
-            if (len(new_email) == 1) or new_email[1] not in valid_emails:
+            if (len(test_email) == 1) or test_email[1] not in valid_emails:
                 flash("Invalid email!")
             isCode = new_hpNo[0]
             if isCode == "+":
@@ -96,15 +134,32 @@ def logout():
 
 @app.route('/support', methods=["GET", "POST"])
 def support():
-    if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        message = request.form.get("message")
-        
-        flash("Your inquiry has been submitted successfully. We'll get back to you soon!", "success")
-        return redirect(url_for("support"))
-    
-    return render_template("support.html")
+    if "user" in session and session["user"] != "":
+        if request.method == "POST":
+            name = users.query.filter_by(username=session["user"]).first().username
+            email = users.query.filter_by(username=session["user"]).first().email
+            message = request.form.get("message")
+
+            try:
+                msg = automatedEmail(message, name)
+                to = [email]
+                smtp_server = "smtp.gmail.com"
+                smtp_port = 587
+                smtp_user = os.getenv("EMAIL_USER")  # Use environment variables
+                smtp_password = os.getenv("EMAIL_PASSWORD")
+
+                with smtplib.SMTP(smtp_server, smtp_port) as smtp:
+                    smtp.starttls()
+                    smtp.login(smtp_user, smtp_password)
+                    smtp.sendmail(from_addr=smtp_user, to_addrs=to, msg=msg.as_string())
+
+                flash(f"Your inquiry has been submitted successfully. Check your email ({email}) for our response!", "success")
+            except Exception as e:
+                flash(f"An error occurred while sending the email: {str(e)}", "danger")
+
+            return redirect(url_for("support"))
+
+        return render_template("support.html")
 
 if __name__ == "__main__":
     with app.app_context():
