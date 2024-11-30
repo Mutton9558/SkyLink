@@ -4,19 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}"
     <title>Customer Support - SkyLink</title>
 </head>
 <body>
     <header class="header">
         <div class="header-container">
-            <a class="navbar-brand" href="/">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" height="80" alt="SkyLink">
-            </a>
-            <nav>
-                <a href="/">Home</a> |
-                <a href="/support">Support</a> |
-                <a href="/logout">Logout</a>
-            </nav>
+            <div class="logo">
+                <a class="navbar-brand" href="/home">
+                    <img src="{{url_for('static', filename='img/logo.png')}}" height="80" alt="SkyLink" href="/">
+                </a>
+            </div>
+            <div class="useful-links">
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Purchases</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Check-in</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Flight Status</p>
+                    </a>
+                <div class="link">
+                    <a class="nav-link" href="/support">
+                        <p>Support</p>
+                    </a>
+                </div>
+                </div>
+                <div class="profile">
+                    <a class="nav-link" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" display="flex" width="25" fill=currentColor class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                        <p class="profile-text">{{ profile_Name }}</p>
+                    </a>
+                    <div class="dropdown">
+                        <div class="dropdown-content">
+                            <a href="#">Edit Profile</a>
+                            <a href="#">Settings</a>
+                            <a href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 

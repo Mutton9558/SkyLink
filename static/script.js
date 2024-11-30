@@ -1,33 +1,72 @@
 // Toggle dropdown visibility when the profile button is clicked
-document.querySelector('.profile').addEventListener('click', function (event) {
+document.querySelector(".profile").addEventListener("click", function (event) {
   event.stopPropagation(); // Prevent click from propagating to the document
-  const dropdown = this.querySelector('.dropdown');
-  dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  const dropdown = this.querySelector(".dropdown");
+  dropdown.style.display =
+    dropdown.style.display === "block" ? "none" : "block";
 });
 
 // Hide the dropdown when clicking outside
-document.addEventListener('click', function () {
-  const dropdown = document.querySelector('.dropdown');
+document.addEventListener("click", function () {
+  const dropdown = document.querySelector(".dropdown");
   if (dropdown) {
-      dropdown.style.display = 'none';
+    dropdown.style.display = "none";
   }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('form');
+document.addEventListener("DOMContentLoaded", () => {
+  // For Carousel Picture
+  const carousel = document.querySelector(".carousel-images");
+  const images = document.querySelectorAll(".carousel-images img");
+  const prevButton = document.querySelector(".prev");
+  const nextButton = document.querySelector(".next");
+
+  // Update the carousel position
+  function updateCarousel() {
+    const offset = -currentIndex * 100; // Move the carousel by 100% per image
+    carousel.style.transform = `translateX(${offset}%)`;
+  }
+
+  let currentIndex = 0;
+  // Move to the previous image
+  prevButton.addEventListener("click", () => {
+    currentIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
+    updateCarousel();
+  });
+
+  // Move to the next image
+  nextButton.addEventListener("click", () => {
+    currentIndex = currentIndex === images.length - 1 ? 0 : currentIndex + 1;
+    updateCarousel();
+  });
+
+  //For hide and show the return date for round-trip and add stops for multi-city
+  const form = document.querySelector("form");
   const tripOptions = document.querySelectorAll('input[name="trip"]');
-  const passengerSelect = document.querySelector('select');
-  const returnElement = document.querySelector('.return');
+  const passengerSelect = document.querySelector("select");
+  const returnElement = document.querySelector(".return");
+  const stopsElement = document.querySelector(".add-stops-button");
+  const bookingElement = document.querySelector(".booking-form");
 
   // Function to update visibility of the return element based on selected trip type
   function updatereturnVisibility() {
-    const tripType = [...tripOptions].find(option => option.checked).className;
-    console.log(tripType)
+    const tripType = [...tripOptions].find(
+      (option) => option.checked
+    ).className;
+    console.log(tripType);
 
-    if (tripType === 'one-trip' || tripType === 'multi-city-one-trip') {
-      returnElement.style.display = 'none'; // Hide return for one-way
+    if (tripType === "one-trip") {
+      returnElement.style.display = "none"; // Hide return for one-way
+      stopsElement.style.display = "none";
+      bookingElement.style.margin = "0 5rem 0 8rem";
+    } else if (tripType === "round-trip") {
+      returnElement.style.display = "block"; // Show return for round trip
+      stopsElement.style.display = "none";
+      bookingElement.style.margin = "0 10rem 0 4.5rem";
     } else {
-      returnElement.style.display = 'block'; // Show return for round trip
+      returnElement.style.display = "none";
+      stopsElement.style.display = "block";
+      bookingElement.style.margin = "0 5rem 0 8rem";
     }
   }
 
@@ -35,22 +74,28 @@ document.addEventListener('DOMContentLoaded', () => {
   updatereturnVisibility();
 
   // Add event listeners to trip options to update visibility when changed
-  tripOptions.forEach(option => {
-    option.addEventListener('change', updatereturnVisibility);
+  tripOptions.forEach((option) => {
+    option.addEventListener("change", updatereturnVisibility);
   });
 
   // Handle form submission
-  form.addEventListener('submit', (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault(); // Prevent actual form submission
 
     // Collect form data
-    const tripType = [...tripOptions].find(option => option.checked).nextSibling.textContent.trim();
+    const tripType = [...tripOptions]
+      .find((option) => option.checked)
+      .nextSibling.textContent.trim();
     const from = form.querySelector('input[placeholder="From"]').value;
     const to = form.querySelector('input[placeholder="To"]').value;
-    const departure = form.querySelector('input[placeholder="Departure"]').value;
+    const departure = form.querySelector(
+      'input[placeholder="Departure"]'
+    ).value;
     const returnDate = form.querySelector('input[placeholder="Return"]').value;
     const passengers = passengerSelect.value;
-    const promoCode = form.querySelector('input[placeholder="Add promo code"]').value;
+    const promoCode = form.querySelector(
+      'input[placeholder="Add promo code"]'
+    ).value;
 
     // Simulate action or display collected data
     console.log({
@@ -70,6 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     - Departure: ${departure}
     - Return: ${returnDate}
     - Passengers/Class: ${passengers}
-    - Promo code: ${promoCode ? promoCode : 'None'}`);
+    - Promo code: ${promoCode ? promoCode : "None"}`);
   });
 });
