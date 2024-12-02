@@ -53,7 +53,7 @@ def automatedEmail(issue, username):
     </p>
     <p>
         Regards,<br>
-        <b><i>SkyLink Co.</i><b>
+        <b>SkyLink Co.<b>
     </p>
 </body>
 </html>

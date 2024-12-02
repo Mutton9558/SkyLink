@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}"
+    <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}">
     <title>Customer Support - SkyLink</title>
 </head>
 <body>
@@ -65,6 +65,7 @@
                     {% if messages %}
                         {% for msg in messages %}
                             <p>{{ msg }}</p>
+                            <script>MSG.innerHTML = ""</script>
                         {% endfor %}
                     {% endif %}
                 {% endwith %}
@@ -72,8 +73,9 @@
                     <label for="message">Message:</label>
                     <textarea id="message" name="message" rows="10" placeholder="Describe your issue or question" required></textarea>
                     
-                    <button type="submit">Submit</button>
+                    <button type="submit" onclick=displayLoadMsg()>Submit</button>
                 </form>
+                <p class="wait-msg"></p>
             </div>
         </section>
 
