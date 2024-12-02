@@ -1,3 +1,5 @@
+MSG = document.querySelector(".wait-msg");
+
 // Toggle dropdown visibility when the profile button is clicked
 document.querySelector(".profile").addEventListener("click", function (event) {
   event.stopPropagation(); // Prevent click from propagating to the document
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const passengerSelect = document.querySelector("select");
   const returnElement = document.querySelector(".return");
   const stopsElement = document.querySelector(".add-stops-button");
-  const bookingElement = document.querySelector(".booking-form");
+  const departureElement = document.querySelector(".departure");
 
   // Function to update visibility of the return element based on selected trip type
   function updatereturnVisibility() {
@@ -58,15 +60,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tripType === "one-trip") {
       returnElement.style.display = "none"; // Hide return for one-way
       stopsElement.style.display = "none";
-      bookingElement.style.margin = "0 5rem 0 8rem";
+      departureElement.style.margin = "0 3rem 0 3rem";
     } else if (tripType === "round-trip") {
       returnElement.style.display = "block"; // Show return for round trip
       stopsElement.style.display = "none";
-      bookingElement.style.margin = "0 10rem 0 4.5rem";
+      departureElement.style.margin = "0";
     } else {
       returnElement.style.display = "none";
       stopsElement.style.display = "block";
-      bookingElement.style.margin = "0 5rem 0 8rem";
+      departureElement.style.margin = "0 3rem 0 3rem";
     }
   }
 
@@ -118,3 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     - Promo code: ${promoCode ? promoCode : "None"}`);
   });
 });
+
+function displayLoadMsg(){
+  MSG.innerHTML = "Your inquiry may take a while to be submitted...Please be patient.";
+}

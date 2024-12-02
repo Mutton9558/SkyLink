@@ -197,7 +197,7 @@ body{
     width: fit-content;
     min-width: 80%;
     z-index: 3;
-    margin: 0 5rem 0 5rem;
+    margin: 0 5rem 0 12rem;
 }
   
 .trip-options {
@@ -209,6 +209,11 @@ body{
 .departure p{
     margin: 0 0 5px 0;
     font-size: small;
+}
+
+.return {
+    display: block;
+    margin: 0 0 5px 0;
 }
 
 .return p{
@@ -291,19 +296,19 @@ body{
 
 @keyframes changeBackground {
     0% {
-        background-image: url('img/japan1.jpg');
+        background-image: url('img/kualalumpur1.jpg');
     }
     25% {
-        background-image: url('img/paris1.jpg');
+        background-image: url('img/melaka1.jpg');
     }
     50% {
-        background-image: url('img/egypt1.jpg');
+        background-image: url('img/georgetown1.jpg');
     }
     75%{
-        background-image: url('img/riodejaneiro1.jpg')
+        background-image: url('img/MountKinabalu1.jpg')
     }
     100% {
-        background-image: url('img/japan1.jpg'); /* Loop back to the first image */
+        background-image: url('img/kualalumpur1.jpg'); /* Loop back to the first image */
     }
 }
 
