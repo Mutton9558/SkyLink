@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}"
     <title>SkyLink</title>
 </head>
 <body>
@@ -11,7 +12,7 @@
     <header class="header">
         <div class="header-container">
             <div class="logo">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="/home">
                     <img src="{{url_for('static', filename='img/logo.png')}}" height="80" alt="SkyLink" href="/">
                 </a>
             </div>
@@ -69,33 +70,47 @@
 
         <div class="booking-form">
             <form>
-              <div class="trip-options">
-                <label><input type="radio" name="trip" class="round-trip" checked> Return</label>
-                <label><input type="radio" name="trip" class="one-trip"> One way</label>
-                <label><input type="radio" name="trip" class="multi-city"> Multi-city return</label>
-                <label><input type="radio" name="trip" class="multi-city-one-trip"> Multi-city one way</label>
-              </div>
-              <div class="fields">
-                <input type="text" placeholder="From" required>
-                <input type="text" placeholder="To" required>
-                <div class="departure">
-                    <p>Departure date</p>
-                    <input type="date" required>
-                </div>
-                <div class="return">
-                    <p>Return Date</p>
-                    <input type="date"class="Return" required>
+                <div class="trip-options">
+                    <label><input type="radio" name="trip" class="round-trip" checked> Return</label>
+                    <label><input type="radio" name="trip" class="one-trip"> One way</label>
+                    <label><input type="radio" name="trip" class="multi-city"> Multi-city</label>
                 </div>
                 
-                <select>
-                  <option>1 Passenger Economy</option>
-                  <option>2 Passengers Economy</option>
-                </select>
-              </div>
-              <div class="actions">
-                <input type="text" placeholder="Add promo code">
-                <button type="submit">Search Flights</button>
-              </div>
+                <div class="fields">
+                    <select type="text" placeholder="From" required>
+                        <option value="">Select an option</option>
+                        {% for option in options %}
+                        <option value="{{option}}">{{option}}</option>
+                        {% endfor %}
+                    </select>
+                    <select type="text" placeholder="To" required>
+                        <option value="">Select an option</option>
+                        {% for option in options %}
+                        <option value="{{option}}">{{option}}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <div class="departure">
+                        <p>Departure date</p>
+                        <input type="date" required>
+                    </div>
+                
+                    <div class="return">
+                        <p>Return Date</p>
+                        <input type="date"class="Return" required>
+                    </div>
+                
+                    <select>
+                        <option>1 Passenger Economy</option>
+                        <option>2 Passengers Economy</option>
+                    </select>
+                </div>
+                
+                <div class="actions">
+                    <a class="add-stops-button">+ Add Stops</a>
+                    <input type="text" placeholder="Add promo code">
+                    <button type="submit">Search Flights</button>
+                </div>
             </form>
         </div>
     </main>
