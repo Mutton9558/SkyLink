@@ -24,27 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const images = document.querySelectorAll(".carousel-images img");
   const prevButton = document.querySelector(".prev");
   const nextButton = document.querySelector(".next");
-
-  // Update the carousel position
-  function updateCarousel() {
-    const offset = -currentIndex * 100; // Move the carousel by 100% per image
-    carousel.style.transform = `translateX(${offset}%)`;
-  }
-
   let currentIndex = 0;
-  // Move to the previous image
-  prevButton.addEventListener("click", () => {
-    currentIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
-    updateCarousel();
-  });
 
-  // Move to the next image
-  nextButton.addEventListener("click", () => {
-    currentIndex = currentIndex === images.length - 1 ? 0 : currentIndex + 1;
-    updateCarousel();
-  });
-
-  //For hide and show the return date for round-trip and add stops for multi-city
+  // For hide and show the return date for round-trip and add stops for multi-city
   const form = document.querySelector("form");
   const tripOptions = document.querySelectorAll('input[name="trip"]');
   const passengerSelect = document.querySelector("select");
@@ -52,38 +34,108 @@ document.addEventListener("DOMContentLoaded", () => {
   const stopsElement = document.querySelector(".add-stops-button");
   const departureElement = document.querySelector(".departure");
   const bookingElement = document.querySelector(".booking-form");
+  const firstStops = document.querySelector(".duplicateFields");
+
+  // Update the carousel position
+  function updateCarousel() {
+    const offset = -currentIndex * 100; // Move the carousel by 100% per image
+    carousel.style.transform = `translateX(${offset}%)`;
+  }
+
+  // Move to the previous image
+  prevButton.addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    updateCarousel();
+  });
+
+  // Move to the next image
+  nextButton.addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % images.length;
+    updateCarousel();
+  });
 
   // Function to update visibility of the return element based on selected trip type
-  function updatereturnVisibility() {
+  function updateReturnVisibility() {
     const tripType = [...tripOptions].find(
       (option) => option.checked
     ).className;
     console.log(tripType);
 
-    if (tripType === "one-trip") {
-      returnElement.style.display = "none"; // Hide return for one-way
-      stopsElement.style.display = "none";
-      departureElement.style.margin = "0 3rem 0 3rem";
-      bookingElement.style.margin = "0 10% 0 7.5%";
-    } else if (tripType === "round-trip") {
-      returnElement.style.display = "block"; // Show return for round trip
-      stopsElement.style.display = "none";
-      departureElement.style.margin = "0";
-      bookingElement.style.margin = "0 10% 0 6%";
-    } else {
-      returnElement.style.display = "none";
-      stopsElement.style.display = "block";
-      departureElement.style.margin = "0 3rem 0 3rem";
-      bookingElement.style.margin = "0 10% 0 6%";
+    switch (tripType) {
+      case "one-trip":
+        returnElement.style.display = "none"; // Hide return for one-way
+        stopsElement.style.display = "none";
+        firstStops.style.display = "none";
+        departureElement.style.margin = "0 3rem 0 3rem";
+        bookingElement.style.margin = "0 10% 0 7.5%";
+        break;
+      case "round-trip":
+        returnElement.style.display = "block"; // Show return for round trip
+        stopsElement.style.display = "none";
+        firstStops.style.display = "none";
+        departureElement.style.margin = "0";
+        bookingElement.style.margin = "0 10% 0 6%";
+        break;
+      default:
+        returnElement.style.display = "none";
+        stopsElement.style.display = "block";
+        departureElement.style.margin = "0 3rem 0 3rem";
+        bookingElement.style.margin = "0 10% 0 6%";
+        firstStops.style.display = "flex";
     }
   }
 
   // Initial call to set the correct visibility based on the default selected trip type
-  updatereturnVisibility();
+  updateReturnVisibility();
 
   // Add event listeners to trip options to update visibility when changed
   tripOptions.forEach((option) => {
-    option.addEventListener("change", updatereturnVisibility);
+    option.addEventListener("change", updateReturnVisibility);
+  });
+
+  const addStopsButton = document.getElementById("addFlight");
+  const stopFieldsContainer = document.getElementById("container");
+
+  addStopsButton.addEventListener("click", () => {
+    // Find the first duplicateFlights element to clone
+    const duplicateFlight =
+      stopFieldsContainer.querySelector(".duplicateFields");
+
+    if (duplicateFlight) {
+      // Clone the duplicateFlights element
+      const newFlight = duplicateFlight.cloneNode(true);
+
+      // Optionally, reset the values of the cloned fields
+      const inputs = newFlight.querySelectorAll("input");
+      inputs.forEach((input) => {
+        input.value = ""; // Clear input values
+      });
+
+      // Append the cloned element to the container
+      stopFieldsContainer.appendChild(newFlight);
+
+      // Add remove button functionality
+      const removeButton = newFlight.querySelector(".removeFlight");
+      removeButton.addEventListener("click", () => {
+        if (stopFieldsContainer.children.length > 1) {
+          stopFieldsContainer.removeChild(newFlight);
+        } else {
+          alert("At least one stop must remain.");
+        }
+      });
+    }
+  });
+
+  // Add event listener for existing remove buttons
+  stopFieldsContainer.addEventListener("click", (event) => {
+    if (event.target.classList.contains("removeFlight")) {
+      const flightField = event.target.closest(".duplicateFields");
+      if (stopFieldsContainer.children.length > 1) {
+        stopFieldsContainer.removeChild(flightField);
+      } else {
+        alert("At least one stop must remain.");
+      }
+    }
   });
 
   // Handle form submission

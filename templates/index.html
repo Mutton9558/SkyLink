@@ -68,48 +68,72 @@
     <main>
         <div class="booking-form">
             <form>
-                <div class="trip-options">
-                    <label><input type="radio" name="trip" class="round-trip" checked> Return</label>
-                    <label><input type="radio" name="trip" class="one-trip"> One way</label>
-                    <label><input type="radio" name="trip" class="multi-city"> Multi-city</label>
-                </div>
-                
-                <div class="fields">
-                    <div class="fields" id="stop-fields-container">
-                        <select type="text" placeholder="From" required>
-                            <option value="">Select an option (Origin)  </option>
-                            {% for option in options %}
-                            <option value="{{option}}">{{option}}</option>
-                            {% endfor %}
-                        </select>
-                        <select type="text" placeholder="To" required>
-                            <option value="">Select an option (Destination)</option>
-                            {% for option in options %}
-                            <option value="{{option}}">{{option}}</option>
-                            {% endfor %}
-                        </select>
-                        
-                        <div class="departure">
-                            <p>Departure date</p>
-                            <input type="date" required>
-                        </div>
+                <div id="container">
+                    <div class="trip-options">
+                        <label><input type="radio" name="trip" class="round-trip" checked> Return</label>
+                        <label><input type="radio" name="trip" class="one-trip"> One way</label>
+                        <label><input type="radio" name="trip" class="multi-city"> Multi-city</label>
+                    </div>
                     
-                        <div class="return">
-                            <p>Return Date</p>
-                            <input type="date"class="Return" required>
+                    <div class="fields" id="stop-fields-container">
+                        <div class="fields">
+                            <select type="text" placeholder="From" required>
+                                <option value="">Select an option (Origin)  </option>
+                                {% for option in options %}
+                                <option value="{{option}}">{{option}}</option>
+                                {% endfor %}
+                            </select>
+                            <select type="text" placeholder="To" required>
+                                <option value="">Select an option (Destination)</option>
+                                {% for option in options %}
+                                <option value="{{option}}">{{option}}</option>
+                                {% endfor %}
+                            </select>
+                            
+                            <div class="departure">
+                                <p>Departure date</p>
+                                <input type="date" required>
+                            </div>
+                        
+                            <div class="return">
+                                <p>Return Date</p>
+                                <input type="date"class="Return" required>
+                            </div>
+                        </div>
+                        <div class="NumberPassenger">
+                            <p style="font-size: small; margin: 0 0 5px 0;">Number of Passengers</p>
+                            <select>
+                                <option>1 Passenger Economy</option>
+                                <option>2 Passengers Economy</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="NumberPassenger">
-                        <p style="font-size: small; margin: 0 0 5px 0;">Number of Passengers</p>
-                        <select>
-                            <option>1 Passenger Economy</option>
-                            <option>2 Passengers Economy</option>
-                        </select>
+
+                    <div class="duplicateFields">
+                        <div class="fields">
+                            <select type="text" placeholder="From" required>
+                                <option value="">Select an option (Origin)  </option>
+                                {% for option in options %}
+                                <option value="{{option}}">{{option}}</option>
+                                {% endfor %}
+                            </select>
+                            <select type="text" placeholder="To" required>
+                                <option value="">Select an option (Destination)</option>
+                                {% for option in options %}
+                                <option value="{{option}}">{{option}}</option>
+                                {% endfor %}
+                            </select>
+                            
+                            <div class="departure">
+                                <p>Departure date</p>
+                                <input type="date" required>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="actions">
-                    <a class="add-stops-button" id="add-flight">+ Add Stops</a>
+                    <a class="add-stops-button" id="addFlight">+ Add Stops</a>
                     <input type="text" placeholder="Add promo code">
                     <button type="submit">Search Flights</button>
                 </div>
