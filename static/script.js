@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const returnElement = document.querySelector(".return");
   const stopsElement = document.querySelector(".add-stops-button");
   const departureElement = document.querySelector(".departure");
+  const bookingElement = document.querySelector(".booking-form");
 
   // Function to update visibility of the return element based on selected trip type
   function updatereturnVisibility() {
@@ -61,14 +62,17 @@ document.addEventListener("DOMContentLoaded", () => {
       returnElement.style.display = "none"; // Hide return for one-way
       stopsElement.style.display = "none";
       departureElement.style.margin = "0 3rem 0 3rem";
+      bookingElement.style.margin = "0 10% 0 7.5%";
     } else if (tripType === "round-trip") {
       returnElement.style.display = "block"; // Show return for round trip
       stopsElement.style.display = "none";
       departureElement.style.margin = "0";
+      bookingElement.style.margin = "0 10% 0 6%";
     } else {
       returnElement.style.display = "none";
       stopsElement.style.display = "block";
       departureElement.style.margin = "0 3rem 0 3rem";
+      bookingElement.style.margin = "0 10% 0 6%";
     }
   }
 
@@ -121,6 +125,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-function displayLoadMsg(){
-  MSG.innerHTML = "Your inquiry may take a while to be submitted...Please be patient.";
+document.addEventListener("DOMContentLoaded", () => {});
+
+function displayLoadMsg() {
+  MSG.innerHTML =
+    "Your inquiry may take a while to be submitted...Please be patient.";
 }
