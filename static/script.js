@@ -113,28 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Append the cloned element to the container
       stopFieldsContainer.appendChild(newFlight);
-
-      // Add remove button functionality
-      const removeButton = newFlight.querySelector(".removeFlight");
-      removeButton.addEventListener("click", () => {
-        if (stopFieldsContainer.children.length > 1) {
-          stopFieldsContainer.removeChild(newFlight);
-        } else {
-          alert("At least one stop must remain.");
-        }
-      });
-    }
-  });
-
-  // Add event listener for existing remove buttons
-  stopFieldsContainer.addEventListener("click", (event) => {
-    if (event.target.classList.contains("removeFlight")) {
-      const flightField = event.target.closest(".duplicateFields");
-      if (stopFieldsContainer.children.length > 1) {
-        stopFieldsContainer.removeChild(flightField);
-      } else {
-        alert("At least one stop must remain.");
-      }
     }
   });
 
