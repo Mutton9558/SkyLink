@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const stopsElement = document.querySelector(".add-stops-button");
   const departureElement = document.querySelector(".departure");
   const bookingElement = document.querySelector(".booking-form");
-  const firstStops = document.querySelector(".duplicateFields");
 
   // Update the carousel position
   function updateCarousel() {
@@ -60,19 +59,23 @@ document.addEventListener("DOMContentLoaded", () => {
       (option) => option.checked
     ).className;
     console.log(tripType);
-
+    const newStops = document.querySelectorAll(".duplicateFields")
     switch (tripType) {
       case "one-trip":
         returnElement.style.display = "none"; // Hide return for one-way
         stopsElement.style.display = "none";
-        firstStops.style.display = "none";
+        newStops.forEach((stopField) => {
+          stopField.style.display = "none";
+        });
         departureElement.style.margin = "0 3rem 0 3rem";
         bookingElement.style.margin = "0 10% 0 7.5%";
         break;
       case "round-trip":
         returnElement.style.display = "block"; // Show return for round trip
         stopsElement.style.display = "none";
-        firstStops.style.display = "none";
+        newStops.forEach((stopField) => {
+          stopField.style.display = "none";
+        });
         departureElement.style.margin = "0";
         bookingElement.style.margin = "0 10% 0 6%";
         break;
@@ -81,7 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
         stopsElement.style.display = "block";
         departureElement.style.margin = "0 3rem 0 3rem";
         bookingElement.style.margin = "0 10% 0 6%";
-        firstStops.style.display = "flex";
+        newStops.forEach((stopField) => {
+          stopField.style.display = "flex";
+        });
+        // firstStops.style.display = "flex";
     }
   }
 
@@ -157,12 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-document.addEventListener("DOMContentLoaded", () => {});
-
-function displayLoadMsg() {
-  MSG.innerHTML =
-    "Your inquiry may take a while to be submitted...Please be patient.";
-}
 function displayLoadMsg() {
   MSG.innerHTML =
     "Your inquiry may take a while to be submitted...Please be patient.";
