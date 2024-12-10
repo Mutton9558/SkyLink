@@ -68,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
           stopField.style.display = "none";
         });
         departureElement.style.margin = "0 3rem 0 3rem";
-        bookingElement.style.margin = "0 10% 0 7.5%";
         break;
       case "round-trip":
         returnElement.style.display = "block"; // Show return for round trip
@@ -77,13 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
           stopField.style.display = "none";
         });
         departureElement.style.margin = "0";
-        bookingElement.style.margin = "0 10% 0 6%";
         break;
       default:
         returnElement.style.display = "none";
         stopsElement.style.display = "block";
         departureElement.style.margin = "0 3rem 0 3rem";
-        bookingElement.style.margin = "0 10% 0 6%";
         newStops.forEach((stopField) => {
           stopField.style.display = "flex";
         });
