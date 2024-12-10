@@ -167,6 +167,26 @@ def support():
             return redirect(url_for("support"))
 
         return render_template("support.html", profile_Name = session["user"])
+@app.route('/check-in', methods=["GET", "POST"])
+def check_in():
+    if request.method == "POST":
+        ic_number = request.form.get("ic_number") 
+        email = request.form.get("email")
+
+
+        user = users.query.filter_by(icNumber=ic_number, email=email).first()
+
+        if user:
+
+            flash(f"Check-in successful! Welcome, {user.name}.", "success")
+            return redirect(url_for("check_in"))
+        else:
+
+            flash("Invalid IC Number or Email. Please try again.", "error")
+            return redirect(url_for("check_in"))
+
+
+    return render_template("check_in.html")
 
 if __name__ == "__main__":
     with app.app_context():
