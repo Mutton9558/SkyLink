@@ -8,25 +8,41 @@
     <title>Login</title>
 </head>
 <body>
-    <h1>Welcome Back!</h1>
-    <h2>Let's get you back to your account.</h2>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for msg in messages %}
-                <p>*{{ msg }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <form method="POST", name="login-form">
-        <label>Username: </label>
-        <input type="text" id="login-user" name="login-username" required>
-        <label>Password: </label>
-        <input type="password" id="login-pass" name="login-password" required>
-        <input type="submit" id="login-submit">
-    </form>
-    <div id="redirect-login-cont">
-        <p>Don't have an account? Click here:</p>
-        <a href="/register" id="btn-to-reg">Register</a>
+    <div id="login-page">
+        <div id="header-login">
+            <img id="logo-login" src="{{url_for('static', filename='img/logo.png')}}" width="140px" height="100%">
+            <h1>SkyLink</h1>
+        </div>
+        <p>Domestic Travel made easier</p>
+        <div id="cont-login">
+            <div id="top-msg">
+                <h1>Welcome Back!</h1>
+                <h2>Let's get you back to your account.</h2>    
+            </div>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <p id="flashed-msg">*{{ msg }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form method="POST", name="login-form" id="login-f">
+                <div class="input-cont">
+                    <input type="text" id="login-user" name="login-username" placeholder="Enter your Username!" required>
+                </div>
+                <div class="input-cont">
+                    <input type="password" id="login-pass" name="login-password" placeholder="Enter your Password!" required>
+                    <button type="button" id="pass-btn" onclick=showPassword()>
+                        <img id="pass-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAA5VJREFUSEuVlk9oHVUUxn+HxLprYl6lilLEELcJFdqVqNBqSQu2zaaiFBFLu1AKWgLd60qoioIGUxSkzaJ/lNI/NBvNwkUWLqwUSy1i243YSpFkUVLwOGfmzMydmTtvnneR3Dnv3nvO+c53vnuFYAig/l3OBUFRN6T/yj/h9mIenpMaG4bMVHUVOmgEEfVTM7Z4yTMKzhws6kGCiPjsh2h7Gv/joG4sqoUMoI4iHi/QINl3RNJ0PMihIbkGJlpIUpu3sLoRsPAIyqvAM0AP2ODg3QX+Bq4DJ4B/OiqUEb17kTwr6KzCXpDhtOHaifsA5DToB8DVavCxGse9jwGfAK9Hsr+Dcst7dBPKozUNUIXjwLvASqzcbTUeAX4ApnzTGvAVcCG1CyuFomQLRgSeV9gFvAE8lJnlR0G3qXC/UKZYH3vUDwNLwFZfcxY4BNypRx5XOh7zIHf4+svANPCvI5RKXyzjBZB9Lp4fArPlhnQ27oFMCqwoLAJzNZKKCnMoB9z+kcNeLKs7fgv40tgj6DmF3WBnaI6UOV1G6NWgsxIYzGHfDwHfA89lZJRp0Eu558xxhtkocBNYnxDqBrA5q2UFYEPgSAtZDmktc0hh/8VaL6n9HwLj6pCHGb+d9OenfujLZBDWx6LA9spNVa44izBTDTTNyHr/pC/bn5TqmzzXfOth4GP/2JMw+ruK1wyVM6T9HB1GwpkIAWdUOO0BvYPwWS4FvlZGQX9LftiAchuYBO5V2KAcTOD7osWxMT8lWaCiBvGVxP44yJ+CTiis1jO27zBrI4IRJmuDcpwHdtYcBOTK82AIdXJlJmP4fDZtttM6hGWUKe/RY4nyvBd6dbtl/pLPy3YqG9tm5uRN37sE8iKYoOWum7g9AfwEbPQl3wp6UFMB6Vb2pB1t/9cI27yuvwNb/CKpVC5SMnkK1DKZ8B/XEOZRLqaqJqzW2sx0/QXgFeA1wHrYIP0ZdHtT9SRyO3lSAj0Fg9paoMIY4K8ERrskhpOAnkTTPg2H8eJz4Gj/S6I/gqbZdoARajhS79Bkl8kpgfcVrhWlaTwWKuTqqJ8whqZX5NOuRL3gIXBX4FeFhSLDErn6xVQAWPAs0ORI3eum+sWe63lnAsVbIiB47fHbF9eBGB6KSdlH9ogp4ffHWBhGtDbFTdWKSndI8fu4cWDDf0nz9pL09R57ZXaHG9GRCJO6Sl1VuXiN4xlXkx04Xl/4H2PqHTfQ11RTAAAAAElFTkSuQmCC"/>
+                    </button>
+                </div>
+                <input type="submit" id="login-submit">
+            </form>
+            <div id="redirect-login-cont">
+                <p>Don't have an account?</p>
+                <a href="/register" id="btn-to-reg">Click here</a>
+            </div>
+        </div>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
