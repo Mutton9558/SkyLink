@@ -97,26 +97,30 @@ def register():
         new_email = request.form["reg-email"]
         new_username = request.form["reg-username"]
         new_password = request.form["reg-password"]
-        
-        if users.query.filter_by(icNumber = new_ic).first():
-            flash(f"User with IC number {new_ic} already exists!")
-        if users.query.filter_by(email = new_email).first() or users.query.filter_by(username = new_username).first():
-            flash("Email or Username already exists!")
-        if users.query.filter_by(phoneNumber = new_hpNo).first():
-            flash("That phone number is already registered!")
-        else:
-            test_email = new_email.split("@")
-            valid_emails = ['gmail.com', 'yahoo.com', 'hotmail.com', 'mmu.edu.my', 'live.com'] # Only these for now
-            if (len(test_email) == 1) or test_email[1] not in valid_emails:
-                flash("Invalid email!")
-            isCode = new_hpNo[0]
-            if isCode == "+":
-                new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password)
-                db.session.add(new_user)
-                db.session.commit()   
-                return redirect(url_for("login"))
+        try:
+            int(new_ic)
+            if users.query.filter_by(icNumber = str(new_ic)).first():
+                flash(f"User with IC number {new_ic} already exists!")
+            if users.query.filter_by(email = new_email).first() or users.query.filter_by(username = new_username).first():
+                flash("Email or Username already exists!")
+            if users.query.filter_by(phoneNumber = new_hpNo).first():
+                flash("That phone number is already registered!")
             else:
-                    flash("Please include country calling code!")
+                test_email = new_email.split("@")
+                valid_emails = ['gmail.com', 'yahoo.com', 'hotmail.com', 'mmu.edu.my', 'live.com', 'student.mmu.edu.my'] # Only these for now
+                if (len(test_email) == 1) or test_email[1] not in valid_emails:
+                    flash("Invalid email!")
+                isCode = new_hpNo[0]
+                if isCode == "+":
+                    new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password)
+                    db.session.add(new_user)
+                    db.session.commit()   
+                    return redirect(url_for("login"))
+                else:
+                        flash("Please include country calling code!")
+        except:
+            flash("Please enter a valid IC Number.")
+        
     return render_template("register.html")
 
 @app.route('/login', methods = ["POST", "GET"])

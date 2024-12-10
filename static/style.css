@@ -183,6 +183,11 @@ body{
     background-color: rgba(0, 0, 0, 0.8);
 }
 
+#home-page-main{
+    display: flex;
+    justify-content: center;
+}
+
 .booking-form {
     display: flex;
     flex-direction: column;
@@ -591,4 +596,73 @@ body{
 #flashed-msg{
     letter-spacing: 0.5ch;
     color: red;
+}
+
+footer{
+    position: absolute;
+    bottom: 0;
+    width: 100vw;
+    margin-top: 2ch;
+    border-top: 1px var(--background-dark) solid;
+    background-color: #82C26E;
+    color: var(--text-light-mode);
+}
+
+.footer-content{
+    margin-top: 1rem;
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+}
+
+#items-footer-left{
+    float: right;
+    margin-right: 12rem;
+    display: flex;
+    flex-direction: column;
+}
+
+#items-footer-right{
+    margin-left: 12rem;
+    display: flex;
+    flex-direction: column;
+}
+
+#items-footer-left h3, #items-footer-right h3{
+    font-size: 28px;
+    cursor: default;
+}
+
+#items-footer-left a, #items-footer-right a{
+    color: #45435c;
+    text-decoration: none;
+    margin-bottom: 1ch;
+}
+
+.left-content-footer{
+    width: 50%;
+}
+
+#copyright-footer{
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 500px) {
+    #cont-login{
+        width: 20rem;
+    }
+}
+
+@media only screen and (min-width: 501px) and (max-width: 650px) {
+    #cont-login{
+        width: 25rem;
+    }
+}
+
+@media only screen and (min-width: 651px) and (max-width: 1399px) {
+    #cont-login{
+        width: 30rem;
+    }
 }
