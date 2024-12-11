@@ -23,7 +23,7 @@
                     </a>
                 </div>
                 <div class="link">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="/check-in">
                         <p>Check-in</p>
                     </a>
                 </div>
@@ -67,23 +67,23 @@
     </div>
     <main id="home-page-main">
         <div class="booking-form">
-            <form>
+            <form method="POST" id="select-flight-form" name="select-flight-form">
                 <div id="container">
                     <div class="trip-options">
-                        <label><input type="radio" name="trip" class="round-trip" checked> Return</label>
-                        <label><input type="radio" name="trip" class="one-trip"> One way</label>
-                        <label><input type="radio" name="trip" class="multi-city"> Multi-city</label>
+                        <label><input type="radio" name="trip" value="round-trip" class="trip-class" required checked> Return</label>
+                        <label><input type="radio" name="trip" value="one-way" class="trip-class" required> One way</label>
+                        <label><input type="radio" name="trip" value="multi-city" class="trip-class" required> Multi-city</label>
                     </div>
                     
                     <div class="fields" id="stop-fields-container">
                         <div class="fields">
-                            <select type="text" placeholder="From" required>
+                            <select type="text" placeholder="From" name="origin-location" required>
                                 <option value="">Select an option (Origin)  </option>
                                 {% for option in options %}
                                 <option value="{{option}}">{{option}}</option>
                                 {% endfor %}
                             </select>
-                            <select type="text" placeholder="To" required>
+                            <select type="text" placeholder="To" name="destination-location" required>
                                 <option value="">Select an option (Destination)</option>
                                 {% for option in options %}
                                 <option value="{{option}}">{{option}}</option>
@@ -92,16 +92,16 @@
                             
                             <div class="departure">
                                 <p>Departure date</p>
-                                <input type="date" required>
+                                <input type="date" name="departure-date" required>
                             </div>
                         
                             <div class="return">
                                 <p>Return Date</p>
-                                <input type="date"class="Return" required>
+                                <input type="date"class="Return" name="return-date" required>
                             </div>
                             <div class="NumberPassenger">
                                 <p style="font-size: small; margin: 0 0 5px 0;">Number of Passengers</p>
-                                <select>
+                                <select name="number-of-passengers">
                                     <option>1 Passenger Economy</option>
                                     <option>2 Passengers Economy</option>
                                 </select>
@@ -111,13 +111,13 @@
 
                     <div class="duplicateFields">
                         <div class="fields">
-                            <select type="text" placeholder="From" required>
+                            <select type="text" placeholder="From" name="origin-location-0">
                                 <option value="">Select an option (Origin)  </option>
                                 {% for option in options %}
                                 <option value="{{option}}">{{option}}</option>
                                 {% endfor %}
                             </select>
-                            <select type="text" placeholder="To" required>
+                            <select type="text" placeholder="To" name="destination-location-0">
                                 <option value="">Select an option (Destination)</option>
                                 {% for option in options %}
                                 <option value="{{option}}">{{option}}</option>
@@ -126,7 +126,7 @@
                             
                             <div class="departure">
                                 <p>Departure date</p>
-                                <input type="date" required>
+                                <input type="date" name="departure-date-0">
                             </div>
                         </div>
                     </div>
@@ -141,29 +141,29 @@
         </div>
     </main>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <footer>
+        <div class="footer-content">
+            <div class="left-content-footer">
+                <div id="items-footer-left">
+                    <h3>Explore</h3>
+                    <a href="#">About Us</a>
+                    <a href="#">Our Partners</a>
+                    <a href="#">Special Offers</a>
+                    <a href="#">Credits</a>
+                </div>
+            </div>
+            <div class="right-content-footer">
+                <div id="items-footer-right">
+                    <h3>Need Help?</h3>
+                    <a href="/support">Customer Service</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">FAQs</a>
+                </div>
+            </div>
+        </div>
+        <div id="copyright-footer">
+            <p>© 2024 Skylink. All Rights Reserved.</p>
+        </div>
+    </footer>
 </body>
-<footer>
-    <div class="footer-content">
-        <div class="left-content-footer">
-            <div id="items-footer-left">
-                <h3>Explore</h3>
-                <a href="#">About Us</a>
-                <a href="#">Our Partners</a>
-                <a href="#">Special Offers</a>
-                <a href="#">Credits</a>
-            </div>
-        </div>
-        <div class="right-content-footer">
-            <div id="items-footer-right">
-                <h3>Need Help?</h3>
-                <a href="/support">Customer Service</a>
-                <a href="#">Contact Us</a>
-                <a href="#">FAQs</a>
-            </div>
-        </div>
-    </div>
-    <div id="copyright-footer">
-        <p>© 2024 Skylink. All Rights Reserved.</p>
-    </div>
-</footer>
 </html>

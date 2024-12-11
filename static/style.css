@@ -16,6 +16,10 @@ body{
     font-weight: 400;
     font-style: normal;
     letter-spacing: 0.2ch;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .header {
@@ -186,6 +190,7 @@ body{
 #home-page-main{
     display: flex;
     justify-content: center;
+    flex: 1;
 }
 
 .booking-form {
@@ -599,13 +604,12 @@ body{
 }
 
 footer{
-    position: absolute;
-    bottom: 0;
-    width: 100vw;
+    width: 100%;
     margin-top: 2ch;
     border-top: 1px var(--background-dark) solid;
     background-color: #82C26E;
     color: var(--text-light-mode);
+    padding: 1rem;
 }
 
 .footer-content{
@@ -665,4 +669,75 @@ footer{
     #cont-login{
         width: 30rem;
     }
+}
+
+.main-content-flights{
+    margin: 5rem 0 2rem 8rem;
+}
+
+#title-flights #type-of-flight{
+    color: var(--primary);
+}
+
+#title-flights #location{
+    color: var(--secondary);
+}
+
+#date-departure-info #cheapest-flight{
+    color: var(--primary);
+    text-decoration: underline
+}
+
+.flight-details{
+    display: flex;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 -2rem -8rem;
+}
+
+#departure-flight-details{
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 4px var(--background-dark);
+    margin-top: 5rem;
+}
+
+#journey-departure{
+    display: flex;
+    flex-direction: row;
+    width: 30%;
+    justify-content: center;
+    border-right: 2px gray solid;
+}
+
+#journey-departure p{
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+#date-departure-info{
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    justify-content: center;
+    align-items: center;
+    border-right: 2px gray solid;
+}
+
+#date-departure-info p{
+    letter-spacing: 0.6ch;
+}
+
+#passenger-departure-total{
+    display: flex;
+    justify-content: center;
+    width: 30%; 
+}
+
+#passenger-departure-total p{
+    letter-spacing: 0.6ch;
 }
