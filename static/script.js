@@ -15,6 +15,14 @@ const stopsElement = document.querySelector(".add-stops-button");
 const departureElement = document.querySelector(".departure");
 const addStopsButton = document.getElementById("addFlight");
 const stopFieldsContainer = document.getElementById("container");
+const departureInput = document.querySelector(".departureDate");
+const returnInput = document.querySelector(".returnDate");
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, "0");
+const day = String(today.getDate()).padStart(2, "0");
+const formattedToday = `${year}-${month}-${day}`;
+
 // Toggle dropdown visibility when the profile button is clicked
 document.querySelector(".profile").addEventListener("click", function (event) {
   event.stopPropagation(); // Prevent click from propagating to the document
@@ -87,6 +95,30 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       // firstStops.style.display = "flex";
     }
+  }
+
+  if (departureInput) {
+    departureInput.setAttribute("min", formattedToday);
+  }
+
+  function updateReturnMinDate() {
+    const departureDate = new Date(departureInput.value);
+
+    if (!isNaN(departureDate.getTime())) {
+      departureDate.setDate(departureDate.getDate() + 1);
+      const year = departureDate.getFullYear();
+      const month = String(departureDate.getMonth() + 1).padStart(2, "0");
+      const day = String(departureDate.getDate()).padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
+
+      returnInput.setAttribute("min", formattedDate);
+    } else {
+      returnInput.removeAttribute("min");
+    }
+  }
+
+  if (departureInput) {
+    departureInput.addEventListener("change", updateReturnMinDate);
   }
 
   // Initial call to set the correct visibility based on the default selected trip type
