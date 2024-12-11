@@ -68,7 +68,7 @@ def automatedEmail(issue, username):
 
     return msg
 
-@app.route('/')
+@app.route('/', methods = ["POST", 'GET'])
 def home():
     if "user" in session and session["user"] != "":
         # Read options from the .txt file
@@ -77,7 +77,9 @@ def home():
                 options = [line.strip() for line in file if line.strip()]  # Remove empty lines
         except FileNotFoundError:
             options = []
-
+        if request.method == "POST":
+                print("Hello")
+                return redirect(url_for("flights"))
         return render_template("index.html", profile_Name = session["user"], options=options)
     else:
         return redirect(url_for("register"))
@@ -191,6 +193,10 @@ def check_in():
 
 
     return render_template("check_in.html")
+
+@app.route('/flights')
+def flights():
+    return render_template("flights.html", profile_Name = session["user"])
 
 if __name__ == "__main__":
     with app.app_context():
