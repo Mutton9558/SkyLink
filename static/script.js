@@ -2,6 +2,27 @@ let MSG = document.querySelector(".wait-msg");
 let PASS_INPUT_BOX = document.querySelector("#login-pass");
 let SHOW_PASSWORD_IMAGE = document.querySelector("#pass-img");
 
+const carousel = document.querySelector(".carousel-images");
+const images = document.querySelectorAll(".carousel-images img");
+const prevButton = document.querySelector(".prev");
+const nextButton = document.querySelector(".next");
+let currentIndex = 0;
+const form = document.querySelector("form");
+const tripOptions = document.querySelectorAll('input[name="trip"]');
+const passengerSelect = document.querySelector("select");
+const returnElement = document.querySelector(".return");
+const stopsElement = document.querySelector(".add-stops-button");
+const departureElement = document.querySelector(".departure");
+const addStopsButton = document.getElementById("addFlight");
+const stopFieldsContainer = document.getElementById("container");
+const departureInput = document.querySelector(".departureDate");
+const returnInput = document.querySelector(".returnDate");
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, "0");
+const day = String(today.getDate()).padStart(2, "0");
+const formattedToday = `${year}-${month}-${day}`;
+
 // Toggle dropdown visibility when the profile button is clicked
 document.querySelector(".profile").addEventListener("click", function (event) {
   event.stopPropagation(); // Prevent click from propagating to the document
@@ -20,20 +41,8 @@ document.addEventListener("click", function () {
 
 document.addEventListener("DOMContentLoaded", () => {
   // For Carousel Picture
-  const carousel = document.querySelector(".carousel-images");
-  const images = document.querySelectorAll(".carousel-images img");
-  const prevButton = document.querySelector(".prev");
-  const nextButton = document.querySelector(".next");
-  let currentIndex = 0;
 
   // For hide and show the return date for round-trip and add stops for multi-city
-  const form = document.querySelector("form");
-  const tripOptions = document.querySelectorAll('input[name="trip"]');
-  const passengerSelect = document.querySelector("select");
-  const returnElement = document.querySelector(".return");
-  const stopsElement = document.querySelector(".add-stops-button");
-  const departureElement = document.querySelector(".departure");
-  const bookingElement = document.querySelector(".booking-form");
 
   // Update the carousel position
   function updateCarousel() {
@@ -59,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       (option) => option.checked
     ).className;
     console.log(tripType);
-    const newStops = document.querySelectorAll(".duplicateFields")
+    const newStops = document.querySelectorAll(".duplicateFields");
     switch (tripType) {
       case "one-trip":
         returnElement.style.display = "none"; // Hide return for one-way
@@ -84,8 +93,32 @@ document.addEventListener("DOMContentLoaded", () => {
         newStops.forEach((stopField) => {
           stopField.style.display = "flex";
         });
-        // firstStops.style.display = "flex";
+      // firstStops.style.display = "flex";
     }
+  }
+
+  if (departureInput) {
+    departureInput.setAttribute("min", formattedToday);
+  }
+
+  function updateReturnMinDate() {
+    const departureDate = new Date(departureInput.value);
+
+    if (!isNaN(departureDate.getTime())) {
+      departureDate.setDate(departureDate.getDate() + 1);
+      const year = departureDate.getFullYear();
+      const month = String(departureDate.getMonth() + 1).padStart(2, "0");
+      const day = String(departureDate.getDate()).padStart(2, "0");
+      const formattedDate = `${year}-${month}-${day}`;
+
+      returnInput.setAttribute("min", formattedDate);
+    } else {
+      returnInput.removeAttribute("min");
+    }
+  }
+
+  if (departureInput) {
+    departureInput.addEventListener("change", updateReturnMinDate);
   }
 
   // Initial call to set the correct visibility based on the default selected trip type
@@ -95,9 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
   tripOptions.forEach((option) => {
     option.addEventListener("change", updateReturnVisibility);
   });
-
-  const addStopsButton = document.getElementById("addFlight");
-  const stopFieldsContainer = document.getElementById("container");
 
   addStopsButton.addEventListener("click", () => {
     // Find the first duplicateFlights element to clone
@@ -114,8 +144,19 @@ document.addEventListener("DOMContentLoaded", () => {
         input.value = ""; // Clear input values
       });
 
+      const removeButton = document.createElement("button");
+      removeButton.textContent = "X";
+      removeButton.classList.add("remove-stop");
+      removeButton.title = "Remove stop";
+
+      removeButton.addEventListener("click", () => {
+        stopFieldsContainer.removeChild(newFlight);
+      });
+
       // Append the cloned element to the container
       stopFieldsContainer.appendChild(newFlight);
+
+      newFlight.appendChild(removeButton);
     }
   });
 
