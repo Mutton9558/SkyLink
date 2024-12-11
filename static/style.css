@@ -264,8 +264,12 @@ body{
     margin: 0 3rem 0 3rem;
 }
 
-.remove-stops-button{
+.remove-stop{
     cursor: pointer;
+    border: none;
+    background-color: transparent;
+    font-family: 'Roboto';
+    font-weight: bold;
 }
 
 .actions{
