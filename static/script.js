@@ -76,9 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
     ).value;
     console.log(tripType);
     const newStops = document.querySelectorAll(".duplicateFields");
+    const returnDateInput = returnElement.querySelector("input")
     switch (tripType) {
       case "one-way":
-        returnElement.style.display = "none"; // Hide return for one-way
+        returnElement.style.display = "none";
+        returnDateInput.removeAttribute("required") // Hide return for one-way
         stopsElement.style.display = "none";
         newStops.forEach((stopField) => {
           stopField.style.display = "none";
@@ -90,7 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
         departureElement.style.margin = "0 3rem 0 3rem";
         break;
       case "round-trip":
-        returnElement.style.display = "block"; // Show return for round trip
+        returnElement.style.display = "block";
+        returnDateInput.setAttribute("required", true) // Show return for round trip
         stopsElement.style.display = "none";
         newStops.forEach((stopField) => {
           stopField.style.display = "none";
@@ -103,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       default:
         returnElement.style.display = "none";
+        returnDateInput.removeAttribute("required")
         stopsElement.style.display = "block";
         departureElement.style.margin = "0 3rem 0 3rem";
         newStops.forEach((stopField) => {
