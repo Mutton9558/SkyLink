@@ -32,6 +32,7 @@ body{
     left: 0;
     width: 100%;
     height: fit-content;
+    z-index: 1;
 }
 
 .header-container{
@@ -105,7 +106,7 @@ body{
     background-color: #f9f9f9;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 2;
+    z-index: 1;
 }
 
 .dropdown-content {
@@ -135,10 +136,8 @@ body{
     height: 100%;
     max-height: 1080px;
     overflow: hidden;
-    border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    margin: 15em 0 0 0;
-    z-index: 1;
+    margin: 1em 0 0 0;
 }
   
 .carousel-images {
@@ -661,12 +660,32 @@ footer{
     #cont-login{
         width: 20rem;
     }
+
+    .carousel-images img{
+        max-width: 500px;
+    }
+}
+
+#image1{
+    background-image: url("__url_for('static',filename='img/promo1(500).png')");
+}
+
+#image2{
+    background-image: url("__url_for('static',filename='img/promo2(500).png')");
 }
 
 @media only screen and (min-width: 501px) and (max-width: 650px) {
     #cont-login{
         width: 25rem;
     }
+}
+
+#image1{
+    background-image: url("__url_for('static',filename='img/promo1(650).png')");
+}
+
+#image2{
+    background-image: url("__url_for('static',filename='img/promo2(650).png')");
 }
 
 @media only screen and (min-width: 651px) and (max-width: 1399px) {
@@ -744,4 +763,12 @@ footer{
 
 #passenger-departure-total p{
     letter-spacing: 0.6ch;
+}
+
+#image1{
+    background-image: url("__url_for('static',filename='img/promo1(1399).png')");
+}
+
+#image2{
+    background-image: url("__url_for('static',filename='img/promo2(1399).png')");
 }

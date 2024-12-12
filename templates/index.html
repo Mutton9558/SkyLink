@@ -18,11 +18,6 @@
             </div>
             <div class="useful-links">
                 <div class="link">
-                    <a class="nav-link" href="#">
-                        <p>Purchases</p>
-                    </a>
-                </div>
-                <div class="link">
                     <a class="nav-link" href="/check-in">
                         <p>Check-in</p>
                     </a>
@@ -47,7 +42,7 @@
                     </a>
                     <div class="dropdown">
                         <div class="dropdown-content">
-                            <a href="#">Edit Profile</a>
+                            <a href="#">Profile</a>
                             <a href="#">Settings</a>
                             <a href="/logout">Logout</a>
                         </div>
@@ -59,8 +54,8 @@
     <div class="carousel">
         <button class="prev">❮</button>
         <div class="carousel-images">
-            <img src="{{url_for('static',filename='promo1.jpg')}}" alt="Image 1">
-            <img src="{{url_for('static',filename='promo2.jpg')}}" alt="Image 2">
+            <img src="{{url_for('static',filename='img/promo1.png')}}" id="image 1">
+            <img src="{{url_for('static',filename='img/promo2.png')}}" id="image 2">
         </div>
         <button class="next">❯</button>
     </div>
