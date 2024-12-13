@@ -32,6 +32,7 @@ body{
     left: 0;
     width: 100%;
     height: fit-content;
+    z-index: 1;
 }
 
 .header-container{
@@ -129,16 +130,14 @@ body{
 }
 
 .carousel {
-    position: relative;
+    position: absolute;
     width: 100%;
     max-width: 1920px;
     height: 100%;
     max-height: 1080px;
     overflow: hidden;
-    border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    margin: 15em 0 0 0;
-    z-index: 1;
+    margin: 1em 0 0 0;
 }
   
 .carousel-images {
@@ -199,14 +198,17 @@ body{
     justify-content: space-between;
     background-color: white;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 1em;
     box-sizing: border-box;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     height: 100%;
     width: fit-content;
     min-width: 80%;
-    z-index: 3;
+    z-index: 10;
     margin: 0 0 0 0;
+    position: relative; 
+    left: 0;
+    top: 20em;
 }
   
 .trip-options {
@@ -661,11 +663,27 @@ footer{
     #cont-login{
         width: 20rem;
     }
+
+    #image1{
+        background-image: url("__url_for('static',filename='img/promo1(500).png')");
+    }
+        
+    #image2{
+        background-image: url("__url_for('static',filename='img/promo2(500).png')");
+    }
 }
 
 @media only screen and (min-width: 501px) and (max-width: 650px) {
     #cont-login{
         width: 25rem;
+    }
+
+    #image1{
+        background-image: url("__url_for('static',filename='img/promo1(650).png')");
+    }
+        
+    #image2{
+        background-image: url("__url_for('static',filename='img/promo2(650).png')");
     }
 }
 
@@ -744,4 +762,12 @@ footer{
 
 #passenger-departure-total p{
     letter-spacing: 0.6ch;
+}
+
+#image1{
+    background-image: url("__url_for('static',filename='img/promo1(1399).png')");
+}
+    
+#image2{
+    background-image: url("__url_for('static',filename='img/promo2(1399).png')");
 }

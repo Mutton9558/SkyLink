@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // For hide and show the return date for round-trip and add stops for multi-city
   const form = document.querySelector("form");
-  const tripOptions = document.querySelectorAll('.trip-class');
+  const tripOptions = document.querySelectorAll(".trip-class");
   const passengerSelect = document.querySelector("select");
   const returnElement = document.querySelector(".return");
   const stopsElement = document.querySelector(".add-stops-button");
@@ -71,50 +71,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to update visibility of the return element based on selected trip type
   function updateReturnVisibility() {
-    const tripType = [...tripOptions].find(
-      (option) => option.checked
-    ).value;
+    const tripType = [...tripOptions].find((option) => option.checked).value;
     console.log(tripType);
     const newStops = document.querySelectorAll(".duplicateFields");
-    const returnDateInput = returnElement.querySelector("input")
+    const returnDateInput = returnElement.querySelector("input");
     switch (tripType) {
       case "one-way":
         returnElement.style.display = "none";
-        returnDateInput.removeAttribute("required") // Hide return for one-way
+        returnDateInput.removeAttribute("required"); // Hide return for one-way
         stopsElement.style.display = "none";
         newStops.forEach((stopField) => {
           stopField.style.display = "none";
           const inputDuplicates = stopField.querySelectorAll("input, select");
-          inputDuplicates.forEach((input) =>{
+          inputDuplicates.forEach((input) => {
             input.removeAttribute("required");
-          })
+          });
         });
         departureElement.style.margin = "0 3rem 0 3rem";
         break;
       case "round-trip":
         returnElement.style.display = "block";
-        returnDateInput.setAttribute("required", true) // Show return for round trip
+        returnDateInput.setAttribute("required", true); // Show return for round trip
         stopsElement.style.display = "none";
         newStops.forEach((stopField) => {
           stopField.style.display = "none";
           const inputDuplicates = stopField.querySelectorAll("input, select");
-          inputDuplicates.forEach((input) =>{
+          inputDuplicates.forEach((input) => {
             input.removeAttribute("required");
-          })
+          });
         });
         departureElement.style.margin = "0";
         break;
       default:
         returnElement.style.display = "none";
-        returnDateInput.removeAttribute("required")
+        returnDateInput.removeAttribute("required");
         stopsElement.style.display = "block";
         departureElement.style.margin = "0 3rem 0 3rem";
         newStops.forEach((stopField) => {
           stopField.style.display = "flex";
           const inputDuplicates = stopField.querySelectorAll("input, select");
-          inputDuplicates.forEach((input) =>{
+          inputDuplicates.forEach((input) => {
             input.setAttribute("required", true);
-          })
+          });
         });
       // firstStops.style.display = "flex";
     }
@@ -128,13 +126,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const departureDate = new Date(departureInput.value);
 
     if (!isNaN(departureDate.getTime())) {
-      departureDate.setDate(departureDate.getDate() + 1);
-      const year = departureDate.getFullYear();
-      const month = String(departureDate.getMonth() + 1).padStart(2, "0");
-      const day = String(departureDate.getDate()).padStart(2, "0");
-      const formattedDate = `${year}-${month}-${day}`;
+      if (departureDate.toDateString() == today.toDateString()) {
+        returnInput.setAttribute("min", formattedToday);
+      } else {
+        departureDate.setDate(departureDate.getDate() + 1);
+        const year = departureDate.getFullYear();
+        const month = String(departureDate.getMonth() + 1).padStart(2, "0");
+        const day = String(departureDate.getDate()).padStart(2, "0");
+        const formattedDate = `${year}-${month}-${day}`;
 
-      returnInput.setAttribute("min", formattedDate);
+        returnInput.setAttribute("min", formattedDate);
+      }
     } else {
       returnInput.removeAttribute("min");
     }
@@ -143,6 +145,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if (departureInput) {
     departureInput.addEventListener("change", updateReturnMinDate);
   }
+
+  function setMinDateForAllDepartures() {
+    const departureInputs = document.querySelectorAll(".departure-date-0");
+    departureInputs.forEach((input) => {
+      input.setAttribute("min", formattedToday);
+    });
+  }
+
+  setMinDateForAllDepartures();
 
   // Initial call to set the correct visibility based on the default selected trip type
   updateReturnVisibility();
@@ -155,87 +166,95 @@ document.addEventListener("DOMContentLoaded", () => {
   const addStopsButton = document.getElementById("addFlight");
   const stopFieldsContainer = document.getElementById("container");
 
-  let fieldCounter = 1
+  let fieldCounter = 1;
 
   addStopsButton.addEventListener("click", () => {
-    // Find the first duplicateFlights element to clone
-    const duplicateFlight = stopFieldsContainer.querySelector(".duplicateFields");
-  
-    if (duplicateFlight) {
-      // Clone the duplicateFlights element
-      const newFlight = duplicateFlight.cloneNode(true);
-  
-      // Update the name attributes of the cloned fields
-      const selects = newFlight.querySelectorAll("select[name], input[name]");
-      selects.forEach((select) => {
-        const name = select.getAttribute("name");
-        if (name) {
-          // Append the counter value to the name
-          select.setAttribute("name", `${name}${fieldCounter}`);
-        }
-      });
-  
-      // Append the cloned element to the container
-      stopFieldsContainer.appendChild(newFlight);
-  
-      // Increment the counter
-      fieldCounter++;
+    const currentStops =
+      stopFieldsContainer.querySelectorAll(".duplicateFields").length;
 
-      const removeButton = document.createElement("button");
-      removeButton.textContent = "X";
-      removeButton.classList.add("remove-stop");
-      removeButton.title = "Remove stop";
+    if (currentStops < 3) {
+      // Find the first duplicateFlights element to clone
+      const duplicateFlight =
+        stopFieldsContainer.querySelector(".duplicateFields");
 
-      removeButton.addEventListener("click", () => {
-        stopFieldsContainer.removeChild(newFlight);
-      });
+      if (duplicateFlight) {
+        // Clone the duplicateFlights element
+        const newFlight = duplicateFlight.cloneNode(true);
 
-      // Append the cloned element to the container
-      stopFieldsContainer.appendChild(newFlight);
+        // Update the name attributes of the cloned fields
+        const selects = newFlight.querySelectorAll("select[name], input[name]");
+        selects.forEach((select) => {
+          const name = select.getAttribute("name");
+          if (name) {
+            // Append the counter value to the name
+            select.setAttribute("name", `${name}${fieldCounter}`);
+          }
+        });
 
-      newFlight.appendChild(removeButton);
+        // Append the cloned element to the container
+        stopFieldsContainer.appendChild(newFlight);
+
+        // Increment the counter
+        fieldCounter++;
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "X";
+        removeButton.classList.add("remove-stop");
+        removeButton.title = "Remove stop";
+
+        removeButton.addEventListener("click", () => {
+          stopFieldsContainer.removeChild(newFlight);
+        });
+
+        // Append the cloned element to the container
+        stopFieldsContainer.appendChild(newFlight);
+
+        newFlight.appendChild(removeButton);
+      }
+    } else {
+      alert("You can't add more than 3 stops");
     }
   });
 
   // Handle form submission
   // form.addEventListener("submit", (e) => {
-  //   e.preventDefault(); 
+  //   e.preventDefault();
 
-    // Collect form data
-    // const tripType = [...tripOptions]
-    //   .find((option) => option.checked)
-    //   .nextSibling.textContent.trim();
-    // const from = form.querySelector('input[placeholder="From"]').value;
-    // const to = form.querySelector('input[placeholder="To"]').value;
-    // const departure = form.querySelector(
-    //   'input[placeholder="Departure"]'
-    // ).value;
-    // const returnDate = form.querySelector('input[placeholder="Return"]').value;
-    // const passengers = passengerSelect.value;
-    // const promoCode = form.querySelector(
-    //   'input[placeholder="Add promo code"]'
-    // ).value;
+  // Collect form data
+  // const tripType = [...tripOptions]
+  //   .find((option) => option.checked)
+  //   .nextSibling.textContent.trim();
+  // const from = form.querySelector('input[placeholder="From"]').value;
+  // const to = form.querySelector('input[placeholder="To"]').value;
+  // const departure = form.querySelector(
+  //   'input[placeholder="Departure"]'
+  // ).value;
+  // const returnDate = form.querySelector('input[placeholder="Return"]').value;
+  // const passengers = passengerSelect.value;
+  // const promoCode = form.querySelector(
+  //   'input[placeholder="Add promo code"]'
+  // ).value;
 
-    // Simulate action or display collected data
-    // console.log({
-    //   tripType,
-    //   from,
-    //   to,
-    //   departure,
-    //   returnDate,
-    //   passengers,
-    //   promoCode,
-    // });
+  // Simulate action or display collected data
+  // console.log({
+  //   tripType,
+  //   from,
+  //   to,
+  //   departure,
+  //   returnDate,
+  //   passengers,
+  //   promoCode,
+  // });
 
-    // alert(`Flight search submitted for:
-    // - Trip type: ${tripType}
-    // - From: ${from}
-    // - To: ${to}
-    // - Departure: ${departure}
-    // - Return: ${returnDate}
-    // - Passengers/Class: ${passengers}
-    // - Promo code: ${promoCode ? promoCode : "None"}`);
-//   });
+  // alert(`Flight search submitted for:
+  // - Trip type: ${tripType}
+  // - From: ${from}
+  // - To: ${to}
+  // - Departure: ${departure}
+  // - Return: ${returnDate}
+  // - Passengers/Class: ${passengers}
+  // - Promo code: ${promoCode ? promoCode : "None"}`);
+  //   });
 });
 
 function displayLoadMsg() {
