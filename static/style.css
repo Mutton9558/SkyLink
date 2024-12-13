@@ -660,22 +660,31 @@ footer{
     justify-content: center;
 }
 
+#profile-main{
+    display: flex;
+}
+
 .settings-content{
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    flex-direction: row;
     background-color: white;
     padding: 20px;
     border-radius: 1em;
     box-sizing: border-box;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    height: 100%;
+    height: fit-content;
     width: fit-content;
     z-index: 10;
     margin: 0 0 0 0;
-    position: relative; 
-    left: 0;
+    position: absolute; 
+    left: 10em;
     top: 20em;
+}
+
+.profile-settings{
+    display: flex;
+    flex-direction: column;
+    border-right: 1px black solid;
 }
 
 .profile-settings a{
@@ -689,8 +698,8 @@ footer{
     cursor: pointer;
 }
 
-#profile-main{
-    display: flex;
+.profile-content{
+    margin-left: 1em;
 }
 
 @media only screen and (max-width: 500px) {
