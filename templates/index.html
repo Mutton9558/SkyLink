@@ -47,7 +47,7 @@
                     </a>
                     <div class="dropdown">
                         <div class="dropdown-content">
-                            <a href="#">Profile</a>
+                            <a href="/profile">Profile</a>
                             <a href="#">Settings</a>
                             <a href="/logout">Logout</a>
                         </div>
@@ -56,15 +56,16 @@
             </div>
         </div>
     </header>
-    <div class="carousel">
-        <button class="prev">❮</button>
-        <div class="carousel-images">
-            <img src="{{url_for('static',filename='img/promo1.png')}}" id="image 1">
-            <img src="{{url_for('static',filename='img/promo2.png')}}" id="image 2">
-        </div>
-        <button class="next">❯</button>
-    </div>
+    
     <main id="home-page-main">
+        <div class="carousel">
+            <button class="prev">❮</button>
+            <div class="carousel-images">
+                <img src="{{url_for('static',filename='img/promo1.png')}}" id="image 1">
+                <img src="{{url_for('static',filename='img/promo2.png')}}" id="image 2">
+            </div>
+            <button class="next">❯</button>
+        </div>
         <div class="booking-form">
             <form method="POST" id="select-flight-form" name="select-flight-form">
                 <div id="container">

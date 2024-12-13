@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}">
+  <title>Profile | SkyLink</title>
+</head>
+<body>
+  <header class="header">
+    <div class="header-container">
+        <div class="logo">
+            <a class="navbar-brand" href="/home">
+                <img src="{{url_for('static', filename='img/logo.png')}}" height="80" alt="SkyLink" href="/">
+            </a>
+        </div>
+        <div class="useful-links">
+            <div class="link">
+                <a class="nav-link" href="#">
+                    <p>Purchases</p>
+                </a>
+            </div>
+            <div class="link">
+                <a class="nav-link" href="/check-in">
+                    <p>Check-in</p>
+                </a>
+            </div>
+            <div class="link">
+                <a class="nav-link" href="#">
+                    <p>Flight Status</p>
+                </a>
+            <div class="link">
+                <a class="nav-link" href="/support">
+                    <p>Support</p>
+                </a>
+            </div>
+            </div>
+            <div class="profile">
+                <a class="nav-link" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" display="flex" width="25" fill=currentColor class="bi bi-person-circle" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                    </svg>
+                    <p class="profile-text">{{ profile_Name }}</p>
+                </a>
+                <div class="dropdown">
+                    <div class="dropdown-content">
+                        <a href="/profile">Profile</a>
+                        <a href="#">Settings</a>
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </header>
+  <main id="profile-main">
+    <div class="settings-content">
+      <div class="profile-settings">
+        <a>Edit Profile</a>
+        <a>Change Password</a>
+        <a>Preference</a>
+      </div>
+      <div class="profile-content">
+        <form>
+          <p>Full Name</p>
+          <input type="text" name="reg-full-name" placeholder="Full Name (according to I.C.)" required>
+          <p>Identification Number</p>
+          <input type="text" name="reg-full-name" placeholder="Identification Card Number (according to I.C.)" required>
+          <p>Phone Number</p>
+          <input type="text" name="reg-hp-no" placeholder="Phone Number (Include Country Calling Code)" required>
+          <p>Email Address</p>
+          <input type="text" name="reg-email" placeholder="Email Address" required>
+          <p>Username</p>
+          <input type="text" name="reg-username" placeholder="Username" required>
+        </form>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
