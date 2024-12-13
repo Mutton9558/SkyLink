@@ -7,6 +7,8 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage 
 from email.mime.multipart import MIMEMultipart 
 import smtplib 
+import requests
+import time
 
 load_dotenv('.env')
 app = Flask(__name__)
@@ -15,6 +17,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = os.getenv('APP_SECRET_KEY')
 app.permanent_session_lifetime = timedelta(days=30)
 
+apiKey = os.getenv('AMADEUSAPIKEY')
+apiSecret = os.getenv('AMADEUSAPISECRET')
 db = SQLAlchemy(app)
 
 class users(db.Model):
@@ -33,6 +37,76 @@ class users(db.Model):
         self.email = email
         self.username = username
         self.password = password
+
+token_cache = {
+    "access_token": None,
+    "expires_at": 0
+}
+
+def get_access_token(client_id, client_secret):
+    # Check if the cached token is still valid
+    if token_cache["access_token"] and time.time() < token_cache["expires_at"]:
+        return token_cache["access_token"]
+
+    # Otherwise, fetch a new token
+    url = "https://test.api.amadeus.com/v1/security/oauth2/token"
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    data = {
+        "grant_type": "client_credentials",
+        "client_id": client_id,
+        "client_secret": client_secret
+    }
+
+    response = requests.post(url, headers=headers, data=data)
+    if response.status_code == 200:
+        token_data = response.json()
+        # Cache the token and its expiration time
+        token_cache["access_token"] = token_data.get("access_token")
+        expires_in = token_data.get("expires_in", 0)  # Expiration time in seconds
+        token_cache["expires_at"] = time.time() + expires_in - 60  # Refresh slightly before expiry
+        return token_cache["access_token"]
+    else:
+        raise Exception(f"Failed to authenticate: {response.status_code}, {response.text}")
+
+def get_flights(origin, destination, passengers, date, access_token):
+    url = "https://test.api.amadeus.com/v2/shopping/flight-offers"
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+    params = {
+        "originLocationCode": origin,
+        "destinationLocationCode": destination,
+        "departureDate": date,
+        "adults": passengers,  
+        "nonStop": "false",
+        "max": 5
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise Exception(f"Failed to fetch flights: {response.status_code}, {response.text}")
+
+def extract_flight_details(flights_data):
+    flight_details = []
+    for offer in flights_data.get("data", []):
+        # Extract price details
+        price_details = offer.get("price", {})
+        total_price = price_details.get("total")
+        currency = price_details.get("currency")
+        
+        # Extract flight segments
+        for segment in offer["itineraries"][0]["segments"]:
+            flight_details.append({
+                "flight_number": segment["carrierCode"] + segment["number"],
+                "airline": segment["operating"]["carrierCode"],
+                "departure_time": segment["departure"]["at"],
+                "arrival_time": segment["arrival"]["at"],
+                "price": f"{currency} {total_price}" if total_price and currency else "N/A"
+            })
+    return flight_details
+
 
 def automatedEmail(issue, username):
     msg = MIMEMultipart()
@@ -68,6 +142,8 @@ def automatedEmail(issue, username):
 
     return msg
 
+access_token = get_access_token(apiKey, apiSecret)
+
 @app.route('/', methods = ["POST", 'GET'])
 def home():
     if "user" in session and session["user"] != "":
@@ -78,8 +154,34 @@ def home():
         except FileNotFoundError:
             options = []
         if request.method == "POST":
-                print("Hello")
-                return redirect(url_for("flights"))
+                selected_trip = request.form.get('trip')
+                if selected_trip == "round-trip":
+                    return_date = request.form.get('return-date')
+                else:
+                    return_date = "None"
+                passengers = request.form.get('number-of-passengers')
+                promo_code = request.form.get('promo-code')
+                stops = []
+                for key in request.form:
+                    if key.startswith('origin-location') or key.startswith('destination-location'):
+                        stops.append({key: request.form[key]})
+                departureDates = []
+                for r in request.form:
+                    if r.startswith('departure-date'):
+                        departureDates.append({r: request.form[r]})
+                originLocations = ",".join(value for stop in stops for key, value in stop.items() if key.startswith('origin-location'))
+                destinationLocations = ",".join(value2 for stop2 in stops for key2, value2 in stop2.items() if key2.startswith('destination-location'))
+                departures = ",".join(value3 for date in departureDates for key3, value3 in date.items() if key3.startswith('departure-date'))
+                return redirect(url_for(
+                    "flights",
+                    trip=selected_trip,
+                    return_date=return_date,
+                    passengers=passengers,
+                    promo_code=promo_code,
+                    origin_locations=originLocations,
+                    destination_locations=destinationLocations,
+                    departure_dates=departures
+                ))
         return render_template("index.html", profile_Name = session["user"], options=options)
     else:
         return redirect(url_for("register"))
@@ -196,6 +298,52 @@ def check_in():
 
 @app.route('/flights')
 def flights():
+    trip = request.args.get('trip')
+    return_date = request.args.get('return_date')
+    passengers = request.args.get('passengers')
+    promo_code = request.args.get('promo_code')
+    origin_locations = request.args.get('origin_locations')
+    destination_locations = request.args.get('destination_locations')
+    departure_dates = request.args.get('departure_dates')
+    if trip == "one-way":
+        try:
+            origin_location = (origin_locations.split(",")[0])
+            originCode = origin_location[-4:-1]
+            destination_location = (destination_locations.split(",")[0])
+            destinationCode = destination_location[-4:-1]
+            departure_date = departure_dates.split(",")[0]
+            date_object = datetime.strptime(departure_date, "%Y-%m-%d")
+            day = date_object.strftime("%A")
+            passengerNum = int(passengers[0])
+            print(origin_location)
+            # flights = get_flights(origin_location, destination_location, passengerNum, departure_date, access_token)
+            # flight_details = extract_flight_details(flights)
+            # priceList = []
+            # departureTimeList = []
+            # arrivalTimeList = []
+            # flightNumList = []
+            # airlineList = []
+
+            # for flight in flight_details:
+            #     print(f"Flight: {flight['flight_number']}, Airline: {flight['airline']}, "
+            #     f"Departure: {flight['departure_time']}, Arrival: {flight['arrival_time']}, Price: {flight['price']}")
+            #     flightNumList.append(flight['flight_number'])
+            #     airlineList.append(flight['airline'])
+            #     departureTimeList.append(flight['departure_time'])
+            #     arrivalTimeList.append(flight['arrival_time'])
+            #     priceList.append(flight['price'])
+            # priceList.sort()
+            return render_template(
+                "flights.html",
+                profile_Name = session["user"], 
+                origin_location=origin_location, 
+                destination_location=destination_location, 
+                day=day, 
+                departure_date=departure_date, 
+                passengerNum=passengerNum
+            )
+        except Exception as e:
+            print(f"Error: {e}")
     return render_template("flights.html", profile_Name = session["user"])
 
 if __name__ == "__main__":

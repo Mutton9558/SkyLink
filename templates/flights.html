@@ -58,26 +58,26 @@
     <div class="main-content-flights">
         <div id="title-flights">
             <h1>Select your <span id="type-of-flight">DEPARTURE FLIGHT</span></h1>
-            <h2>From <span id="location">ORIGIN</span> to <span id="location">DESTINATION</span></h2>
-            <p>Day, Date</p>
+            <h2>From <span id="location">{{ origin_location }}</span> to <span id="location">{{destination_location}}</span></h2>
+            <p>{{day}}, {{departure_date}}</p>
         </div>
         <div class="flight-details">
             <div id="departure-flight-details">
                 <div id="journey-departure">
-                    <p>ORI</p>
+                    <p>{{origin_location}}</p>
                     <p>⇌</p>
-                    <p>DST</p>
+                    <p>{{destination_location}}</p>
                 </div>
                 <div id="date-departure-info">
-                    <p>Day, Date</p>
+                    <p>{{day}}, {{departure_date}}</p>
                     <p id="cheapest-flight">RM0 (Cheapest Flight)</p>
                 </div>
                 <div id="passenger-departure-total">
-                    <p>0 Passengers</p>
+                    <p>{{passengerNum}} Passengers</p>
                 </div>
             </div>
         </div>
-    </div>
+    </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
