@@ -58,22 +58,22 @@
     <div class="main-content-flights">
         <div id="title-flights">
             <h1>Select your <span id="type-of-flight">DEPARTURE FLIGHT</span></h1>
-            <h2>From <span id="location">{{ origin_location }}</span> to <span id="location">{{destination_location}}</span></h2>
-            <p>{{day}}, {{departure_date}}</p>
+            <h2>From <span id="location">{{ origin_location|safe }}</span> to <span id="location">{{destination_location|safe}}</span></h2>
+            <p>{{day|safe}}, {{departure_date|safe}}</p>
         </div>
         <div class="flight-details">
             <div id="departure-flight-details">
                 <div id="journey-departure">
-                    <p>{{origin_location}}</p>
+                    <p>{{origin_location|safe}}</p>
                     <p>⇌</p>
-                    <p>{{destination_location}}</p>
+                    <p>{{destination_location|safe}}</p>
                 </div>
                 <div id="date-departure-info">
-                    <p>{{day}}, {{departure_date}}</p>
+                    <p>{{day|safe}}, {{departure_date|safe}}</p>
                     <p id="cheapest-flight">RM0 (Cheapest Flight)</p>
                 </div>
                 <div id="passenger-departure-total">
-                    <p>{{passengerNum}} Passengers</p>
+                    <p>{{passengerNum|safe}} Passengers</p>
                 </div>
             </div>
         </div>

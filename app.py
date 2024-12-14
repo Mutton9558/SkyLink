@@ -9,6 +9,7 @@ from email.mime.multipart import MIMEMultipart
 import smtplib 
 import requests
 import time
+from flask_wtf.csrf import CSRFProtect
 
 load_dotenv('.env')
 app = Flask(__name__)
@@ -16,6 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///skylink.db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = os.getenv('APP_SECRET_KEY')
 app.permanent_session_lifetime = timedelta(days=30)
+csrf = CSRFProtect(app)
 
 apiKey = os.getenv('AMADEUSAPIKEY')
 apiSecret = os.getenv('AMADEUSAPISECRET')
@@ -194,6 +196,8 @@ def redirectToDefault():
 def register():
     if "user" in session and session["user"] != "":
         return redirect(url_for("home"))
+    
+
     if request.method == "POST":
         new_ic = request.form["reg-ic"]
         new_name = request.form["reg-full-name"]
