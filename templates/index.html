@@ -31,11 +31,11 @@
                     <a class="nav-link" href="#">
                         <p>Flight Status</p>
                     </a>
+                </div>
                 <div class="link">
                     <a class="nav-link" href="/support">
                         <p>Support</p>
                     </a>
-                </div>
                 </div>
                 <div class="profile">
                     <a class="nav-link" href="#">
@@ -68,6 +68,7 @@
         </div>
         <div class="booking-form">
             <form method="POST" id="select-flight-form" name="select-flight-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div id="container">
                     <div class="trip-options">
                         <label><input type="radio" name="trip" value="round-trip" class="trip-class" required checked> Return</label>

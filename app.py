@@ -9,6 +9,7 @@ from email.mime.multipart import MIMEMultipart
 import smtplib 
 import requests
 import time
+from flask_wtf.csrf import CSRFProtect
 
 load_dotenv('.env')
 app = Flask(__name__)
@@ -16,6 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///skylink.db'
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = os.getenv('APP_SECRET_KEY')
 app.permanent_session_lifetime = timedelta(days=30)
+csrf = CSRFProtect(app)
 
 apiKey = os.getenv('AMADEUSAPIKEY')
 apiSecret = os.getenv('AMADEUSAPISECRET')
@@ -48,7 +50,7 @@ def get_access_token(client_id, client_secret):
     if token_cache["access_token"] and time.time() < token_cache["expires_at"]:
         return token_cache["access_token"]
 
-    # Otherwise, fetch a new token
+    # fetch a new token
     url = "https://test.api.amadeus.com/v1/security/oauth2/token"
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     data = {
@@ -88,24 +90,22 @@ def get_flights(origin, destination, passengers, date, access_token):
     else:
         raise Exception(f"Failed to fetch flights: {response.status_code}, {response.text}")
 
-def extract_flight_details(flights_data):
+def extract_flight_details(flights_data, max_results=5):
     flight_details = []
-    for offer in flights_data.get("data", []):
-        # Extract price details
+    for offer in flights_data.get("data", [])[:max_results]:  # Limit to max_results
         price_details = offer.get("price", {})
         total_price = price_details.get("total")
-        currency = price_details.get("currency")
-        
-        # Extract flight segments
         for segment in offer["itineraries"][0]["segments"]:
             flight_details.append({
                 "flight_number": segment["carrierCode"] + segment["number"],
                 "airline": segment["operating"]["carrierCode"],
                 "departure_time": segment["departure"]["at"],
                 "arrival_time": segment["arrival"]["at"],
-                "price": f"{currency} {total_price}" if total_price and currency else "N/A"
+                "price": f"{round((float(total_price)*4.67), 2)}" if total_price else "N/A"
             })
     return flight_details
+
+
 
 
 def automatedEmail(issue, username):
@@ -194,6 +194,8 @@ def redirectToDefault():
 def register():
     if "user" in session and session["user"] != "":
         return redirect(url_for("home"))
+    
+
     if request.method == "POST":
         new_ic = request.form["reg-ic"]
         new_name = request.form["reg-full-name"]
@@ -305,6 +307,14 @@ def flights():
     origin_locations = request.args.get('origin_locations')
     destination_locations = request.args.get('destination_locations')
     departure_dates = request.args.get('departure_dates')
+
+    airline_list = {
+        "FY" : "Firefly",
+        "MH" : "Malaysia Airlines",
+        "OD" : "Batik Air",
+        "AK" : "AirAsia"
+    }
+
     if trip == "one-way":
         try:
             origin_location = (origin_locations.split(",")[0])
@@ -316,23 +326,23 @@ def flights():
             day = date_object.strftime("%A")
             passengerNum = int(passengers[0])
             print(origin_location)
-            # flights = get_flights(origin_location, destination_location, passengerNum, departure_date, access_token)
-            # flight_details = extract_flight_details(flights)
-            # priceList = []
+            flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
+            flight_details = extract_flight_details(flights)
+            priceList = []
             # departureTimeList = []
             # arrivalTimeList = []
             # flightNumList = []
             # airlineList = []
 
-            # for flight in flight_details:
+            for flight in flight_details:
             #     print(f"Flight: {flight['flight_number']}, Airline: {flight['airline']}, "
             #     f"Departure: {flight['departure_time']}, Arrival: {flight['arrival_time']}, Price: {flight['price']}")
             #     flightNumList.append(flight['flight_number'])
             #     airlineList.append(flight['airline'])
             #     departureTimeList.append(flight['departure_time'])
             #     arrivalTimeList.append(flight['arrival_time'])
-            #     priceList.append(flight['price'])
-            # priceList.sort()
+                priceList.append(flight['price'])
+            priceList.sort()
             return render_template(
                 "flights.html",
                 profile_Name = session["user"], 
@@ -340,7 +350,10 @@ def flights():
                 destination_location=destination_location, 
                 day=day, 
                 departure_date=departure_date, 
-                passengerNum=passengerNum
+                passengerNum=passengerNum,
+                flight_details=flight_details,
+                priceList=priceList,
+                airline_list=airline_list
             )
         except Exception as e:
             print(f"Error: {e}")

@@ -170,6 +170,7 @@
 
         <main>
             <form method="POST" action="/support">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <label for="message">Your Message:</label>
                 <textarea id="message" name="message" placeholder="Describe your issue or question" required></textarea>
                 <button type="submit">Submit</button>
@@ -188,6 +189,7 @@
                     {% endif %}
                 {% endwith %}
                 <form method="POST" action="/support">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <label for="message">Message:</label>
                     <textarea id="message" name="message" rows="10" placeholder="Describe your issue or question" required></textarea>
                     

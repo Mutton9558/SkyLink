@@ -202,14 +202,12 @@ body{
     border-radius: 1em;
     box-sizing: border-box;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    height: 100%;
+    height: auto; /* Adjust height dynamically */
     min-width: 80%;
     z-index: 10;
-    margin: 0 0 0 0;
-    position: relative; 
-    left: 0;
-    top: 20em;
+    margin: 20em auto 2rem auto; /* Center vertically and create space below */
 }
+
   
 .trip-options {
     display: flex;
@@ -315,7 +313,7 @@ body{
     --secondary: #0A85ED; /*rgb secondary (10, 133, 237)*/
     --background-dark: #050418;
     --text-dark-mode: #e8e6fb;
-    --background-light: #eae9fb;
+    --background-light: #f0f0f0;
     --text-light-mode:#06041a;
 }
 
@@ -611,7 +609,7 @@ body{
 
 footer{
     width: 100%;
-    margin-top: 2ch;
+    margin-top: 2rem;
     border-top: 1px var(--background-dark) solid;
     background-color: #82C26E;
     color: var(--text-light-mode);
@@ -817,4 +815,65 @@ footer{
     
 #image2{
     background-image: url("__url_for('static',filename='img/promo2(1399).png')");
+}
+
+.flight-list{
+    display: flex;
+    width: 100vw;
+    height: 30rem;
+    justify-content: center;
+    align-items: center;
+}
+
+#flight-list-container{
+    width: 50rem;
+    height: 20rem;
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    border-radius: 20px;
+    box-shadow: 0 0 5px var(--background-dark);
+}
+
+#flight-list-right{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 30%;
+}
+
+#flight-list-right img{
+    width: 120px;
+    height: 120px;
+    margin-top: 1.4rem;
+}
+
+#flight-list-right p{
+    font-size: 20px;
+}
+
+#flight-list-right button{
+    margin-top: 30%;
+}
+
+#flight-list-left{
+    width: 70%;
+}
+
+#flight-list-left h3{
+    margin-left: 2rem;
+    font-size: 24px;
+}
+
+#flight-times{
+    margin-top: 3rem;
+}
+
+#flight-list-left p{
+    margin: 1rem 0 0 3rem;
+}
+
+.cheapest-price{
+    color: lawngreen;
+    text-shadow: 0 0 1px black;
 }
