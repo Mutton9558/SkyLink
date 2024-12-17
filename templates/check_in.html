@@ -63,7 +63,7 @@
         }
 
         input[type="text"],
-        input[type="email"] {
+        input[type="surname"] {
             width: 100%;
             padding: 10px;
             font-size: 1rem;
@@ -118,13 +118,13 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="fields">
                         <div class="field">
-                            <label for="ic-number">IC Number:</label>
-                            <input type="text" id="ic-number" name="ic_number" placeholder="Enter your IC Number" required>
+                            <label for="booking-number">Booking Reference No.</label>
+                            <input type="text" id="booking-number" name="booking_number" placeholder="Enter Booking Number" required>
                         </div>
                         
                         <div class="field">
-                            <label for="email">Email Address:</label>
-                            <input type="email" id="email" name="email" placeholder="Enter your Email Address" required>
+                            <label for="surname">Surname</label>
+                            <input type="surname" id="surname" name="surname" placeholder="Enter your Surname" required>
                         </div>
                     </div>
 
