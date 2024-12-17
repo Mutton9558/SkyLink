@@ -362,6 +362,33 @@ def flights():
 def profile():
     return render_template("profile.html", profile_Name = session["user"])
 
+@app.route('/booking', methods=["GET", "POST"])
+def booking():
+    if "user" in session and session["user"] != "":
+        if request.method == "POST":
+            # Capture form data
+            first_name = request.form.get("first_name")
+            surname = request.form.get("surname")
+            ic_number = request.form.get("ic_number")
+            phone_number = request.form.get("phone_number")
+            seat_selection = request.form.get("seat_selection")
+
+            # Assuming static/preset data for now
+            start_location = "Kuala Lumpur International Airport (KUL)"
+            destination = "Singapore Changi Airport (SIN)"
+            departure_time = "10:00 AM"
+            estimated_arrival = "12:30 PM"
+            flight_date = "2024-12-20"
+            flight_number = "MH123"
+
+            # Process data or save to the database (if needed)
+            flash("Booking details captured successfully!", "success")
+            return redirect(url_for("booking"))
+        return render_template("booking.html", profile_Name=session["user"])
+    else:
+        return redirect(url_for("login"))
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
