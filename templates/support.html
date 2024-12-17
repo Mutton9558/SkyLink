@@ -29,11 +29,6 @@
             margin-top: 120px;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
         h1 {
             font-size: 1.8rem;
             color: #333;
@@ -114,53 +109,6 @@
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-container">
-            <div class="logo">
-                <a class="navbar-brand" href="/home">
-                    <img src="{{url_for('static', filename='img/logo.png')}}" height="80" alt="SkyLink" href="/">
-                </a>
-            </div>
-            <div class="useful-links">
-                <div class="link">
-                    <a class="nav-link" href="#">
-                        <p>Purchases</p>
-                    </a>
-                </div>
-                <div class="link">
-                    <a class="nav-link" href="#">
-                        <p>Check-in</p>
-                    </a>
-                </div>
-                <div class="link">
-                    <a class="nav-link" href="#">
-                        <p>Flight Status</p>
-                    </a>
-                <div class="link">
-                    <a class="nav-link" href="/support">
-                        <p>Support</p>
-                    </a>
-                </div>
-                </div>
-                <div class="profile">
-                    <a class="nav-link" href="#">
-                        <svg xmlns="http://www.w3.org/2000/svg" display="flex" width="25" fill=currentColor class="bi bi-person-circle" viewBox="0 0 16 16">
-                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                        </svg>
-                        <p class="profile-text">{{ profile_Name }}</p>
-                    </a>
-                    <div class="dropdown">
-                        <div class="dropdown-content">
-                            <a href="#">Edit Profile</a>
-                            <a href="#">Settings</a>
-                            <a href="/logout">Logout</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
     <div class="center-box">
         <header>
             <img src="{{ url_for('static', filename='img/logo.png') }}" height="50" alt="SkyLink">
@@ -169,35 +117,19 @@
         </header>
 
         <main>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <p>{{ msg }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             <form method="POST" action="/support">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <label for="message">Your Message:</label>
                 <textarea id="message" name="message" placeholder="Describe your issue or question" required></textarea>
                 <button type="submit">Submit</button>
             </form>
-    <main>
-        <section class="support">
-            <div class="container">
-                <h1>Contact Customer Support</h1>
-                <p>We’re here to help! If you have any questions or need assistance, please fill out the form below.</p>
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for msg in messages %}
-                            <p>{{ msg }}</p>
-                            <script>MSG.innerHTML = "";</script>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                <form method="POST" action="/support">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <label for="message">Message:</label>
-                    <textarea id="message" name="message" rows="10" placeholder="Describe your issue or question" required></textarea>
-                    
-                    <button type="submit" onclick=displayLoadMsg()>Submit</button>
-                </form>
-                <p class="wait-msg"></p>
-            </div>
-        </section>
 
             <section class="faq">
                 <h2>Frequently Asked Questions (FAQs)</h2>
