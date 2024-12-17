@@ -26,7 +26,7 @@
             max-width: 600px;
             padding: 20px;
             text-align: center;
-            margin-top: 120px;
+            margin-top: 30rem;
         }
 
         h1 {
@@ -109,6 +109,53 @@
     </style>
 </head>
 <body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a class="navbar-brand" href="/home">
+                    <img src="{{url_for('static', filename='img/logo.png')}}" height="80" alt="SkyLink" href="/">
+                </a>
+            </div>
+            <div class="useful-links">
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Purchases</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="/check-in">
+                        <p>Check-in</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Flight Status</p>
+                    </a>
+                <div class="link">
+                    <a class="nav-link" href="/support">
+                        <p>Support</p>
+                    </a>
+                </div>
+                </div>
+                <div class="profile">
+                    <a class="nav-link" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" display="flex" width="25" fill=currentColor class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                        <p class="profile-text">{{ profile_Name }}</p>
+                    </a>
+                    <div class="dropdown">
+                        <div class="dropdown-content">
+                            <a href="#">Edit Profile</a>
+                            <a href="#">Settings</a>
+                            <a href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
     <div class="center-box">
         <header>
             <img src="{{ url_for('static', filename='img/logo.png') }}" height="50" alt="SkyLink">
@@ -147,10 +194,30 @@
                 </details>
             </section>
         </main>
-
-        <footer>
-            <p>&copy; 2024 SkyLink. All Rights Reserved.</p>
-        </footer>
     </div>
+    <footer>
+        <div class="footer-content">
+            <div class="left-content-footer">
+                <div id="items-footer-left">
+                    <h3>Explore</h3>
+                    <a href="#">About Us</a>
+                    <a href="#">Our Partners</a>
+                    <a href="#">Special Offers</a>
+                    <a href="#">Credits</a>
+                </div>
+            </div>
+            <div class="right-content-footer">
+                <div id="items-footer-right">
+                    <h3>Need Help?</h3>
+                    <a href="/support">Customer Service</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">FAQs</a>
+                </div>
+            </div>
+        </div>
+        <div id="copyright-footer">
+            <p>© 2024 Skylink. All Rights Reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
