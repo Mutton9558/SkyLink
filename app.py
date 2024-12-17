@@ -359,9 +359,9 @@ def flights():
             print(f"Error: {e}")
     return render_template("flights.html", profile_Name = session["user"])
 
-@app.route('/profile')
-def profile():
-    return render_template("profile.html", profile_Name = session["user"])
+@app.route('/settings')
+def settings():
+    return render_template("settings.html", profile_Name = session["user"])
 
 if __name__ == "__main__":
     with app.app_context():

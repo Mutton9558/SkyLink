@@ -255,6 +255,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // - Passengers/Class: ${passengers}
   // - Promo code: ${promoCode ? promoCode : "None"}`);
   //   });
+
+  const editProfileButton = document.querySelector("#edit-profile-button");
+  const editProfile = document.querySelector(".edit-profile");
+  const changePasswordButton = document.querySelector(
+    ".change-password-button"
+  );
+  const changePassword = document.querySelector(".change-password");
+  const preferenceButton = document.querySelector(".preferences-button");
+  const preferences = document.querySelector(".preferences");
+
+  editProfileButton.addEventListener("click", function () {
+    editProfile.style.display = "none";
+    changePassword.style.display = "none";
+    preferences.style.display = "none";
+  });
 });
 
 function displayLoadMsg() {
