@@ -325,7 +325,6 @@ def flights():
             date_object = datetime.strptime(departure_date, "%Y-%m-%d")
             day = date_object.strftime("%A")
             passengerNum = int(passengers[0])
-            print(origin_location)
             flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
             flight_details = extract_flight_details(flights)
             priceList = []
