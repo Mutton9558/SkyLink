@@ -63,7 +63,7 @@
         }
 
         input[type="text"],
-        input[type="email"] {
+        input[type="surname"] {
             width: 100%;
             padding: 10px;
             font-size: 1rem;
@@ -105,6 +105,53 @@
     </style>
 </head>
 <body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a class="navbar-brand" href="/home">
+                    <img src="{{url_for('static', filename='img/logo.png')}}" height="80" alt="SkyLink" href="/">
+                </a>
+            </div>
+            <div class="useful-links">
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Purchases</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="/check-in">
+                        <p>Check-in</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Flight Status</p>
+                    </a>
+                <div class="link">
+                    <a class="nav-link" href="/support">
+                        <p>Support</p>
+                    </a>
+                </div>
+                </div>
+                <div class="profile">
+                    <a class="nav-link" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" display="flex" width="25" fill=currentColor class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                        <p class="profile-text">{{ profile_Name }}</p>
+                    </a>
+                    <div class="dropdown">
+                        <div class="dropdown-content">
+                            <a href="#">Edit Profile</a>
+                            <a href="#">Settings</a>
+                            <a href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
     <div class="content-area-checkin">
         <div class="center-box">
             <header>
@@ -118,13 +165,13 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="fields">
                         <div class="field">
-                            <label for="ic-number">IC Number:</label>
-                            <input type="text" id="ic-number" name="ic_number" placeholder="Enter your IC Number" required>
+                            <label for="booking-number">Booking Reference No.</label>
+                            <input type="text" id="booking-number" name="booking_number" placeholder="Enter Booking Number" required>
                         </div>
                         
                         <div class="field">
-                            <label for="email">Email Address:</label>
-                            <input type="email" id="email" name="email" placeholder="Enter your Email Address" required>
+                            <label for="surname">Surname</label>
+                            <input type="surname" id="surname" name="surname" placeholder="Enter your Surname" required>
                         </div>
                     </div>
 

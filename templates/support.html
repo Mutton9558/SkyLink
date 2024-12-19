@@ -26,12 +26,7 @@
             max-width: 600px;
             padding: 20px;
             text-align: center;
-            margin-top: 120px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 20px;
+            margin-top: 30rem;
         }
 
         h1 {
@@ -128,7 +123,7 @@
                     </a>
                 </div>
                 <div class="link">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="/check-in">
                         <p>Check-in</p>
                     </a>
                 </div>
@@ -169,35 +164,19 @@
         </header>
 
         <main>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <p>{{ msg }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             <form method="POST" action="/support">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <label for="message">Your Message:</label>
                 <textarea id="message" name="message" placeholder="Describe your issue or question" required></textarea>
                 <button type="submit">Submit</button>
             </form>
-    <main>
-        <section class="support">
-            <div class="container">
-                <h1>Contact Customer Support</h1>
-                <p>We’re here to help! If you have any questions or need assistance, please fill out the form below.</p>
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for msg in messages %}
-                            <p>{{ msg }}</p>
-                            <script>MSG.innerHTML = "";</script>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                <form method="POST" action="/support">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <label for="message">Message:</label>
-                    <textarea id="message" name="message" rows="10" placeholder="Describe your issue or question" required></textarea>
-                    
-                    <button type="submit" onclick=displayLoadMsg()>Submit</button>
-                </form>
-                <p class="wait-msg"></p>
-            </div>
-        </section>
 
             <section class="faq">
                 <h2>Frequently Asked Questions (FAQs)</h2>
@@ -215,10 +194,30 @@
                 </details>
             </section>
         </main>
-
-        <footer>
-            <p>&copy; 2024 SkyLink. All Rights Reserved.</p>
-        </footer>
     </div>
+    <footer>
+        <div class="footer-content">
+            <div class="left-content-footer">
+                <div id="items-footer-left">
+                    <h3>Explore</h3>
+                    <a href="#">About Us</a>
+                    <a href="#">Our Partners</a>
+                    <a href="#">Special Offers</a>
+                    <a href="#">Credits</a>
+                </div>
+            </div>
+            <div class="right-content-footer">
+                <div id="items-footer-right">
+                    <h3>Need Help?</h3>
+                    <a href="/support">Customer Service</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">FAQs</a>
+                </div>
+            </div>
+        </div>
+        <div id="copyright-footer">
+            <p>© 2024 Skylink. All Rights Reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

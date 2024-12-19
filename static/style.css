@@ -899,7 +899,7 @@ footer{
 }
 
 #flight-list-right button{
-    margin-top: 30%;
+    margin-top: 25%;
 }
 
 #flight-list-left{
@@ -922,4 +922,34 @@ footer{
 .cheapest-price{
     color: lawngreen;
     text-shadow: 0 0 1px black;
+}
+
+#select-flight-btn{
+    height: 2rem;
+    border-radius: 10px;
+    background-color: var(--primary);
+}
+
+#select-flight-btn:hover{
+    background-color: var(--secondary);
+}
+
+#edit-detail{
+    margin: 5rem 0 0 55%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#edit-detail a{
+    margin-left: 0.4rem;
+    width: 2.5rem;
+    height: 1.2rem;
+    background-color: white;
+    border: 2px black solid;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #050418;
 }
