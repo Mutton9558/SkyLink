@@ -40,8 +40,6 @@ document.addEventListener("click", function () {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  // For Carousel Picture
-
   // For hide and show the return date for round-trip and add stops for multi-city
   const form = document.querySelector("form");
   const tripOptions = document.querySelectorAll(".trip-class");
@@ -255,21 +253,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // - Passengers/Class: ${passengers}
   // - Promo code: ${promoCode ? promoCode : "None"}`);
   //   });
-
-  const editProfileButton = document.querySelector("#edit-profile-button");
-  const editProfile = document.querySelector(".edit-profile");
-  const changePasswordButton = document.querySelector(
-    ".change-password-button"
-  );
-  const changePassword = document.querySelector(".change-password");
-  const preferenceButton = document.querySelector(".preferences-button");
-  const preferences = document.querySelector(".preferences");
-
-  editProfileButton.addEventListener("click", function () {
-    editProfile.style.display = "none";
-    changePassword.style.display = "none";
-    preferences.style.display = "none";
-  });
 });
 
 function displayLoadMsg() {

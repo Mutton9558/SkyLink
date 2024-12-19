@@ -63,37 +63,40 @@
         <a id="change-password-button">Change Password</a>
         <a id="preferences-button">Preference</a>
       </div>
-      <div class="edit-profile">
-        <form>
-          <p>Full Name</p>
-          <input type="text" name="reg-full-name" placeholder="Full Name (according to I.C.)" required>
-          <p>Username</p>
-          <input type="text" name="reg-username"placeholder="Username" required>
-          <p>Identification Number</p>
-          <input type="text" name="reg-ic" placeholder="Identification Card Number (according to I.C.)" required>
-          <p>Phone Number</p>
-          <input type="text" name="reg-hp-no" placeholder="Phone Number (Include Country Calling Code)" required>
-          <p>Email Address</p>
-          <input type="text" name="reg-email" placeholder="Email Address" required style="margin-bottom: 1em;">
-          <input type="submit" name="submit" id="submit">
-        </form>
-      </div>
-      <div class="change-password">
-        <form>
-            <p>Current Password</p>
-            <input type="password" name="reg-password" placeholder="Password" required>
-            <p>New Password</p>
-            <input type="password" name="new-password" placeholder="New Password" required style="margin-bottom: 1em;">
+      <div>
+        <div class="edit-profile">
+          <form>
+            <p>Full Name</p>
+            <input type="text" name="reg-full-name" placeholder="Full Name (according to I.C.)" required>
+            <p>Username</p>
+            <input type="text" name="reg-username"placeholder="Username" required>
+            <p>Identification Number</p>
+            <input type="text" name="reg-ic" placeholder="Identification Card Number (according to I.C.)" required>
+            <p>Phone Number</p>
+            <input type="text" name="reg-hp-no" placeholder="Phone Number (Include Country Calling Code)" required>
+            <p>Email Address</p>
+            <input type="text" name="reg-email" placeholder="Email Address" required style="margin-bottom: 1em;">
             <input type="submit" name="submit" id="submit">
-        </form>
-      </div>
-      <div class="preferences">
-        <div class="theme-toggle">
-            <label for="dark-mode-toggle">Dark Mode</label>
-            <input type="checkbox" id="dark-mode-toggle">
+          </form>
+        </div>
+        <div class="change-password">
+          <form>
+              <p>Current Password</p>
+              <input type="password" name="reg-password" placeholder="Password" required>
+              <p>New Password</p>
+              <input type="password" name="new-password" placeholder="New Password" required style="margin-bottom: 1em;">
+              <input type="submit" name="submit" id="submit">
+          </form>
+        </div>
+        <div class="preferences">
+          <div class="theme-toggle">
+              <label for="dark-mode-toggle">Dark Mode</label>
+              <input type="checkbox" id="dark-mode-toggle">
+          </div>
         </div>
       </div>
     </div>
   </main>
+  <script src="{{ url_for('static', filename='settings.js') }}"></script>
 </body>
 </html>

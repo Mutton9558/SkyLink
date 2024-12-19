@@ -676,8 +676,8 @@ footer{
     border-radius: 1em;
     box-sizing: border-box;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    height: fit-content;
-    width: fit-content;
+    height: 530px;
+    width: 867px;
     z-index: 0;
     margin: 0 0 0 0;
     position: absolute; 
@@ -702,7 +702,7 @@ footer{
     cursor: pointer;
 }
 
-.edit-profile{
+.edit-profile, .change-password , .preferences{
     margin-left: 1em;
 }
 
@@ -724,10 +724,6 @@ footer{
     background: linear-gradient(to right, var(--primary), var(--secondary));
     color: var(--text-dark-mode);
     text-shadow: 0 0 5px var(--background-dark);
-}
-
-.change-password{
-    margin-left: 1em;
 }
 
 .change-password input{
