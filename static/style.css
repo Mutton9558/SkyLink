@@ -953,3 +953,47 @@ footer{
     text-decoration: none;
     color: #050418;
 }
+
+#forgot-pass-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#forgot-password-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 25rem;
+    height: 20rem;
+    background-color: white;
+    border: 2px black solid;
+    border-radius: 10px;
+}
+
+#user-label{
+    align-self: center;
+}
+
+#user-input-forgot-pass{
+    margin-top: 5%;
+    width: 75%;
+    align-self: center;
+}
+
+#btn-forgot-pass{
+    margin-top: 5%;
+    width: 50%;
+    align-self: center;
+}
+
+#flashed-messages {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem;
+}
