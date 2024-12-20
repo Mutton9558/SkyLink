@@ -360,9 +360,41 @@ def flights():
             print(f"Error: {e}")
     return render_template("flights.html", profile_Name = session["user"])
 
-@app.route('/settings')
+@app.route('/settings', methods=["GET", "POST"])
 def settings():
-    return render_template("settings.html", profile_Name = session["user"])
+    if "user" in session and session["user"] != "":
+        current_user = users.query.filter_by(username=session["user"]).first()
+        if request.method == "POST":
+            current_user.name = request.form.get("name")
+            current_user.username = request.form.get("username")
+            current_user.icNumber = request.form.get("icNumber")
+            current_user.phoneNumber = request.form.get("phoneNumber")
+            current_user.email = request.form.get("email")
+            db.session.commit()
+            flash("Profile updated successfully!", "success")
+            return redirect(url_for("settings"))
+        
+        return render_template("settings.html", profile_Name = session["user"], user=current_user)
+    else:
+        return redirect(url_for("login"))
+    
+@app.route('/change_password', methods=["POST"])
+def change_password():
+    if "user" in session and session["user"] != "":
+        current_user = users.query.filter_by(username=session["user"]).first()
+        current_password = request.form.get("current_password")
+        new_password = request.form.get("new_password")
+
+        if current_user.password == current_password:
+            current_user.password = new_password
+            db.session.commit()
+            flash("Password changed successfully!", "success")
+        else:
+            flash("Invalid current password. Please try again.", "error")
+
+        return redirect(url_for("settings"))
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/booking', methods=["GET", "POST"])
 def booking():
