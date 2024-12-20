@@ -30,11 +30,11 @@
                     <a class="nav-link" href="#">
                         <p>Flight Status</p>
                     </a>
+                </div>
                 <div class="link">
                     <a class="nav-link" href="/support">
                         <p>Support</p>
                     </a>
-                </div>
                 </div>
                 <div class="profile">
                     <a class="nav-link" href="#">
@@ -46,7 +46,7 @@
                     </a>
                     <div class="dropdown">
                         <div class="dropdown-content">
-                            <a href="#">Edit Profile</a>
+                            <a href="/profile">Profile</a>
                             <a href="#">Settings</a>
                             <a href="/logout">Logout</a>
                         </div>
@@ -82,21 +82,24 @@
             <a href="/home">Edit</a>
         </div>  
     </div>
+    <div id="selected-flight-container" style="display: none;">
+        <button id="change-flight-btn" type="button">Change Flight</button>
+    </div>
     {% for flight in flight_details %}
         <div class="flight-list">
             <div id="flight-list-container">
                 <div id="flight-list-left">
-                    <h3>{{ airline_list[flight['airline']] }}</h3>
-                    <h3>{{ flight['flight_number'] }}</h3>
+                    <h3 id="airline">{{ airline_list[flight['airline']] }}</h3>
+                    <h3 id="flight-number">{{ flight['flight_number'] }}</h3>
                     <div id="flight-times">
-                        <p>Departure Time: {{ flight['departure_time'] }}</p>
-                        <p>Arrival Time: {{ flight['arrival_time'] }}</p>
+                        <p id="departure-time">Departure Time: {{ flight['departure_time'] }}</p>
+                        <p id="arrival-time">Arrival Time: {{ flight['arrival_time'] }}</p>
                     </div>
                 </div>
                 <div id="flight-list-right">
                     <img src="{{ url_for('static', filename='img/' + flight['airline'] + '.png') }}" alt="{{ airline_list[flight['airline']] }}">
                     <p id="flight-price-text">RM {{ flight['price'] }}</p>
-                    <button id="select-flight-btn">Select Flight</button>
+                    <button id="select-flight-btn" type="button">Select Flight</button>
                 </div>
             </div>
         </div>
@@ -111,6 +114,61 @@
                 price.classList.add("cheapest-price");
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+        const flightListContainer = document.querySelectorAll('#flight-list-container');
+        const selectedFlightContainer = document.querySelector('#selected-flight-container');
+
+        document.querySelectorAll('#select-flight-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const flightElement = this.closest('.flight-list');
+
+                const airlineName = flightElement.querySelector('#airline').textContent.trim();
+                const flightNumber = flightElement.querySelector('#flight-number').textContent.trim();
+                const departureTime = flightElement.querySelector('#departure-time').textContent.replace('Departure Time: ', '').trim();
+                const arrivalTime = flightElement.querySelector('#arrival-time').textContent.replace('Arrival Time: ', '').trim();
+                const flightPrice = flightElement.querySelector('#flight-price-text').textContent.trim();
+
+                // Hide the flight list
+                flightListContainer.forEach((container) => {
+                    container.style.display = "none"
+                });
+
+                // Show selected flight details
+                selectedFlightContainer.style.display = 'block';
+                selectedFlightContainer.innerHTML = `
+                    <div class="selected-flight">
+                        <form method="POST">
+                            <label>Airline: </label>
+                            <input name="selected-airline-name" value="${airlineName}" disabled>
+                            <label>Flight Number: </label>
+                            <input name="selected-flight-number" value="${flightNumber}" disabled>
+                            <label>Departure Time: </label>
+                            <input name="selected-departure-time" value="${departureTime}" disabled>
+                            <label>Arrival Time: </label>
+                            <input name="selected-arrival-time" value="${arrivalTime}" disabled>
+                            <label>Price: </label>
+                            <input name="selected-price" value="${flightPrice}" disabled>
+                            <button id="change-flight-btn" type="button">Change Flight</button>
+                            <input type="submit">
+                        </form>
+                    </div>
+                `;
+
+                selectedFlightContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Attach click event to change flight button
+                document.getElementById('change-flight-btn').addEventListener('click', function () {
+                    selectedFlightContainer.style.display = 'none';
+                    flightListContainer.forEach((container) => {
+                        container.style.display = "flex"
+                    });
+                    flightListContainer[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+        });
+    });
+
     </script>
 </body>
 </html>

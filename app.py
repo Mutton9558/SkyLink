@@ -10,6 +10,7 @@ import smtplib
 import requests
 import time
 from flask_wtf.csrf import CSRFProtect
+import random
 
 load_dotenv('.env')
 app = Flask(__name__)
@@ -279,24 +280,25 @@ def support():
         return render_template("support.html", profile_Name = session["user"])
 @app.route('/check-in', methods=["GET", "POST"])
 def check_in():
-    if request.method == "POST":
-        ic_number = request.form.get("ic_number") 
-        email = request.form.get("email")
+    if session["user"] and session["user"] != "":
+        # if request.method == "POST":
+            # ic_number = request.form.get("ic_number") 
+            # email = request.form.get("email")
 
 
-        user = users.query.filter_by(icNumber=ic_number, email=email).first()
+            # user = users.query.filter_by(icNumber=ic_number, email=email).first()
 
-        if user:
+            # if user:
 
-            flash(f"Check-in successful! Welcome, {user.name}.", "success")
-            return redirect(url_for("check_in"))
-        else:
+            #     flash(f"Check-in successful! Welcome, {user.name}.", "success")
+            #     return redirect(url_for("check_in"))
+            # else:
 
-            flash("Invalid IC Number or Email. Please try again.", "error")
-            return redirect(url_for("check_in"))
-
-
-    return render_template("check_in.html")
+            #     flash("Invalid IC Number or Email. Please try again.", "error")
+            #     return redirect(url_for("check_in"))
+        return render_template("check_in.html", profile_Name = session["user"])
+    else:
+        return redirect(url_for("register"))
 
 @app.route('/flights')
 def flights():
@@ -420,6 +422,57 @@ def booking():
     else:
         return redirect(url_for("login"))
 
+@app.route('/forgotpassword', methods=["GET", "POST"])
+def forgotpassword():
+    if request.method == "POST":
+        session.pop('_flashes', None)
+        usernameForgotPassword = request.form.get("user-forgot-pass")
+        isUser = users.query.filter_by(username=usernameForgotPassword).first()
+        if isUser:
+            email = isUser.email
+            newPass = "".join(str(random.randint(0,9)) for i in range(0,8))
+            isUser.password = newPass
+            db.session.commit()
+
+            msg = MIMEMultipart()
+            msg['Subject'] = "New Password."
+
+            text = f'''
+        <html>
+        <body>
+            <p>Dear <b>{usernameForgotPassword}</b>,</p>
+            <p>This is your new <i>TEMPORARY</i> password.</p>
+            <b>{newPass}</b>
+            <p>You may change this password later in the <i>Change Password</i> menu in the settings.</p>
+            <p>
+                Regards,<br>
+                <b>SkyLink Co.<b>
+            </p>
+        </body>
+        </html>
+        '''
+            msg.attach(MIMEText(text, "html"))
+
+            image_path = os.path.join(current_app.root_path, 'static', 'img', 'logo.png')
+            if image_path and os.path.isfile(image_path):
+                with open(image_path, "rb") as img_file:
+                    img = MIMEImage(img_file.read(), name=os.path.basename(image_path))
+                    msg.attach(img)
+
+            to = [email]
+            smtp_server = "smtp.gmail.com"
+            smtp_port = 587
+            smtp_user = os.getenv("EMAIL_USER")  # Use environment variables
+            smtp_password = os.getenv("EMAIL_PASSWORD")
+
+            with smtplib.SMTP(smtp_server, smtp_port) as smtp:
+                smtp.starttls()
+                smtp.login(smtp_user, smtp_password)
+                smtp.sendmail(from_addr=smtp_user, to_addrs=to, msg=msg.as_string())
+            flash(f"A new password has been sent to you via email ({email})", "success")
+        else:
+            flash("That Username does not exist!")
+    return render_template('forgot.html')
 
 if __name__ == "__main__":
     with app.app_context():

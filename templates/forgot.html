@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Forgot Password</title>
+</head>
+<body>
+    <div id="forgot-pass-content">
+        <h1 style="position: absolute;top: 0;">Forgot Password</h1>
+        <form id="forgot-password-form" name="forgot-pass" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div id="flashed-messages">
+                <p id="wait-msg-forgotpass" style="color: red;margin: 0;padding: 0;"></p>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <p style="color: red;margin: 0;padding: 0;">*{{ msg }}</p>
+                            <script>waitMsgFP.innerHTML=""</script>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <label id="user-label">Enter your Username: </label>
+            <input type="text" id="user-input-forgot-pass" name="user-forgot-pass" placeholder="Enter username" required>
+            <button type="submit" id="btn-forgot-pass" onclick=msgLoad()>Reset Password</button>
+        </form>
+    </div>
+    <script>
+        const waitMsgFP = document.querySelector("#wait-msg-forgotpass");
+        const usernameInputValue = document.querySelector("#user-input-forgot-pass").value;
+        function msgLoad(){
+            if(usernameInputValue != ""){
+                waitMsgFP.innerHTML = "Your new password will be sent to you shortly. It may take some time. Thanks for your patience."
+            }
+        }
+    </script>
+</body>
+</html>
