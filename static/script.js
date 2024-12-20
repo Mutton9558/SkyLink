@@ -257,11 +257,6 @@ document.addEventListener("DOMContentLoaded", () => {
   //   });
 });
 
-function displayLoadMsg() {
-  MSG.innerHTML =
-    "Your inquiry may take a while to be submitted...Please be patient.";
-}
-
 function showPassword() {
   if (PASS_INPUT_BOX.type == "text") {
     PASS_INPUT_BOX.type = "password";

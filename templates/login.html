@@ -37,12 +37,13 @@
                         <img id="pass-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAA5VJREFUSEuVlk9oHVUUxn+HxLprYl6lilLEELcJFdqVqNBqSQu2zaaiFBFLu1AKWgLd60qoioIGUxSkzaJ/lNI/NBvNwkUWLqwUSy1i243YSpFkUVLwOGfmzMydmTtvnneR3Dnv3nvO+c53vnuFYAig/l3OBUFRN6T/yj/h9mIenpMaG4bMVHUVOmgEEfVTM7Z4yTMKzhws6kGCiPjsh2h7Gv/joG4sqoUMoI4iHi/QINl3RNJ0PMihIbkGJlpIUpu3sLoRsPAIyqvAM0AP2ODg3QX+Bq4DJ4B/OiqUEb17kTwr6KzCXpDhtOHaifsA5DToB8DVavCxGse9jwGfAK9Hsr+Dcst7dBPKozUNUIXjwLvASqzcbTUeAX4ApnzTGvAVcCG1CyuFomQLRgSeV9gFvAE8lJnlR0G3qXC/UKZYH3vUDwNLwFZfcxY4BNypRx5XOh7zIHf4+svANPCvI5RKXyzjBZB9Lp4fArPlhnQ27oFMCqwoLAJzNZKKCnMoB9z+kcNeLKs7fgv40tgj6DmF3WBnaI6UOV1G6NWgsxIYzGHfDwHfA89lZJRp0Eu558xxhtkocBNYnxDqBrA5q2UFYEPgSAtZDmktc0hh/8VaL6n9HwLj6pCHGb+d9OenfujLZBDWx6LA9spNVa44izBTDTTNyHr/pC/bn5TqmzzXfOth4GP/2JMw+ruK1wyVM6T9HB1GwpkIAWdUOO0BvYPwWS4FvlZGQX9LftiAchuYBO5V2KAcTOD7osWxMT8lWaCiBvGVxP44yJ+CTiis1jO27zBrI4IRJmuDcpwHdtYcBOTK82AIdXJlJmP4fDZtttM6hGWUKe/RY4nyvBd6dbtl/pLPy3YqG9tm5uRN37sE8iKYoOWum7g9AfwEbPQl3wp6UFMB6Vb2pB1t/9cI27yuvwNb/CKpVC5SMnkK1DKZ8B/XEOZRLqaqJqzW2sx0/QXgFeA1wHrYIP0ZdHtT9SRyO3lSAj0Fg9paoMIY4K8ERrskhpOAnkTTPg2H8eJz4Gj/S6I/gqbZdoARajhS79Bkl8kpgfcVrhWlaTwWKuTqqJ8whqZX5NOuRL3gIXBX4FeFhSLDErn6xVQAWPAs0ORI3eum+sWe63lnAsVbIiB47fHbF9eBGB6KSdlH9ogp4ffHWBhGtDbFTdWKSndI8fu4cWDDf0nz9pL09R57ZXaHG9GRCJO6Sl1VuXiN4xlXkx04Xl/4H2PqHTfQ11RTAAAAAElFTkSuQmCC"/>
                     </button>
                 </div>
+                <a style="color: white;cursor: pointer;font-size: 14px;" href="/forgotpassword">Forgot Password?</a>
                 <input type="submit" id="login-submit">
+                <div id="redirect-login-cont">
+                    <p>Don't have an account?</p>
+                    <a href="/register" id="btn-to-reg">Click here</a>
+                </div>
             </form>
-            <div id="redirect-login-cont">
-                <p>Don't have an account?</p>
-                <a href="/register" id="btn-to-reg">Click here</a>
-            </div>
         </div>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
