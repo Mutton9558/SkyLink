@@ -82,7 +82,7 @@ def get_flights(origin, destination, passengers, date, access_token):
         "departureDate": date,
         "adults": passengers,  
         "nonStop": "false",
-        "max": 5
+        "max": 4
     }
 
     response = requests.get(url, headers=headers, params=params)
@@ -104,10 +104,8 @@ def extract_flight_details(flights_data, max_results=5):
                 "arrival_time": segment["arrival"]["at"],
                 "price": f"{round((float(total_price)*4.67), 2)}" if total_price else "N/A"
             })
+            
     return flight_details
-
-
-
 
 def automatedEmail(issue, username):
     msg = MIMEMultipart()
@@ -155,7 +153,7 @@ def home():
         except FileNotFoundError:
             options = []
         if request.method == "POST":
-                selected_trip = request.form.get('trip')
+                selected_trip = request.form.get('trip')    
                 if selected_trip == "round-trip":
                     return_date = request.form.get('return-date')
                 else:
@@ -325,7 +323,7 @@ def flights():
             destinationCode = destination_location[-4:-1]
             departure_date = departure_dates.split(",")[0]
             date_object = datetime.strptime(departure_date, "%Y-%m-%d")
-            day = date_object.strftime("%A")
+            departure_day = date_object.strftime("%A")
             passengerNum = int(passengers[0])
             flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
             flight_details = extract_flight_details(flights)
@@ -363,15 +361,64 @@ def flights():
             return render_template(
                 "flights.html",
                 profile_Name = session["user"], 
+                trip=trip,
                 origin_location=origin_location, 
                 destination_location=destination_location, 
-                day=day, 
+                departure_day=departure_day, 
                 departure_date=departure_date, 
                 passengerNum=passengerNum,
                 flight_details=flight_details,
                 priceList=priceList,
                 airline_list=airline_list
             )
+        except Exception as e:
+            print(f"Error: {e}")
+    elif trip == "round-trip":
+        try:
+            origin_location = (origin_locations.split(",")[0])
+            originCode = origin_location[-4:-1]
+            destination_location = (destination_locations.split(",")[0])
+            destinationCode = destination_location[-4:-1]
+            departure_date = departure_dates.split(",")[0]
+            departure_date_object = datetime.strptime(departure_date, "%Y-%m-%d")
+            departure_day = departure_date_object.strftime("%A")
+            return_date_object = datetime.strptime(return_date, "%Y-%m-%d")
+            return_day = return_date_object.strftime("%A")
+            passengerNum = int(passengers[0])
+
+            departure_flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
+            flight_details = extract_flight_details(departure_flights)
+
+            priceList = []
+            for flight in flight_details:
+                priceList.append(flight['price'])
+            priceList.sort()
+            
+            return_flights = get_flights(destinationCode, originCode, passengerNum, return_date, access_token)
+            return_flight_details = extract_flight_details(return_flights)
+            
+            returnPriceList = []
+            for flight in return_flight_details:
+                returnPriceList.append(flight['price'])
+            returnPriceList.sort()
+            return render_template(
+                "flights.html",
+                profile_Name = session["user"],
+                trip=trip, 
+                origin_location=origin_location, 
+                destination_location=destination_location, 
+                departure_day=departure_day, 
+                departure_date=departure_date,
+                return_day = return_day,
+                return_date = return_date, 
+                passengerNum=passengerNum,
+                flight_details=flight_details,
+                return_flight_details=return_flight_details,
+                priceList=priceList,
+                returnPriceList=returnPriceList,
+                airline_list=airline_list
+                )
+
         except Exception as e:
             print(f"Error: {e}")
     return render_template("flights.html", profile_Name = session["user"])
