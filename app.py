@@ -300,7 +300,7 @@ def check_in():
     else:
         return redirect(url_for("register"))
 
-@app.route('/flights')
+@app.route('/flights', methods=["GET", "POST"])
 def flights():
     trip = request.args.get('trip')
     return_date = request.args.get('return_date')
@@ -344,6 +344,22 @@ def flights():
             #     arrivalTimeList.append(flight['arrival_time'])
                 priceList.append(flight['price'])
             priceList.sort()
+
+            if request.method == "POST":
+                departureAirline = request.form.get('departure-airline-name-0')
+                departureFlightNum = request.form.get('departure-flight-number-0')
+                departureTime = request.form.get('selected-departure-time-0')
+                arrivalTime = request.form.get('selected-arrival-time-0')
+                departurePrice = request.form.get('selected-departure-price-0')
+
+                return redirect(url_for("booking",
+                                        departureAirline=departureAirline,
+                                        departureFlightNum=departureFlightNum,
+                                        departureTime=departureTime,
+                                        arrivalTime=arrivalTime,
+                                        departurePrice=departurePrice
+                                        ))
+
             return render_template(
                 "flights.html",
                 profile_Name = session["user"], 

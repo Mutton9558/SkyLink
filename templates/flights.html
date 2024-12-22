@@ -139,6 +139,7 @@
                 selectedFlightContainer.innerHTML = `
                     <div class="selected-flight">
                         <form method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <label>Airline: </label>
                             <input name="selected-airline-name" value="${airlineName}" disabled>
                             <label>Flight Number: </label>
