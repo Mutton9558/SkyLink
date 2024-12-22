@@ -658,8 +658,14 @@ footer{
     justify-content: center;
 }
 
-#profile-main{
+#settings-main{
     display: flex;
+}
+
+.title-profile{
+    position: absolute;
+    left: 8.5em;
+    top: 1.5em;
 }
 
 .settings-content{
@@ -670,13 +676,13 @@ footer{
     border-radius: 1em;
     box-sizing: border-box;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    height: fit-content;
-    width: fit-content;
-    z-index: 10;
+    height: 530px;
+    width: 867px;
+    z-index: 0;
     margin: 0 0 0 0;
     position: absolute; 
-    left: 10em;
-    top: 20em;
+    left: 15em;
+    top: 6.5em;
 }
 
 .profile-settings{
@@ -696,8 +702,48 @@ footer{
     cursor: pointer;
 }
 
-.profile-content{
+.edit-profile, .change-password , .preferences{
     margin-left: 1em;
+}
+
+.edit-profile input{
+    width: 40vw;
+    height: 5vh;
+}
+
+.edit-profile #submit{
+    width: 25%;
+    font-size: 16px;
+}
+
+.edit-profile #submit:focus{
+    transform: scaleX(1);
+}
+
+.edit-profile #submit:hover{
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: var(--text-dark-mode);
+    text-shadow: 0 0 5px var(--background-dark);
+}
+
+.change-password input{
+    width: 40vw;
+    height: 5vh;
+}
+
+.change-password #submit{
+    width: 25%;
+    font-size: 16px;
+}
+
+.change-password #submit:focus{
+    transform: scaleX(1);
+}
+
+.change-password #submit:hover{
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: var(--text-dark-mode);
+    text-shadow: 0 0 5px var(--background-dark);
 }
 
 @media only screen and (max-width: 500px) {

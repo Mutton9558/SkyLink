@@ -55,28 +55,48 @@
         </div>
     </div>
   </header>
-  <main id="profile-main">
+  <main id="settings-main">
+    <h1 class="title-profile">Settings</h1>
     <div class="settings-content">
       <div class="profile-settings">
-        <a>Edit Profile</a>
-        <a>Change Password</a>
-        <a>Preference</a>
+        <a id="edit-profile-button">Edit Profile</a>
+        <a id="change-password-button">Change Password</a>
+        <a id="preferences-button">Preference</a>
       </div>
-      <div class="profile-content">
-        <form>
-          <p>Full Name</p>
-          <input type="text" name="reg-full-name" placeholder="Full Name (according to I.C.)" required>
-          <p>Identification Number</p>
-          <input type="text" name="reg-full-name" placeholder="Identification Card Number (according to I.C.)" required>
-          <p>Phone Number</p>
-          <input type="text" name="reg-hp-no" placeholder="Phone Number (Include Country Calling Code)" required>
-          <p>Email Address</p>
-          <input type="text" name="reg-email" placeholder="Email Address" required>
-          <p>Username</p>
-          <input type="text" name="reg-username" placeholder="Username" required>
-        </form>
+      <div>
+        <div class="edit-profile">
+          <form method="POST">
+            <p>Full Name</p>
+            <input type="text" name="reg-full-name" placeholder="Full Name (according to I.C.)" value="{{ user.name }}" required>
+            <p>Username</p>
+            <input type="text" name="reg-username"placeholder="Username" value="{{ user.username }}" required>
+            <p>Identification Number</p>
+            <input type="text" name="reg-ic" placeholder="Identification Card Number (according to I.C.)" value="{{ user.icNumber }}" required>
+            <p>Phone Number</p>
+            <input type="text" name="reg-hp-no" placeholder="Phone Number (Include Country Calling Code)" value="{{ user.phoneNumber }}" required>
+            <p>Email Address</p>
+            <input type="text" name="reg-email" placeholder="Email Address" value="{{ user.email }}" required style="margin-bottom: 1em;">
+            <input type="submit" name="submit" id="submit">
+          </form>
+        </div>
+        <div class="change-password">
+          <form method="POST" action="{{ url_for('change_password') }}">
+              <p>Current Password</p>
+              <input type="password" name="reg-password" placeholder="Password" required>
+              <p>New Password</p>
+              <input type="password" name="new-password" placeholder="New Password" required style="margin-bottom: 1em;">
+              <input type="submit" name="submit" id="submit">
+          </form>
+        </div>
+        <div class="preferences">
+          <div class="theme-toggle">
+              <label for="dark-mode-toggle">Dark Mode</label>
+              <input type="checkbox" id="dark-mode-toggle">
+          </div>
+        </div>
       </div>
     </div>
   </main>
+  <script src="{{ url_for('static', filename='settings.js') }}"></script>
 </body>
 </html>

@@ -40,8 +40,6 @@ document.addEventListener("click", function () {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  // For Carousel Picture
-
   // For hide and show the return date for round-trip and add stops for multi-city
   const form = document.querySelector("form");
   const tripOptions = document.querySelectorAll(".trip-class");
