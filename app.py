@@ -461,8 +461,8 @@ def settings():
 def change_password():
     if "user" in session and session["user"] != "":
         current_user = users.query.filter_by(username=session["user"]).first()
-        current_password = request.form.get("current_password")
-        new_password = request.form.get("new_password")
+        current_password = request.form.get("reg-password")
+        new_password = request.form.get("new-password")
 
         if current_user.password == current_password:
             current_user.password = new_password
