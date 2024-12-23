@@ -82,7 +82,7 @@ def get_flights(origin, destination, passengers, date, access_token):
         "departureDate": date,
         "adults": passengers,  
         "nonStop": "false",
-        "max": 4
+        "max": "4"
     }
 
     response = requests.get(url, headers=headers, params=params)
@@ -340,23 +340,27 @@ def flights():
             #     airlineList.append(flight['airline'])
             #     departureTimeList.append(flight['departure_time'])
             #     arrivalTimeList.append(flight['arrival_time'])
+            
                 priceList.append(flight['price'])
             priceList.sort()
 
             if request.method == "POST":
-                departureAirline = request.form.get('departure-airline-name-0')
-                departureFlightNum = request.form.get('departure-flight-number-0')
-                departureTime = request.form.get('selected-departure-time-0')
-                arrivalTime = request.form.get('selected-arrival-time-0')
-                departurePrice = request.form.get('selected-departure-price-0')
+                airlineOneWay = request.form['depature-airline-name-0']
+                flightNoOneWay = request.form['departure-flight-number-0']
+                departuretimeOneWay = request.form['selected-departure-time-0']
+                arrivaltimeOneWay = request.form['selected-arrival-time-0']
+                priceOneWay = request.form['selected-departure-price-0']
 
                 return redirect(url_for("booking",
-                                        departureAirline=departureAirline,
-                                        departureFlightNum=departureFlightNum,
-                                        departureTime=departureTime,
-                                        arrivalTime=arrivalTime,
-                                        departurePrice=departurePrice
-                                        ))
+                                        airlineOneWay=airlineOneWay,
+                                        flightNoOneWay=flightNoOneWay,
+                                        departuretimeOneWay=departuretimeOneWay,
+                                        arrivaltimeOneWay=arrivaltimeOneWay,
+                                        priceOneWay=priceOneWay,
+                                        trip=trip,
+                                        passengerNum=passengerNum,
+                                        origin_location=origin_location,
+                                        destination_location=destination_location))
 
             return render_template(
                 "flights.html",
@@ -462,26 +466,41 @@ def change_password():
 @app.route('/booking', methods=["GET", "POST"])
 def booking():
     if "user" in session and session["user"] != "":
-        if request.method == "POST":
-            # Capture form data
-            first_name = request.form.get("first_name")
-            surname = request.form.get("surname")
-            ic_number = request.form.get("ic_number")
-            phone_number = request.form.get("phone_number")
-            seat_selection = request.form.get("seat_selection")
+        data = {}
+        tripType = request.args.get('trip')
+        if tripType == "one-way":
 
+            data["airline"] = request.args.get('airlineOneWay')
+            data["flightNumber"] = request.args.get('flightNoOneWay')
+            print(request.args.get('departuretimeOneWay'))
+            data["departureTime"] = str(request.args.get('departuretimeOneWay')).strip().split("T")[1]
+            data["arrivalTime"] = str(request.args.get('arrivaltimeOneWay')).strip().split("T")[1]
+            data["date"] = str(request.args.get('departuretimeOneWay')).strip().split("T")[0]
+            data["price"] = request.args.get('priceOneWay')
+            data["passengerNum"] = request.args.get('passengerNum')
+            data["originLocation"] = request.args.get('origin_location')
+            data["destinationLocation"] = request.args.get('destination_location')
+
+            if request.method == "POST":
+                first_name = request.form.get("first_name")
+                surname = request.form.get("surname")
+                ic_number = request.form.get("ic_number")
+                phone_number = request.form.get("phone_number")
+                seat_selection = request.form.get("seat_selection")
+                flash("Booking details captured successfully!", "success")
+                return redirect(url_for("booking"))
+            
+            return render_template("booking.html", data=data, tripType=tripType)
             # Assuming static/preset data for now
-            start_location = "Kuala Lumpur International Airport (KUL)"
-            destination = "Singapore Changi Airport (SIN)"
-            departure_time = "10:00 AM"
-            estimated_arrival = "12:30 PM"
-            flight_date = "2024-12-20"
-            flight_number = "MH123"
+            # start_location = "Kuala Lumpur International Airport (KUL)"
+            # destination = "Singapore Changi Airport (SIN)"
+            # departure_time = "10:00 AM"
+            # estimated_arrival = "12:30 PM"
+            # flight_date = "2024-12-20"
+            # flight_number = "MH123"
 
             # Process data or save to the database (if needed)
-            flash("Booking details captured successfully!", "success")
-            return redirect(url_for("booking"))
-        return render_template("booking.html", profile_Name=session["user"])
+        return redirect(url_for("home"))     
     else:
         return redirect(url_for("login"))
 
