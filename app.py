@@ -365,14 +365,30 @@ def settings():
     if "user" in session and session["user"] != "":
         current_user = users.query.filter_by(username=session["user"]).first()
         if request.method == "POST":
-            current_user.name = request.form.get("name")
-            current_user.username = request.form.get("username")
-            current_user.icNumber = request.form.get("icNumber")
-            current_user.phoneNumber = request.form.get("phoneNumber")
-            current_user.email = request.form.get("email")
-            db.session.commit()
-            flash("Profile updated successfully!", "success")
-            return redirect(url_for("settings"))
+            new_name = request.form.get("new-full-name")
+            new_username = request.form.get("new-username")
+            new_ic = request.form.get("new-ic")
+            new_phone = request.form.get("new-hp-no")
+            new_email = request.form.get("new-email")
+
+            if users.query.filter(users.username == new_username, users.id != current_user.id).first():
+                flash("Username already exists!", "danger")
+            elif users.query.filter(users.icNumber == new_ic, users.id != current_user.id).first():
+                flash("IC number already exists!", "danger")
+            elif users.query.filter(users.phoneNumber == new_phone, users.id != current_user.id).first():
+                flash("Phone number already exists!", "danger")
+            elif users.query.filter(users.email == new_email, users.id != current_user.id).first():
+                flash("Email already exists!", "danger")
+            else:
+                current_user.name = new_name
+                current_user.username = new_username
+                current_user.icNumber = new_ic
+                current_user.phoneNumber = new_phone
+                current_user.email = new_email
+                db.session.commit()
+                session["user"] = current_user.username
+                flash("Profile updated successfully!", "success")
+            return redirect(url_for("settings", profile_Name = session["user"], user=current_user))
         
         return render_template("settings.html", profile_Name = session["user"], user=current_user)
     else:
