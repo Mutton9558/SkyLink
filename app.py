@@ -422,9 +422,24 @@ def flights():
                 returnPriceList=returnPriceList,
                 airline_list=airline_list
                 )
-
         except Exception as e:
             print(f"Error: {e}")
+    elif trip == "multi-city":
+        try:
+            originStops = origin_locations.split(",")
+            destinationStops = destination_locations.split(",")
+            departureDates = departure_dates.split(",")
+            stops = [{"origin": originStops[i], "destination": destinationStops[i], "date": departureDates[i]} for i in range(0, len(originStops))]
+            passengerNum = int(passengers[0])
+
+            flights = [get_flights(stops[i]["origin"][-4:-1], stops[i]["destination"][-4:-1], passengerNum, stops[i]["date"], access_token) for i in range(0, len(stops))]
+            flight_details = [extract_flight_details(flight) for flight in flights]
+            priceList = []
+            for i in range(0, len(stops)):
+                for detail in flight_details[i]:
+                    priceList.append(detail['price'])
+        except Exception as e:
+            print(f"{e}")
     return render_template("flights.html", profile_Name = session["user"])
 
 @app.route('/settings', methods=["GET", "POST"])
@@ -472,7 +487,6 @@ def booking():
 
             data["airline"] = request.args.get('airlineOneWay')
             data["flightNumber"] = request.args.get('flightNoOneWay')
-            print(request.args.get('departuretimeOneWay'))
             data["departureTime"] = str(request.args.get('departuretimeOneWay')).strip().split("T")[1]
             data["arrivalTime"] = str(request.args.get('arrivaltimeOneWay')).strip().split("T")[1]
             data["date"] = str(request.args.get('departuretimeOneWay')).strip().split("T")[0]

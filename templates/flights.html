@@ -55,72 +55,57 @@
             </div>
         </div>
     </header>
-    <div class="main-content-flights">
-        <div id="title-flights">
-            <h1>Select your <span id="type-of-flight">DEPARTURE FLIGHT</span></h1>
-            <h2>From <span id="location">{{ origin_location|safe }}</span> to <span id="location">{{destination_location|safe}}</span></h2>
-            <p>{{departure_day|safe}}, {{departure_date|safe}}</p>
-        </div>
-        <div class="flight-details">
-            <div id="departure-flight-details">
-                <div id="journey-departure">
-                    <p>{{origin_location|safe}}</p>
-                    <p>⇌</p>
-                    <p>{{destination_location|safe}}</p>
-                </div>
-                <div id="date-departure-info">
-                    <p>{{departure_day|safe}}, {{departure_date|safe}}</p>
-                    <p id="cheapest-flight">RM {{ priceList[0] }} (Cheapest Flight)</p>
-                </div>
-                <div id="passenger-departure-total">
-                    <p>{{passengerNum|safe}} Passengers</p>
-                </div>
+    {% if trip == "multi-city" %}
+        <div class="main-content-flights">
+            <div id="title-flights">
+                <h1>Select your <span id="type-of-flight">DEPARTURE FLIGHTS</span></h1>
             </div>
         </div>
-        <div id="edit-detail">
-            <p>Want to change some details?</p>
-            <a href="/home">Edit</a>
-        </div>  
-    </div>
-    <div id="selected-flight-container" class="selected-departure-flight" style="display: none;">
-        <button id="change-flight-btn" type="button">Change Flight</button>
-    </div>
-    {% for flight in flight_details %}
-        <div class="flight-list" id="cont-1">
-            <div id="flight-list-container" class="departure-container">
-                <div id="flight-list-left">
-                    <h3 id="airline">{{ airline_list[flight['airline']] }}</h3>
-                    <h3 id="flight-number">{{ flight['flight_number'] }}</h3>
-                    <div id="flight-times">
-                        <p id="departure-time">Departure Time: {{ flight['departure_time'] }}</p>
-                        <p id="arrival-time">Arrival Time: {{ flight['arrival_time'] }}</p>
+        {% for stop in stops %}
+            <div class="main-content-flights">
+                <div id="title-flights">
+                    <h2>From <span id="location">{{ stop["origin"]|safe }}</span> to <span id="location">{{ stop["destination"]|safe }}</span></h2>
+                    <p>{{ (datetime.strptime(stop["date"], "%Y-%m-%d")).strftime("%A")|safe }}, {{ stop["date"]|safe }}</p>
+                </div>
+                <div class="flight-details">
+                    <div id="departure-flight-details">
+                        <div id="journey-departure">
+                            <p>{{ stop["origin"]|safe }}</p>
+                            <p>⇌</p>
+                            <p>{{ stop["destination"]|safe }}</p>
+                        </div>
+                        <div id="date-departure-info">
+                            <p>{{(datetime.strptime(stop["date"], "%Y-%m-%d")).strftime("%A")|safe}}, {{stop["date"]|safe}}</p>
+                            <p id="cheapest-flight">RM {{ priceList[0] }} (Cheapest Flight)</p>
+                        </div>
+                        <div id="passenger-departure-total">
+                            <p>{{passengerNum|safe}} Passengers</p>
+                        </div>
                     </div>
                 </div>
-                <div id="flight-list-right">
-                    <img src="{{ url_for('static', filename='img/' + flight['airline'] + '.png') }}" alt="{{ airline_list[flight['airline']] }}">
-                    <p id="flight-price-text">RM {{ flight['price'] }}</p>
-                    <button id="select-flight-btn" class="departure-btn" type="button">Select Flight</button>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-    {% if trip == "round-trip" %}
-        <div class="main-content-flights" id="return-content-flights" style="display: none;">
+                <div id="edit-detail">
+                    <p>Want to change some details?</p>
+                    <a href="/home">Edit</a>
+                </div>  
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="main-content-flights">
             <div id="title-flights">
-                <h1>Select your <span id="type-of-flight">RETURN FLIGHT</span></h1>
-                <h2>From <span id="location">{{ destination_location|safe }}</span> to <span id="location">{{origin_location|safe}}</span></h2>
-                <p>{{return_day|safe}}, {{return_date|safe}}</p>
+                <h1>Select your <span id="type-of-flight">DEPARTURE FLIGHT</span></h1>
+                <h2>From <span id="location">{{ origin_location|safe }}</span> to <span id="location">{{destination_location|safe}}</span></h2>
+                <p>{{departure_day|safe}}, {{departure_date|safe}}</p>
             </div>
             <div class="flight-details">
                 <div id="departure-flight-details">
                     <div id="journey-departure">
-                        <p>{{destination_location|safe}}</p>
+                        <p>{{origin_location|safe}}</p>
                         <p>⇌</p>
-                        <p>{{ origin_location|safe }}</p>
+                        <p>{{destination_location|safe}}</p>
                     </div>
                     <div id="date-departure-info">
-                        <p>{{return_day|safe}}, {{return_date|safe}}</p>
-                        <p id="cheapest-flight">RM {{ returnPriceList[0] }} (Cheapest Flight)</p>
+                        <p>{{departure_day|safe}}, {{departure_date|safe}}</p>
+                        <p id="cheapest-flight">RM {{ priceList[0] }} (Cheapest Flight)</p>
                     </div>
                     <div id="passenger-departure-total">
                         <p>{{passengerNum|safe}} Passengers</p>
@@ -132,12 +117,12 @@
                 <a href="/home">Edit</a>
             </div>  
         </div>
-        <div id="selected-flight-container" class="selected-return-flight" style="display: none;">
+        <div id="selected-flight-container" class="selected-departure-flight" style="display: none;">
             <button id="change-flight-btn" type="button">Change Flight</button>
         </div>
-        {% for flight in return_flight_details %}
-            <div class="flight-list">
-                <div id="flight-list-container" class="return-flight-list-container">
+        {% for flight in flight_details %}
+            <div class="flight-list" id="cont-1">
+                <div id="flight-list-container" class="departure-container">
                     <div id="flight-list-left">
                         <h3 id="airline">{{ airline_list[flight['airline']] }}</h3>
                         <h3 id="flight-number">{{ flight['flight_number'] }}</h3>
@@ -149,15 +134,66 @@
                     <div id="flight-list-right">
                         <img src="{{ url_for('static', filename='img/' + flight['airline'] + '.png') }}" alt="{{ airline_list[flight['airline']] }}">
                         <p id="flight-price-text">RM {{ flight['price'] }}</p>
-                        <button id="select-flight-btn" class="return-flight-btn" type="button">Select Flight</button>
+                        <button id="select-flight-btn" class="departure-btn" type="button">Select Flight</button>
                     </div>
                 </div>
             </div>
         {% endfor %}
+        {% if trip == "round-trip" %}
+            <div class="main-content-flights" id="return-content-flights" style="display: none;">
+                <div id="title-flights">
+                    <h1>Select your <span id="type-of-flight">RETURN FLIGHT</span></h1>
+                    <h2>From <span id="location">{{ destination_location|safe }}</span> to <span id="location">{{origin_location|safe}}</span></h2>
+                    <p>{{return_day|safe}}, {{return_date|safe}}</p>
+                </div>
+                <div class="flight-details">
+                    <div id="departure-flight-details">
+                        <div id="journey-departure">
+                            <p>{{destination_location|safe}}</p>
+                            <p>⇌</p>
+                            <p>{{ origin_location|safe }}</p>
+                        </div>
+                        <div id="date-departure-info">
+                            <p>{{return_day|safe}}, {{return_date|safe}}</p>
+                            <p id="cheapest-flight">RM {{ returnPriceList[0] }} (Cheapest Flight)</p>
+                        </div>
+                        <div id="passenger-departure-total">
+                            <p>{{passengerNum|safe}} Passengers</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="edit-detail">
+                    <p>Want to change some details?</p>
+                    <a href="/home">Edit</a>
+                </div>  
+            </div>
+            <div id="selected-flight-container" class="selected-return-flight" style="display: none;">
+                <button id="change-flight-btn" type="button">Change Flight</button>
+            </div>
+            {% for flight in return_flight_details %}
+                <div class="flight-list">
+                    <div id="flight-list-container" class="return-flight-list-container">
+                        <div id="flight-list-left">
+                            <h3 id="airline">{{ airline_list[flight['airline']] }}</h3>
+                            <h3 id="flight-number">{{ flight['flight_number'] }}</h3>
+                            <div id="flight-times">
+                                <p id="departure-time">Departure Time: {{ flight['departure_time'] }}</p>
+                                <p id="arrival-time">Arrival Time: {{ flight['arrival_time'] }}</p>
+                            </div>
+                        </div>
+                        <div id="flight-list-right">
+                            <img src="{{ url_for('static', filename='img/' + flight['airline'] + '.png') }}" alt="{{ airline_list[flight['airline']] }}">
+                            <p id="flight-price-text">RM {{ flight['price'] }}</p>
+                            <button id="select-flight-btn" class="return-flight-btn" type="button">Select Flight</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div id="submit-btn-flights">
+            
+        </div>
     {% endif %}
-    <div id="submit-btn-flights">
-        
-    </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
         const ALLPRICES = document.querySelectorAll("#flight-price-text");
