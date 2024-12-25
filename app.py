@@ -171,16 +171,27 @@ def home():
                 originLocations = ",".join(value for stop in stops for key, value in stop.items() if key.startswith('origin-location'))
                 destinationLocations = ",".join(value2 for stop2 in stops for key2, value2 in stop2.items() if key2.startswith('destination-location'))
                 departures = ",".join(value3 for date in departureDates for key3, value3 in date.items() if key3.startswith('departure-date'))
-                return redirect(url_for(
-                    "flights",
-                    trip=selected_trip,
-                    return_date=return_date,
-                    passengers=passengers,
-                    promo_code=promo_code,
-                    origin_locations=originLocations,
-                    destination_locations=destinationLocations,
-                    departure_dates=departures
-                ))
+                if selected_trip != "multi-city":
+                    return redirect(url_for(
+                        "flights",
+                        trip=selected_trip,
+                        return_date=return_date,
+                        passengers=passengers,
+                        promo_code=promo_code,
+                        origin_locations=originLocations,
+                        destination_locations=destinationLocations,
+                        departure_dates=departures
+                    ))
+                else:
+                    return redirect(url_for(
+                        "flightsmulticity",
+                        trip=selected_trip,
+                        passengers=passengers,
+                        promo_code=promo_code,
+                        origin_locations=originLocations,
+                        destination_locations=destinationLocations,
+                        departure_dates=departures
+                    ))
         return render_template("index.html", profile_Name = session["user"], options=options)
     else:
         return redirect(url_for("register"))
@@ -422,10 +433,64 @@ def flights():
                 returnPriceList=returnPriceList,
                 airline_list=airline_list
                 )
-
         except Exception as e:
             print(f"Error: {e}")
     return render_template("flights.html", profile_Name = session["user"])
+
+@app.route('/flightsmulticity', methods=["GET", "POST"])
+def flightsmulticity():
+    if "user" in session and session["user"] != "":
+        trip = request.args.get('trip')
+        passengers = request.args.get('passengers')
+        promo_code = request.args.get('promo_code')
+        origin_locations = request.args.get('origin_locations')
+        destination_locations = request.args.get('destination_locations')
+        departure_dates = request.args.get('departure_dates')
+
+        airline_list = {
+            "FY" : "Firefly",
+            "MH" : "Malaysia Airlines",
+            "OD" : "Batik Air",
+            "AK" : "AirAsia"
+        }
+        try:
+            originStops = origin_locations.split(",")
+            destinationStops = destination_locations.split(",")
+            departureDates = departure_dates.split(",")
+            stops = [{"origin": originStops[i], "destination": destinationStops[i], "date": departureDates[i]} for i in range(0, len(originStops))]
+            days = []
+            for stop in stops:
+                days.append((datetime.strptime(stop["date"], "%Y-%m-%d")).strftime("%A"))
+            passengerNum = int(passengers[0])
+
+            flights = [get_flights(stops[i]["origin"][-4:-1], stops[i]["destination"][-4:-1], passengerNum, stops[i]["date"], access_token) for i in range(0, len(stops))]
+            flight_details = [extract_flight_details(flight) for flight in flights]
+
+            priceList = []
+            cheapestFlights = []
+            for detail in flight_details:
+                for item in detail:
+                    priceList.append(item['price'])
+                priceList.sort()
+                cheapestFlights.append(priceList[0])
+                priceList = []
+            
+            return render_template(
+                "flightsmulticity.html",
+                profile_Name = session["user"], 
+                trip=trip,
+                stops=stops,
+                days=days,
+                passengerNum=passengerNum,
+                cheapestFlights=cheapestFlights,
+                flight_details=flight_details,
+                airline_list=airline_list
+            )
+        except Exception as e:
+            print(f"{e}")
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/settings', methods=["GET", "POST"])
 def settings():
@@ -488,7 +553,6 @@ def booking():
 
             data["airline"] = request.args.get('airlineOneWay')
             data["flightNumber"] = request.args.get('flightNoOneWay')
-            print(request.args.get('departuretimeOneWay'))
             data["departureTime"] = str(request.args.get('departuretimeOneWay')).strip().split("T")[1]
             data["arrivalTime"] = str(request.args.get('arrivaltimeOneWay')).strip().split("T")[1]
             data["date"] = str(request.args.get('departuretimeOneWay')).strip().split("T")[0]
