@@ -553,6 +553,14 @@ def forgotpassword():
             flash("That Username does not exist!")
     return render_template('forgot.html')
 
+@app.route('/profile')
+def profile():
+    if "user" in session and session["user"] != "":
+        return render_template("profile.html", profile_Name = session["user"])
+    else:
+        return redirect(url_for("login"))
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
