@@ -1,0 +1,73 @@
+:root{
+  --primary: #82C26E; /*rgb primary (130, 194, 110)*/
+  --secondary: #0A85ED; /*rgb secondary (10, 133, 237)*/
+  --background-dark: #050418;
+  --text-dark-mode: #e8e6fb;
+  --background-light: #f0f0f0;
+  --text-light-mode:#06041a;
+}
+
+.profile{
+  height: 55%;
+}
+
+.user-profile-main{
+  display: flex;
+}
+
+.user-profile{
+  background-color: white;
+  width: 65em;
+  position: absolute;
+  left: 10em;
+  top: 6.5em;
+  border-radius: 1em;
+}
+
+#profile-background{
+  width: 63em;
+  margin: 1em;
+  border-radius: 1em;
+}
+
+#profile-picture{
+  position: absolute;
+  top: 15em;
+  right: 55.5em;
+  width: 8em;
+  margin: 1em;
+  
+}
+
+.user-profile-content{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1em;
+}
+
+.name-username h1, p{
+  margin: 0;
+}
+
+.name-username p{
+  color: gray;
+}
+
+.personal-info{
+  display: flex;
+  flex-direction: row;
+  
+}
+
+.personal-info p{
+  margin: 1em 5em 1em 1em;
+}
+
+.edit-user-profile button{
+  background-color: var(--background-dark);
+  color: var(--text-dark-mode);
+  border-radius: 1em;
+  height: 2em;
+  cursor: pointer;
+}
