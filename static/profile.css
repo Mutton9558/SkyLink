@@ -1,0 +1,86 @@
+.profile{
+  height: 55%;
+}
+
+.user-profile-main{
+  display: flex;
+}
+
+.user-profile{
+  background-color: white;
+  width: 65em;
+  position: absolute;
+  left: 10em;
+  top: 6em;
+  border-radius: 1em;
+}
+
+#profile-background{
+  width: 63em;
+  margin: 1em;
+  border-radius: 1em;
+}
+
+#profile-picture{
+  position: absolute;
+  top: 15em;
+  right: 55.5em;
+  width: 8em;
+  margin: 1em;
+  
+}
+
+.user-profile-content{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1em;
+}
+
+.name-username h1, p{
+  margin: 0;
+}
+
+.name-username p{
+  color: gray;
+}
+
+.personal-info{
+  display: flex;
+  flex-direction: row;
+  
+}
+
+.personal-info-details{
+  display: flex;
+  flex-direction: column;
+}
+
+.personal-info-details p{
+  color: gray;
+  margin: 0.5em 4em 1em 1em;
+}
+
+.personal-info-details h3{
+  margin: 0 4em 0 1em;
+  font-weight: lighter;
+  font-size: medium;
+}
+
+.edit-user-profile button{
+  background-color: var(--background-dark);
+  color: var(--text-dark-mode);
+  border-radius: 1em;
+  height: 2em;
+  cursor: pointer;
+  transition: background-color 0.5s ease;
+}
+
+.edit-user-profile button:hover{
+  background-color: var(--primary);
+  color: white;
+}
+
+body.dark-mode .user-profile{
+  background-color: #333333;
+}

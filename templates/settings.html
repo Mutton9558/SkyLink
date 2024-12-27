@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}">
-  <title>Profile | SkyLink</title>
+  <title>Settings | SkyLink</title>
 </head>
 <body>
   <header class="header">
@@ -58,7 +58,7 @@
   <main id="settings-main">
     <h1 class="title-profile">Settings</h1>
     <div class="settings-content">
-      <div class="profile-settings">
+      <div class="settings-option">
         <a id="edit-profile-button">Edit Profile</a>
         <a id="change-password-button">Change Password</a>
         <a id="preferences-button">Preference</a>
@@ -66,32 +66,51 @@
       <div>
         <div class="edit-profile">
           <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <p>Full Name</p>
-            <input type="text" name="reg-full-name" placeholder="Full Name (according to I.C.)" value="{{ user.name }}" required>
+            <input type="text" name="new-full-name" placeholder="Full Name (according to I.C.)" value="{{ user.name }}" required>
             <p>Username</p>
-            <input type="text" name="reg-username"placeholder="Username" value="{{ user.username }}" required>
+            <input type="text" name="new-username"placeholder="Username" value="{{ user.username }}" required>
             <p>Identification Number</p>
-            <input type="text" name="reg-ic" placeholder="Identification Card Number (according to I.C.)" value="{{ user.icNumber }}" required>
+            <input type="text" name="new-ic" placeholder="Identification Card Number (according to I.C.)" value="{{ user.icNumber }}" required>
             <p>Phone Number</p>
-            <input type="text" name="reg-hp-no" placeholder="Phone Number (Include Country Calling Code)" value="{{ user.phoneNumber }}" required>
+            <input type="text" name="new-hp-no" placeholder="Phone Number (Include Country Calling Code)" value="{{ user.phoneNumber }}" required>
             <p>Email Address</p>
-            <input type="text" name="reg-email" placeholder="Email Address" value="{{ user.email }}" required style="margin-bottom: 1em;">
+            <input type="text" name="new-email" placeholder="Email Address" value="{{ user.email }}" style="margin-bottom: 1em;" required>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                  {% for msg in messages %}
+                      <p>*{{ msg }}</p>
+                  {% endfor %}
+              {% endif %}
+            {% endwith %}
             <input type="submit" name="submit" id="submit">
           </form>
         </div>
         <div class="change-password">
           <form method="POST" action="{{ url_for('change_password') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
               <p>Current Password</p>
               <input type="password" name="reg-password" placeholder="Password" required>
               <p>New Password</p>
               <input type="password" name="new-password" placeholder="New Password" required style="margin-bottom: 1em;">
+              {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                      {% for msg in messages %}
+                          <p>*{{ msg }}</p>
+                      {% endfor %}
+                  {% endif %}
+              {% endwith %}
               <input type="submit" name="submit" id="submit">
           </form>
         </div>
         <div class="preferences">
           <div class="theme-toggle">
-              <label for="dark-mode-toggle">Dark Mode</label>
-              <input type="checkbox" id="dark-mode-toggle">
+            <h2>Appearence</h2>
+            <input type="radio" id="dark-mode-toggle" name="theme" value="dark">  
+            <label for="dark-mode-toggle">Dark Mode</label>
+            <input type="radio" id="light-mode-toggle" name="theme" value="light">  
+            <label for="light-mode-toggle">Light Mode</label>
           </div>
         </div>
       </div>
