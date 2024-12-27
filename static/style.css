@@ -685,18 +685,18 @@ footer{
     top: 6.5em;
 }
 
-.profile-settings{
+.settings-option{
     display: flex;
     flex-direction: column;
     border-right: 1px black solid;
 }
 
-.profile-settings a{
+.settings-option a{
     color: #45435c;
     margin: 1em;
 }
 
-.profile-settings a:hover{
+.settings-option a:hover{
     color: black;
     font-weight: bold;
     cursor: pointer;
@@ -1002,4 +1002,55 @@ footer{
     width: 100%;
     text-align: center;
     margin-bottom: 1rem;
+}
+
+body.dark-mode {
+    background-color: var(--background-dark);
+    color: #ffffff;
+}
+
+body.dark-mode .header,
+body.dark-mode .dropdown {
+    background-color: #333333;
+}
+
+body.dark-mode .dropdown-content :hover {
+    background-color: #535353;
+}
+
+body.dark-mode p,
+body.dark-mode svg,
+body.dark-mode a,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode label {
+    color: var(--text-dark-mode);
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="password"],
+body.dark-mode input[type="submit"],
+body.dark-mode input[type="radio"],
+body.dark-mode input[type="date"],
+body.dark-mode input[type="surname"],
+body.dark-mode select[type="text"],
+body.dark-mode select[name="number-of-passengers"],
+body.dark-mode textarea{
+    background-color: #333333;
+    color: #ffffff;
+    border: 1px solid #444444;
+}
+
+body.dark-mode .settings-content {
+    background-color: #1e1e1e;
+}
+
+body.dark-mode .booking-form {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+body.dark-mode .center-box,
+body.dark-mode details{
+    background-color: #333333;
 }

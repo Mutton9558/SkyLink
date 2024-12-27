@@ -1,12 +1,3 @@
-:root{
-  --primary: #82C26E; /*rgb primary (130, 194, 110)*/
-  --secondary: #0A85ED; /*rgb secondary (10, 133, 237)*/
-  --background-dark: #050418;
-  --text-dark-mode: #e8e6fb;
-  --background-light: #f0f0f0;
-  --text-light-mode:#06041a;
-}
-
 .profile{
   height: 55%;
 }
@@ -67,7 +58,7 @@
 
 .personal-info-details p{
   color: gray;
-  margin: 0em 4em 1em 1em;
+  margin: 0.5em 4em 1em 1em;
 }
 
 .personal-info-details h3{
@@ -88,4 +79,8 @@
 .edit-user-profile button:hover{
   background-color: var(--primary);
   color: white;
+}
+
+body.dark-mode .user-profile{
+  background-color: #333333;
 }
