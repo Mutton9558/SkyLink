@@ -639,7 +639,8 @@ def forgotpassword():
 @app.route('/profile')
 def profile():
     if "user" in session and session["user"] != "":
-        return render_template("profile.html", profile_Name = session["user"])
+        current_user = users.query.filter_by(username=session["user"]).first()
+        return render_template("profile.html", profile_Name = session["user"], user=current_user)
     else:
         return redirect(url_for("login"))
 

@@ -32,4 +32,32 @@ document.addEventListener("DOMContentLoaded", function () {
     hideAllDividers();
     preferencesDivider.style.display = "flex";
   });
+
+  darkModeToggle = document.getElementById("dark-mode-toggle");
+  lightModeToggle = document.getElementById("light-mode-toggle");
+
+  darkModeToggle.addEventListener("change", function () {
+    if (darkModeToggle.checked) {
+      document.body.classList.add("dark-mode");
+      document.body.classList.remove("light-mode");
+      localStorage.setItem("theme", "dark");
+    }
+  });
+
+  lightModeToggle.addEventListener("change", function () {
+    if (lightModeToggle.checked) {
+      document.body.classList.add("light-mode");
+      document.body.classList.remove("dark-mode");
+      localStorage.setItem("theme", "light");
+    }
+  });
+
+  const theme = localStorage.getItem("theme");
+  if (theme === "dark") {
+    darkModeToggle.checked = true;
+    document.body.classList.add("dark-mode");
+  } else if (theme === "light") {
+    lightModeToggle.checked = true;
+    document.body.classList.add("light-mode");
+  }
 });
