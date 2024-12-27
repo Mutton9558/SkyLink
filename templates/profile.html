@@ -68,8 +68,8 @@
 
         <div class="user-profile-content">
           <div class="name-username">
-            <h1>Name</h1>
-            <p>username</p>
+            <h1>{{ user.name }}</h1>
+            <p>{{ user.username }}</p>
           </div>
           <div class="edit-user-profile">
             <a href="/settings">
@@ -79,10 +79,15 @@
         </div>
 
         <div class="personal-info">
-          <p>Birthday</p>
-          <p>Email Address</p>
-          <p>Phone Number</p>
-          <p>Date Joined</p>
+          <div class="personal-info-details">
+            <h3>Email Address</h3>
+            <p>{{ user.email }}</p>
+          </div>
+          <div class="personal-info-details">
+            <h3>Phone Number</h3>
+            <p>{{ user.phoneNumber }}</p>
+          </div>
+          
         </div>
       </div>
     </main>
