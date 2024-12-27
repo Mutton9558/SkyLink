@@ -11,6 +11,7 @@ import requests
 import time
 from flask_wtf.csrf import CSRFProtect
 import random
+import ast
 
 load_dotenv('.env')
 app = Flask(__name__)
@@ -363,6 +364,7 @@ def flights():
                 priceOneWay = request.form['selected-departure-price-0']
 
                 return redirect(url_for("booking",
+                                        profile_Name = session["user"],
                                         airlineOneWay=airlineOneWay,
                                         flightNoOneWay=flightNoOneWay,
                                         departuretimeOneWay=departuretimeOneWay,
@@ -451,7 +453,8 @@ def flightsmulticity():
             "FY" : "Firefly",
             "MH" : "Malaysia Airlines",
             "OD" : "Batik Air",
-            "AK" : "AirAsia"
+            "AK" : "AirAsia",
+            "TR" : "Scoot"
         }
         try:
             originStops = origin_locations.split(",")
@@ -474,6 +477,27 @@ def flightsmulticity():
                 priceList.sort()
                 cheapestFlights.append(priceList[0])
                 priceList = []
+
+            if request.method == "POST":
+                chosenFlightList = []
+                for i in range(0, len(stops)):
+                    chosenFlight = {}
+                    chosenFlight['airline'] = request.form[f"depature-airline-name-{i}"]
+                    chosenFlight['flightNumber'] = request.form[f'departure-flight-number-{i}']
+                    chosenFlight['departureTime'] = request.form[f'selected-departure-time-{i}']
+                    chosenFlight['arrivalTime'] = request.form[f'selected-arrival-time-{i}']
+                    chosenFlight['price'] = request.form[f'selected-departure-price-{i}']
+                    chosenFlightList.append(chosenFlight)
+                    print(chosenFlightList)
+                    chosenFlightListSerialized = json.dumps(chosenFlightList)
+                    stopsSerialized = json.dumps(stops)
+
+                return redirect(url_for("booking",
+                                        chosenFlightList=chosenFlightListSerialized,
+                                        trip=trip,
+                                        passengerNum=passengerNum,
+                                        stops=stopsSerialized,
+                                        profile_Name = session["user"]))
             
             return render_template(
                 "flightsmulticity.html",
@@ -547,10 +571,10 @@ def change_password():
 @app.route('/booking', methods=["GET", "POST"])
 def booking():
     if "user" in session and session["user"] != "":
-        data = {}
+        dataList = []
         tripType = request.args.get('trip')
         if tripType == "one-way":
-
+            data = {}
             data["airline"] = request.args.get('airlineOneWay')
             data["flightNumber"] = request.args.get('flightNoOneWay')
             data["departureTime"] = str(request.args.get('departuretimeOneWay')).strip().split("T")[1]
@@ -560,6 +584,7 @@ def booking():
             data["passengerNum"] = request.args.get('passengerNum')
             data["originLocation"] = request.args.get('origin_location')
             data["destinationLocation"] = request.args.get('destination_location')
+            dataList.append(data)
 
             if request.method == "POST":
                 first_name = request.form.get("first_name")
@@ -570,7 +595,7 @@ def booking():
                 flash("Booking details captured successfully!", "success")
                 return redirect(url_for("booking"))
             
-            return render_template("booking.html", data=data, tripType=tripType)
+            return render_template("booking.html", dataList=dataList, tripType=tripType, profile_Name = session["user"])
             # Assuming static/preset data for now
             # start_location = "Kuala Lumpur International Airport (KUL)"
             # destination = "Singapore Changi Airport (SIN)"
@@ -580,7 +605,30 @@ def booking():
             # flight_number = "MH123"
 
             # Process data or save to the database (if needed)
-        return redirect(url_for("home"))     
+        elif tripType == "multi-city":
+            try:
+                flightList = json.loads(request.args.get('chosenFlightList'))
+                stops = json.loads(request.args.get('stops'))
+                print(flightList)
+                for i in range(0, len(stops)):
+                    data = {}
+                    data["airline"] = flightList[i]['airline']
+                    data["flightNumber"] = flightList[i]['flightNumber']
+                    data["departureTime"] = str(flightList[i]['departureTime']).strip().split("T")[1]
+                    data["arrivalTime"] = str(flightList[i]['arrivalTime']).strip().split("T")[1]
+                    data["date"] = str(stops[i]["date"]).strip().split("T")[0]
+                    data["price"] = flightList[i]['price']
+                    data["passengerNum"] = request.args.get('passengerNum')
+                    data["originLocation"] = stops[i]["origin"]
+                    data["destinationLocation"] = stops[i]["destination"]
+                    dataList.append(data)
+                print(dataList)
+
+                return render_template("booking.html", dataList=dataList, tripType=tripType, profile_Name = session["user"])
+            except Exception as e:
+                print(f"{e}")
+        # return redirect(url_for("home"))   
+        return render_template("booking.html", dataList=dataList, tripType=tripType, profile_Name = session["user"])  
     else:
         return redirect(url_for("login"))
 
