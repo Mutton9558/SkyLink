@@ -136,7 +136,7 @@
             <button id="change-flight-btn" type="button">Change Flight</button>
         </div>
         {% for flight in return_flight_details %}
-            <div class="flight-list">
+            <div class="flight-list" id="cont-2">
                 <div id="flight-list-container" class="return-flight-list-container">
                     <div id="flight-list-left">
                         <h3 id="airline">{{ airline_list[flight['airline']] }}</h3>
@@ -155,12 +155,15 @@
             </div>
         {% endfor %}
     {% endif %}
-    <div id="submit-btn-flights">
-        
-    </div>
+    <div id="submit-btn-flights"></div>
+    {% if trip == "round-trip" %}
+        <form method="POST" id="finalForm" style="display:none;">
+        </form>
+    {% endif %}
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
         const ALLPRICES = document.querySelectorAll("#flight-price-text");
+        const finalForm = document.getElementById('finalForm');
         let cheapestPrice = "RM {{ priceList[0] if priceList else 0 }}";
         let tripType = "{{ trip }}";
 
@@ -169,10 +172,46 @@
                 price.classList.add("cheapest-price");
             }
         });
+
         document.addEventListener('DOMContentLoaded', function () {
             const flightListContainer = document.querySelectorAll('.departure-container');
             const selectedFlightContainer = document.querySelector('.selected-departure-flight');
             const wrapperDeparture = document.querySelectorAll('#cont-1')
+            const wrapperReturn = document.querySelectorAll('#cont-2')
+            
+            function checkForm(FORMELEMENTS) {
+                if (FORMELEMENTS.innerHTML.trim() === ""){
+                    console.log('Form validation failed');
+                    return false;
+                }
+                console.log('All forms are valid');
+                return true;
+            }
+
+            function createAndSubmitInvisibleForm(departureForm, returnForm) {
+                finalForm.innerHTML = '';
+
+                const formData = new FormData(departureForm);
+                for (const [key, value] of formData.entries()) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `${key}`;
+                    hiddenInput.value = value;
+                    finalForm.appendChild(hiddenInput);
+                }
+
+                const formData2 = new FormData(returnForm);
+                for (const [key, value] of formData2.entries()) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `${key}`;
+                    hiddenInput.value = value;
+                    finalForm.appendChild(hiddenInput);
+                }
+
+                console.log(finalForm);
+                finalForm.submit();
+            }
 
             document.querySelectorAll('.departure-btn').forEach(button => {
                 button.addEventListener('click', function () {
@@ -200,7 +239,7 @@
                             <form method="POST" id="departure-form">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <label>Airline: </label>
-                                <input name="depature-airline-name-0" value="${airlineName}" readonly>
+                                <input name="departure-airline-name-0" value="${airlineName}" readonly>
                                 <label>Flight Number: </label>
                                 <input name="departure-flight-number-0" value="${flightNumber}" readonly>
                                 <label>Departure Time: </label>
@@ -226,10 +265,10 @@
                     document.getElementById('change-flight-btn').addEventListener('click', function () {
                         selectedFlightContainer.style.display = 'none';
                         flightListContainer.forEach((container) => {
-                            container.style.display = "flex"
+                            container.style.display = "flex";
                         });
                         wrapperDeparture.forEach((cont)=>{
-                            cont.classList.remove("hidden-flight-list")
+                            cont.classList.remove("hidden-flight-list");
                         })
                         flightListContainer[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
                         document.querySelector("#submit-btn-flights").innerHTML="";
@@ -250,7 +289,11 @@
                                 const returnFlightPrice = selectedReturnFlight.querySelector('#flight-price-text').textContent.trim();
 
                                 returnListContainer.forEach((container)=>{
-                                    container.style.display="none"
+                                    container.style.display="none";
+                                });
+
+                                wrapperReturn.forEach((container)=>{
+                                    container.classList.add("hidden-flight-list");
                                 });
 
                                 selectedReturnCont.style.display = 'block';
@@ -260,29 +303,42 @@
                                         <form method="POST" id="return-form">
                                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                             <label>Airline: </label>
-                                            <input name="depature-airline-name-0" value="${returnAirlineName}" readonly>
+                                            <input name="return-airline-name-0" value="${returnAirlineName}" readonly>
                                             <label>Flight Number: </label>
-                                            <input name="departure-flight-number-0" value="${returnFlightNumber}" readonly>
+                                            <input name="return-flight-number-0" value="${returnFlightNumber}" readonly>
                                             <label>Departure Time: </label>
-                                            <input name="selected-departure-time-0" value="${returnDepartureTime}" readonly>
+                                            <input name="return-departure-time-0" value="${returnDepartureTime}" readonly>
                                             <label>Arrival Time: </label>
-                                            <input name="selected-arrival-time-0" value="${returnArrivalTime}" readonly>
+                                            <input name="return-arrival-time-0" value="${returnArrivalTime}" readonly>
                                             <label>Price: </label>
-                                            <input name="selected-departure-price-0" value="${returnFlightPrice}" readonly>
+                                            <input name="selected-return-price-0" value="${returnFlightPrice}" readonly>
                                             <button id="change-flight-btn" class="change-return-flight" type="button">Change Flight</button>
                                         </form>
                                     </div>
                                 `;
 
                                 selectedReturnCont.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
+                                
                                 document.querySelector(".change-return-flight").addEventListener('click', function () {
                                     selectedReturnCont.style.display = 'none';
+                                    document.querySelector("#submit-btn-flights").innerHTML = '';
+                                    finalForm.innerHTML = '';
                                     returnListContainer.forEach((container) => {
-                                        container.style.display = "flex"
+                                        container.style.display = "flex";
+                                    });
+                                    wrapperReturn.forEach((container)=>{
+                                        container.classList.remove("hidden-flight-list");
                                     });
                                     returnListContainer[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
                                 });
+                                const departureForm = document.querySelector("#departure-form");
+                                const returnForm = document.querySelector("#return-form");
+                                if(checkForm(departureForm) && checkForm(returnForm)){
+                                    document.querySelector("#submit-btn-flights").innerHTML = '<button id="submitButton" type="submit">Book Flights</button>';
+                                    document.getElementById('submitButton').addEventListener('click', function() {
+                                        createAndSubmitInvisibleForm(departureForm, returnForm);
+                                    });
+                                };
                             });
                         })
                     };

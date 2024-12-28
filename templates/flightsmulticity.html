@@ -154,13 +154,6 @@
                     }
                 });
 
-                // Add CSRF token (if needed)
-                const csrfTokenInput = document.createElement('input');
-                csrfTokenInput.type = 'hidden';
-                csrfTokenInput.name = 'csrf_token';
-                csrfTokenInput.value = '{{ csrf_token() }}';
-                finalForm.appendChild(csrfTokenInput);
-
                 // Log the final form to console for debugging
                 console.log(finalForm);
 
