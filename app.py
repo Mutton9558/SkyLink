@@ -357,7 +357,7 @@ def flights():
             priceList.sort()
 
             if request.method == "POST":
-                airlineOneWay = request.form['depature-airline-name-0']
+                airlineOneWay = request.form['departure-airline-name-0']
                 flightNoOneWay = request.form['departure-flight-number-0']
                 departuretimeOneWay = request.form['selected-departure-time-0']
                 arrivaltimeOneWay = request.form['selected-arrival-time-0']
@@ -418,6 +418,36 @@ def flights():
             for flight in return_flight_details:
                 returnPriceList.append(flight['price'])
             returnPriceList.sort()
+
+            if request.method == "POST":
+                airlineDeparture = request.form['departure-airline-name-0']
+                flightNumDeparture = request.form['departure-flight-number-0']
+                departureTimeInitial = request.form['selected-departure-time-0']
+                arrivalTimeInitial = request.form['selected-arrival-time-0']
+                priceDeparture = request.form['selected-departure-price-0']
+                airlineReturn = request.form['return-airline-name-0']
+                flightNumReturn = request.form['return-flight-number-0']
+                departureTimeRound = request.form['return-departure-time-0']
+                arrivalTimeRound = request.form['return-arrival-time-0']
+                priceReturn = request.form['selected-return-price-0']
+
+                return redirect(url_for("booking",
+                                        profile_Name = session["user"],
+                                        airlineDeparture=airlineDeparture,
+                                        airlineReturn=airlineReturn,
+                                        flightNumDeparture=flightNumDeparture,
+                                        flightNumReturn=flightNumReturn,
+                                        departureTimeInitial=departureTimeInitial,
+                                        departureTimeRound=departureTimeRound,
+                                        arrivalTimeInitial=arrivalTimeInitial,
+                                        arrivalTimeRound=arrivalTimeRound,
+                                        priceDeparture=priceDeparture,
+                                        priceReturn=priceReturn,
+                                        trip=trip,
+                                        passengerNum=passengerNum,
+                                        origin_location=origin_location,
+                                        destination_location=destination_location))
+
             return render_template(
                 "flights.html",
                 profile_Name = session["user"],
@@ -605,6 +635,30 @@ def booking():
             # flight_number = "MH123"
 
             # Process data or save to the database (if needed)
+        elif tripType == "round-trip":
+            dataDeparture = {}
+            dataReturn = {}
+            dataDeparture["airline"] = request.args.get('airlineDeparture')
+            dataDeparture["flightNumber"] = request.args.get('flightNumDeparture')
+            dataDeparture["departureTime"] = str(request.args.get('departureTimeInitial')).strip().split("T")[1]
+            dataDeparture["arrivalTime"] = str(request.args.get('arrivalTimeInitial')).strip().split("T")[1]
+            dataDeparture["date"] = str(request.args.get('departureTimeInitial')).strip().split("T")[0]
+            dataDeparture["price"] = request.args.get('priceDeparture')
+            dataDeparture["passengerNum"] = request.args.get('passengerNum')
+            dataDeparture["originLocation"] = request.args.get('origin_location')
+            dataDeparture["destinationLocation"] = request.args.get('destination_location')
+            
+            dataReturn["airline"] = request.args.get('airlineReturn')
+            dataReturn["flightNumber"] = request.args.get('flightNumReturn')
+            dataReturn["departureTime"] = str(request.args.get('departureTimeRound')).strip().split("T")[1]
+            dataReturn["arrivalTime"] = str(request.args.get('arrivalTimeRound')).strip().split("T")[1]
+            dataReturn["date"] = str(request.args.get('departureTimeRound')).strip().split("T")[0]
+            dataReturn["price"] = request.args.get('priceReturn')
+            dataReturn["passengerNum"] = request.args.get('passengerNum')
+            dataReturn["originLocation"] = request.args.get('origin_location')
+            dataReturn["destinationLocation"] = request.args.get('destination_location')
+            dataList = [dataDeparture, dataReturn]
+            return render_template("booking.html", dataList=dataList, tripType=tripType, profile_Name = session["user"])
         elif tripType == "multi-city":
             try:
                 flightList = json.loads(request.args.get('chosenFlightList'))

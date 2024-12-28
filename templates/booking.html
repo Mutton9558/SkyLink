@@ -146,6 +146,42 @@
                 <button type="submit">Submit Booking</button>
             </form>
         </div>
+    {% elif tripType == "round-trip" %}
+        <div class="container">
+            <h1>Flight Booking</h1>
+            {% for data in dataList %}
+                <form method="POST" action="{{ url_for('booking') }}">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
+
+                    <label for="surname">Surname</label>
+                    <input type="text" id="surname" name="surname" placeholder="Enter your surname" required>
+
+                    <label for="ic_number">IC Number</label>
+                    <input type="text" id="ic_number" name="ic_number" placeholder="Enter your IC number" required>
+
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
+
+                    <div class="preset-values">
+                        <p><strong>Start Location:</strong> {{ data["originLocation"] }}</p>
+                        <p><strong>Destination:</strong> {{ data["destinationLocation"] }}</p>
+                        <p><strong>Departure Time:</strong> {{ data["departureTime"]}}</p>
+                        <p><strong>Estimated Arrival:</strong> {{ data["arrivalTime"]}}</p>
+                        <p><strong>Flight Date:</strong> {{ data["date"] }}</p>
+                        <p><strong>Airline:</strong> {{ data["airline"] }}</p>
+                        <p><strong>Flight Number:</strong> {{ data["flightNumber"] }}</p>
+                    </div>
+
+                    <label for="seat_selection">Choose a Seat</label>
+                    <button type="button" id="choose_seat" onclick="alert('Seat selection feature is under development.')">
+                        Choose Seat
+                    </button>
+
+                    <button type="submit">Submit Booking</button>
+                </form>
+            {% endfor %}
+        </div>
     {% elif tripType == "multi-city" %}
         <div class="container">
             <h1>Flight Booking</h1>
