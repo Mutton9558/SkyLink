@@ -1045,6 +1045,10 @@ body.dark-mode .settings-content {
     background-color: #1e1e1e;
 }
 
+body.dark-mode .settings-option a:hover {
+    color: #ffffff;
+}
+
 body.dark-mode .booking-form {
     background-color: #333333;
     color: #ffffff;
@@ -1052,5 +1056,10 @@ body.dark-mode .booking-form {
 
 body.dark-mode .center-box,
 body.dark-mode details{
+    background-color: #333333;
+}
+
+body.dark-mode #departure-flight-details,
+body.dark-mode #flight-list-container{
     background-color: #333333;
 }
