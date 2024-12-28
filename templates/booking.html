@@ -65,6 +65,53 @@
     </style>
 </head>
 <body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a class="navbar-brand" href="/home">
+                    <img src="{{url_for('static', filename='img/logo.png')}}" height="80" alt="SkyLink" href="/">
+                </a>
+            </div>
+            <div class="useful-links">
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Purchases</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="/check-in">
+                        <p>Check-in</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="#">
+                        <p>Flight Status</p>
+                    </a>
+                </div>
+                <div class="link">
+                    <a class="nav-link" href="/support">
+                        <p>Support</p>
+                    </a>
+                </div>
+                <div class="profile">
+                    <a class="nav-link" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" display="flex" width="25" fill=currentColor class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                        <p class="profile-text">{{ profile_Name }}</p>
+                    </a>
+                    <div class="dropdown">
+                        <div class="dropdown-content">
+                            <a href="/profile">Profile</a>
+                            <a href="/settings">Settings</a>
+                            <a href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
     {% if tripType == "one-way" %}
         <div class="container">
             <h1>Flight Booking</h1>
@@ -82,13 +129,13 @@
                 <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
 
                 <div class="preset-values">
-                    <p><strong>Start Location:</strong> {{ data["originLocation"] }}</p>
-                    <p><strong>Destination:</strong> {{ data["destinationLocation"] }}</p>
-                    <p><strong>Departure Time:</strong> {{ data["departureTime"]}}</p>
-                    <p><strong>Estimated Arrival:</strong> {{ data["arrivalTime"]}}</p>
-                    <p><strong>Flight Date:</strong> {{ data["date"] }}</p>
-                    <p><strong>Airline:</strong> {{ data["airline"] }}</p>
-                    <p><strong>Flight Number:</strong> {{ data["flightNumber"] }}</p>
+                    <p><strong>Start Location:</strong> {{ dataList[0]["originLocation"] }}</p>
+                    <p><strong>Destination:</strong> {{ dataList[0]["destinationLocation"] }}</p>
+                    <p><strong>Departure Time:</strong> {{ dataList[0]["departureTime"]}}</p>
+                    <p><strong>Estimated Arrival:</strong> {{ dataList[0]["arrivalTime"]}}</p>
+                    <p><strong>Flight Date:</strong> {{ dataList[0]["date"] }}</p>
+                    <p><strong>Airline:</strong> {{ dataList[0]["airline"] }}</p>
+                    <p><strong>Flight Number:</strong> {{ dataList[0]["flightNumber"] }}</p>
                 </div>
 
                 <label for="seat_selection">Choose a Seat</label>
@@ -98,6 +145,42 @@
 
                 <button type="submit">Submit Booking</button>
             </form>
+        </div>
+    {% elif tripType == "multi-city" %}
+        <div class="container">
+            <h1>Flight Booking</h1>
+            {% for data in dataList %}
+                <form method="POST" action="{{ url_for('booking') }}">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
+
+                    <label for="surname">Surname</label>
+                    <input type="text" id="surname" name="surname" placeholder="Enter your surname" required>
+
+                    <label for="ic_number">IC Number</label>
+                    <input type="text" id="ic_number" name="ic_number" placeholder="Enter your IC number" required>
+
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
+
+                    <div class="preset-values">
+                        <p><strong>Start Location:</strong> {{ data["originLocation"] }}</p>
+                        <p><strong>Destination:</strong> {{ data["destinationLocation"] }}</p>
+                        <p><strong>Departure Time:</strong> {{ data["departureTime"]}}</p>
+                        <p><strong>Estimated Arrival:</strong> {{ data["arrivalTime"]}}</p>
+                        <p><strong>Flight Date:</strong> {{ data["date"] }}</p>
+                        <p><strong>Airline:</strong> {{ data["airline"] }}</p>
+                        <p><strong>Flight Number:</strong> {{ data["flightNumber"] }}</p>
+                    </div>
+
+                    <label for="seat_selection">Choose a Seat</label>
+                    <button type="button" id="choose_seat" onclick="alert('Seat selection feature is under development.')">
+                        Choose Seat
+                    </button>
+
+                    <button type="submit">Submit Booking</button>
+                </form>
+            {% endfor %}
         </div>
     {% endif %}
 </body>

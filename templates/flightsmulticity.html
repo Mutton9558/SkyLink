@@ -47,7 +47,7 @@
                     <div class="dropdown">
                         <div class="dropdown-content">
                             <a href="/profile">Profile</a>
-                            <a href="#">Settings</a>
+                            <a href="/settings">Settings</a>
                             <a href="/logout">Logout</a>
                         </div>
                     </div>
@@ -126,11 +126,58 @@
     <div id="submit-btn-flights">
         
     </div>
+    <form method="POST" id="finalForm" style="display:none;">
+    </form>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
+        
         document.addEventListener('DOMContentLoaded', function(){
             const multiCityFlightContainer = document.querySelectorAll('.departure-container');
             const selectedFlightContainers = document.querySelectorAll('.selected-flight-multicity');
+            SUBMITBTN = document.querySelector('#submit-btn-flights');
+            const finalForm = document.getElementById('finalForm');
+
+            // Function to create and submit the invisible form
+            function createAndSubmitInvisibleForm(forms) {
+                // Clear the final form's content to avoid duplicate entries
+                finalForm.innerHTML = '';
+
+                // Combine data from all forms and append to the final form
+                forms.forEach((form, index) => {
+                    const formData = new FormData(form);
+                    for (const [key, value] of formData.entries()) {
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = `${key}${index}`;
+                        hiddenInput.value = value;
+                        finalForm.appendChild(hiddenInput);
+                    }
+                });
+
+                // Add CSRF token (if needed)
+                const csrfTokenInput = document.createElement('input');
+                csrfTokenInput.type = 'hidden';
+                csrfTokenInput.name = 'csrf_token';
+                csrfTokenInput.value = '{{ csrf_token() }}';
+                finalForm.appendChild(csrfTokenInput);
+
+                // Log the final form to console for debugging
+                console.log(finalForm);
+
+                // Submit the final form
+                finalForm.submit();
+            }
+
+            function checkForm(FORMELEMENTS) {
+                for (const form of FORMELEMENTS) {
+                    if (form.innerHTML.trim() === "") {
+                        console.log('Form validation failed');
+                        return false;
+                    }
+                }
+                console.log('All forms are valid');
+                return true;
+            }
 
             document.querySelectorAll('.multicity-btn').forEach((button) => {
                 button.addEventListener('click', function(){
@@ -152,7 +199,7 @@
                     selectedFlight.innerHTML = `
                         <div class="selected-flight">
                             <p>Selected Flight: </p>
-                            <form method="POST" id="departure-form">
+                            <form id="departure-form">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <label>Airline: </label>
                                 <input name="depature-airline-name-{{i}}" value="${airlineName}" readonly>
@@ -168,7 +215,7 @@
                             </form>
                         </div>
                     `;
-
+                    const SELECTEDFLIGHTFORMS = document.querySelectorAll('#departure-form');
                     selectedFlight.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
                     const changeFlightButtons = document.querySelectorAll("#change-flight-btn");
@@ -179,8 +226,17 @@
                             parentForBtn.querySelector('.wrapper-2').style.display = 'block';
                             parentForBtn.querySelector('.wrapper-2').classList.remove("hidden-flight-list");
                             parentForBtn.querySelector('.wrapper-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            SUBMITBTN.innerHTML = '';
+                            finalForm.innerHTML = '';
                         });
                     });
+                    
+                    if(checkForm(SELECTEDFLIGHTFORMS)){
+                        SUBMITBTN.innerHTML = '<button id="submitButton" type="submit">Book Flights</button>';
+                        document.getElementById('submitButton').addEventListener('click', function() {
+                            createAndSubmitInvisibleForm(SELECTEDFLIGHTFORMS);
+                        });
+                    };
                 });
             });
         });
