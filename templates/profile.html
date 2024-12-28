@@ -87,7 +87,45 @@
             <h3>Phone Number</h3>
             <p>{{ user.phoneNumber }}</p>
           </div>
-          
+        </div>
+
+        <div class="profile-content">
+          <div class="profile-content-header">
+            <a>Flight Booking History</a>
+            <a>Sign Out</a>
+          </div>
+          <div class="profile-content">
+            <div class="recent-flight-list" id="cont-1">
+              <div id="recent-flight-list-container" class="departure-container">
+                <div id="recent-flight-list-left">
+                  <h3 id="airline">Malaysia Airlines</h3>
+                  <h3 id="flight-number">MH1430</h3>
+                  <div id="recent-flight-date-time">
+                    <div id="flight-date">
+                      <p>Flight Date</p>
+                      <p>30/12/2024</p>
+                    </div>
+                    <div id="recent-flight-times">
+                      <div id="departure-time">
+                        <p>Departure Time</p>
+                        <p>2:50 p.m</p>
+                      </div>
+                      <div id="arrival-time">
+                        <p>Arrival Time</p>
+                        <p>4:10 p.m</p></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="recent-flight-list-right">
+                  <p id="flight-price-text">RM 350</p>
+                  <div id="recent-button-actions">
+                    <button>View ticket</button>
+                    <button>View details</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -100,6 +138,5 @@
           document.body.classList.add('light-mode');
       }
   </script>
-    <script src="{{ url_for('static', filename='settings.js') }}"></script>
   </body>
 </html>
