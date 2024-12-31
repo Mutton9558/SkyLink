@@ -42,6 +42,34 @@ class users(db.Model):
         self.username = username
         self.password = password
 
+class bookings(db.Model):
+    bookingNum = db.Column("bookingNum", db.String(5), primary_key=True, nullable=False, unique=True)
+    firstName = db.Column("firstName", db.String(255), nullable=False, unique=False)
+    surname = db.Column("surname", db.String(255), nullable=False, unique=False)
+    icNum = db.Column("icNum", db.String(12), nullable=False, unique=False)
+    phoneNum = db.Column("phoneNum", db.String(15), nullable=False, unique=False)
+    origin = db.Column("origin", db.String(255), nullable=False, unique=False)
+    destination = db.Column("destination", db.String(255), nullable=False, unique=False)
+    departureTime = db.Column("departureTime", db.String(5), nullable=False)
+    arrivalTime = db.Column("arrivalTime", db.String(5), nullable=False)
+    date = db.Column("date", db.String(12), nullable=False)
+    flightNum = db.Column("flightNum", db.String(7), nullable=False)
+    seatNum = db.Column("seatNum", db.String(4), nullable=False)
+
+    def _init_(self, bookingNum, firstName, surname, icNum, phoneNum, origin, destination, departureTime, arrivalTime, date, flightNum, seatNum):
+        self.bookingNum = bookingNum
+        self.firstName = firstName
+        self.surname = surname
+        self.icNum = icNum
+        self.phoneNum = phoneNum
+        self.origin = origin
+        self.destination = destination
+        self.departureTime = departureTime
+        self.arrivalTime = arrivalTime
+        self.date = date
+        self.flightNum = flightNum
+        self.seatNum = seatNum
+
 token_cache = {
     "access_token": None,
     "expires_at": 0
@@ -603,6 +631,19 @@ def booking():
     if "user" in session and session["user"] != "":
         dataList = []
         tripType = request.args.get('trip')
+        rowTag = {0:"A", 1:"B", 2:"C", 3:"D", 4:"E", 5:"F"}
+        taken_seats = {seat.seatNum for seat in bookings.query.all()}
+
+        quadrants = {
+            "top": {f"{i}-{rowTag[j]}" for i in range(0, 5) for j in range(0, 6)},
+            "left": {f"{i}-{rowTag[j]}" for i in range(0, 10) for j in range(0, 3)},
+            "bottom": {f"{i}-{rowTag[j]}" for i in range(5, 10) for j in range(0, 6)},
+            "right": {f"{i}-{rowTag[j]}" for i in range(0, 10) for j in range(3, 6)},
+        }
+
+        quadrant_taken = {key: len(taken_seats & seats) for key, seats in quadrants.items()}
+        quadrant_taken_json = json.dumps(quadrant_taken)
+
         if tripType == "one-way":
             data = {}
             data["airline"] = request.args.get('airlineOneWay')
@@ -625,7 +666,15 @@ def booking():
                 flash("Booking details captured successfully!", "success")
                 return redirect(url_for("booking"))
             
-            return render_template("booking.html", dataList=dataList, tripType=tripType, profile_Name = session["user"])
+            return render_template(
+                "booking.html",
+                rowDict=rowTag, 
+                taken_seats=taken_seats,
+                quadrant_taken_json=quadrant_taken_json, 
+                dataList=dataList, 
+                tripType=tripType, 
+                profile_Name = session["user"]
+            )
             # Assuming static/preset data for now
             # start_location = "Kuala Lumpur International Airport (KUL)"
             # destination = "Singapore Changi Airport (SIN)"
