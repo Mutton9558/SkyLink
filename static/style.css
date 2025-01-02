@@ -1023,6 +1023,7 @@ body.dark-mode svg,
 body.dark-mode a,
 body.dark-mode h1,
 body.dark-mode h2,
+body.dark-mode h3,
 body.dark-mode label {
     color: var(--text-dark-mode);
 }
