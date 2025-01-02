@@ -652,10 +652,11 @@ def booking():
             data["arrivalTime"] = str(request.args.get('arrivaltimeOneWay')).strip().split("T")[1]
             data["date"] = str(request.args.get('departuretimeOneWay')).strip().split("T")[0]
             data["price"] = request.args.get('priceOneWay')
-            data["passengerNum"] = request.args.get('passengerNum')
             data["originLocation"] = request.args.get('origin_location')
             data["destinationLocation"] = request.args.get('destination_location')
             dataList.append(data)
+
+            passengerNum = int(str(request.args.get('passengerNum'))[0])
 
             if request.method == "POST":
                 first_name = request.form.get("first_name")
@@ -670,8 +671,10 @@ def booking():
                 "booking.html",
                 rowDict=rowTag, 
                 taken_seats=taken_seats,
+                taken_seats_json = json.dumps(list(taken_seats)),
                 quadrant_taken_json=quadrant_taken_json, 
                 dataList=dataList, 
+                passengerNum = passengerNum,
                 tripType=tripType, 
                 profile_Name = session["user"]
             )
@@ -693,7 +696,6 @@ def booking():
             dataDeparture["arrivalTime"] = str(request.args.get('arrivalTimeInitial')).strip().split("T")[1]
             dataDeparture["date"] = str(request.args.get('departureTimeInitial')).strip().split("T")[0]
             dataDeparture["price"] = request.args.get('priceDeparture')
-            dataDeparture["passengerNum"] = request.args.get('passengerNum')
             dataDeparture["originLocation"] = request.args.get('origin_location')
             dataDeparture["destinationLocation"] = request.args.get('destination_location')
             
@@ -703,11 +705,12 @@ def booking():
             dataReturn["arrivalTime"] = str(request.args.get('arrivalTimeRound')).strip().split("T")[1]
             dataReturn["date"] = str(request.args.get('departureTimeRound')).strip().split("T")[0]
             dataReturn["price"] = request.args.get('priceReturn')
-            dataReturn["passengerNum"] = request.args.get('passengerNum')
             dataReturn["originLocation"] = request.args.get('origin_location')
             dataReturn["destinationLocation"] = request.args.get('destination_location')
             dataList = [dataDeparture, dataReturn]
-            return render_template("booking.html", dataList=dataList, tripType=tripType, profile_Name = session["user"])
+
+            passengerNum = int(str(request.args.get('passengerNum'))[0])
+            return render_template("booking.html", dataList=dataList, passengerNum=passengerNum, tripType=tripType, profile_Name = session["user"])
         elif tripType == "multi-city":
             try:
                 flightList = json.loads(request.args.get('chosenFlightList'))
@@ -721,13 +724,14 @@ def booking():
                     data["arrivalTime"] = str(flightList[i]['arrivalTime']).strip().split("T")[1]
                     data["date"] = str(stops[i]["date"]).strip().split("T")[0]
                     data["price"] = flightList[i]['price']
-                    data["passengerNum"] = request.args.get('passengerNum')
                     data["originLocation"] = stops[i]["origin"]
                     data["destinationLocation"] = stops[i]["destination"]
                     dataList.append(data)
+                
+                passengerNum = int(str(request.args.get('passengerNum'))[0])
                 print(dataList)
 
-                return render_template("booking.html", dataList=dataList, tripType=tripType, profile_Name = session["user"])
+                return render_template("booking.html", dataList=dataList, passengerNum=passengerNum, tripType=tripType, profile_Name = session["user"])
             except Exception as e:
                 print(f"{e}")
         # return redirect(url_for("home"))   
