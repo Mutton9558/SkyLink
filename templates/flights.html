@@ -60,6 +60,7 @@
             <h1>Select your <span id="type-of-flight">DEPARTURE FLIGHT</span></h1>
             <h2>From <span id="location">{{ origin_location|safe }}</span> to <span id="location">{{destination_location|safe}}</span></h2>
             <p>{{departure_day|safe}}, {{departure_date|safe}}</p>
+            <p>All prices shown are after discount</p>
         </div>
         <div class="flight-details">
             <div id="departure-flight-details">
@@ -110,6 +111,7 @@
                 <h1>Select your <span id="type-of-flight">RETURN FLIGHT</span></h1>
                 <h2>From <span id="location">{{ destination_location|safe }}</span> to <span id="location">{{origin_location|safe}}</span></h2>
                 <p>{{return_day|safe}}, {{return_date|safe}}</p>
+                <p>All prices shown are after discount</p>
             </div>
             <div class="flight-details">
                 <div id="departure-flight-details">

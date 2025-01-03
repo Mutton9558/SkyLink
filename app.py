@@ -189,6 +189,7 @@ def home():
                     return_date = "None"
                 passengers = request.form.get('number-of-passengers')
                 promo_code = request.form.get('promo-code')
+                print(promo_code)
                 stops = []
                 for key in request.form:
                     if key.startswith('origin-location') or key.startswith('destination-location'):
@@ -200,27 +201,35 @@ def home():
                 originLocations = ",".join(value for stop in stops for key, value in stop.items() if key.startswith('origin-location'))
                 destinationLocations = ",".join(value2 for stop2 in stops for key2, value2 in stop2.items() if key2.startswith('destination-location'))
                 departures = ",".join(value3 for date in departureDates for key3, value3 in date.items() if key3.startswith('departure-date'))
-                if selected_trip != "multi-city":
-                    return redirect(url_for(
-                        "flights",
-                        trip=selected_trip,
-                        return_date=return_date,
-                        passengers=passengers,
-                        promo_code=promo_code,
-                        origin_locations=originLocations,
-                        destination_locations=destinationLocations,
-                        departure_dates=departures
-                    ))
+                if (("Sultan Haji Ahmad Shah (KUA)" in destinationLocations.split(',') and promo_code=="KUANTAN20")  or ("Sultan Mahmud Airport (TGG)" in destinationLocations.split(',') and promo_code=="GANU10")) or (promo_code == ""):
+                    if selected_trip != "multi-city":
+                        return redirect(url_for(
+                            "flights",
+                            trip=selected_trip,
+                            return_date=return_date,
+                            passengers=passengers,
+                            promo_code=promo_code,
+                            origin_locations=originLocations,
+                            destination_locations=destinationLocations,
+                            departure_dates=departures
+                        ))
+                    else:
+                        return redirect(url_for(
+                            "flightsmulticity",
+                            trip=selected_trip,
+                            passengers=passengers,
+                            promo_code=promo_code,
+                            origin_locations=originLocations,
+                            destination_locations=destinationLocations,
+                            departure_dates=departures
+                        ))
                 else:
-                    return redirect(url_for(
-                        "flightsmulticity",
-                        trip=selected_trip,
-                        passengers=passengers,
-                        promo_code=promo_code,
-                        origin_locations=originLocations,
-                        destination_locations=destinationLocations,
-                        departure_dates=departures
-                    ))
+                    if promo_code == "KUANTAN20" or promo_code == "GANU10":
+                        flash("Promo Code cannot be used for this destination!")
+                        return redirect(url_for("home"))
+                    else:
+                        flash("Invalid Promo Code")
+                        return redirect(url_for("home"))
         return render_template("index.html", profile_Name = session["user"], options=options)
     else:
         return redirect(url_for("register"))
@@ -367,20 +376,15 @@ def flights():
             passengerNum = int(passengers[0])
             flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
             flight_details = extract_flight_details(flights)
+            if flight_details == []:
+                flash(f"Sorry, there are no flights for this trip. ({origin_location} to {destination_location})")
+                return redirect(url_for("home"))
             priceList = []
-            # departureTimeList = []
-            # arrivalTimeList = []
-            # flightNumList = []
-            # airlineList = []
-
             for flight in flight_details:
-            #     print(f"Flight: {flight['flight_number']}, Airline: {flight['airline']}, "
-            #     f"Departure: {flight['departure_time']}, Arrival: {flight['arrival_time']}, Price: {flight['price']}")
-            #     flightNumList.append(flight['flight_number'])
-            #     airlineList.append(flight['airline'])
-            #     departureTimeList.append(flight['departure_time'])
-            #     arrivalTimeList.append(flight['arrival_time'])
-            
+                if promo_code == "KUANTAN20" and destinationCode == "KUA":
+                    flight['price'] = flight['price']*0.8
+                if promo_code == "GANU10" and destinationCode == "TGG":
+                    flight['price'] = flight['price']*0.9
                 priceList.append(flight['price'])
             priceList.sort()
 
@@ -433,17 +437,31 @@ def flights():
 
             departure_flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
             flight_details = extract_flight_details(departure_flights)
+            if flight_details == []:
+                flash(f"Sorry, there are no flights for this trip. ({origin_location} to {destination_location})")
+                return redirect(url_for("home"))
 
             priceList = []
             for flight in flight_details:
+                if promo_code == "KUANTAN20" and destinationCode == "KUA":
+                    flight['price'] = flight['price']*0.8
+                if promo_code == "GANU10" and destinationCode == "TGG":
+                    flight['price'] = flight['price']*0.9
                 priceList.append(flight['price'])
             priceList.sort()
             
             return_flights = get_flights(destinationCode, originCode, passengerNum, return_date, access_token)
             return_flight_details = extract_flight_details(return_flights)
+            if return_flight_details == []:
+                flash(f"Sorry, there are no flights for this trip. ({destination_location} to {origin_location})")
+                return redirect(url_for("home"))
             
             returnPriceList = []
             for flight in return_flight_details:
+                if promo_code == "KUANTAN20" and originCode == "KUA":
+                    flight['price'] = flight['price']*0.8
+                if promo_code == "GANU10" and originCode == "TGG":
+                    flight['price'] = flight['price']*0.9
                 returnPriceList.append(flight['price'])
             returnPriceList.sort()
 
@@ -529,8 +547,15 @@ def flightsmulticity():
 
             priceList = []
             cheapestFlights = []
-            for detail in flight_details:
-                for item in detail:
+            for detail in range(0, len(flight_details)):
+                if flight_details[detail] == "":
+                    flash(f"There are no flights for this trip. ({stops[detail]['origin']} to {stops[detail]['destination']})")
+                    return redirect(url_for("home"))
+                for item in flight_details[detail]:
+                    if promo_code == "KUANTAN20" and stops[detail]['destination'][-4:-1] == "KUA":
+                        item['price'] = item['price']*0.8
+                    if promo_code == "GANU10" and stops[detail]['destination'][-4:-1] == "TGG":
+                        item['price'] = item['price']*0.9
                     priceList.append(item['price'])
                 priceList.sort()
                 cheapestFlights.append(priceList[0])
