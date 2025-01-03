@@ -223,6 +223,7 @@
                     </button>
                     <div id="seating-form">
                         <div id="seats">
+                            <h3 id="seat-form-header">Choose your seat:</h3>
                             <button type="button" id="closeBtn" onclick="closeForm(event)"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAmdJREFUSEu1lr9uE0EQxn+TuKJLn2dA4g2QFQTCsqCgsEBKSQsFD0QRUkQIWYiOBoGUxijwKoCFiSiG+7N33r3dub2NxBXWeXdv/nzzfTMrDB8BtPmJtvqFaDtx3i355vxT9XviCQ3t/2UCSmcRrnoBgWXPjzob3uBADrQoGwtqK4jovCBoslC+rxbq0egycNhMGNkRpLRqUaA5SA2aeuSyLSTQ3JP+RpG3IBfRZiiJQHQFVTEcu7K3ho4E1iq8QPk+qhjhHspL4DHwdyynXMYHwDfgNvADZA56ZZBxWZ17B8yAD8ByjLWB45DuvSROgdeO+z+BE2DTG20/WgBrhBnKtcBS4WNSMJ0sp9RM4FT3zrcI88rZxkHZOm0zvQYeAJ86mM2yRxuJhaYhCCuUc5f51sF+DFyAzATdKTz0ndaopJtJvV72PAXeuE+2wC3gAOQP6P0Kic9js8V3NaFzRRRZAWcghy6bHcgJ6GVJDpMayCDSlTaOOXTrO0e4y47t6bqGqyarjXn8rMm2teFD/Ru0JtWXpIQSkcRQ2zSvIT4XEKV22mj6GOEClRloxOiQXCHRcg2kmwmhnGAOsnGoLEDWoGVyGjKt7b0BNkYDCU6ZWvabkl++nJzqlvkVuAP8Arkr6FV8JWvM+y3zfdVqH42x3JvHBgNUjgR9W9X1levbwQQJwBEWKM+BJ/GQCMmTy3jkepJgodUfXerhLChR/cjozms3peNuYvTXlCmhW6XxSRcZ7nO/2Z0rLYVwUk6IvejqM1oZP8Hm3TWNaN28c1nmLejKiTKB1QVG7XY7MPKf7tWZ8jZB/AM5t/Em43PHggAAAABJRU5ErkJggg=="/></button>
                             <div id="column-left-seats">
                                 {% for i in range(0, 10) %}
@@ -265,37 +266,40 @@
     {% elif tripType == "round-trip" %}
         <div class="container">
             <h1>Flight Booking</h1>
-            {% for data in dataList %}
-                <form method="POST" action="{{ url_for('booking') }}">
-                    <label for="first_name">First Name</label>
-                    <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
+            {% for i in range(1, passengerNum+1) %}
+                <h1>Passenger {{ i }}</h1>
+                {% for data in dataList %}
+                    <form method="POST" action="{{ url_for('booking') }}">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
 
-                    <label for="surname">Surname</label>
-                    <input type="text" id="surname" name="surname" placeholder="Enter your surname" required>
+                        <label for="surname">Surname</label>
+                        <input type="text" id="surname" name="surname" placeholder="Enter your surname" required>
 
-                    <label for="ic_number">IC Number</label>
-                    <input type="text" id="ic_number" name="ic_number" placeholder="Enter your IC number" required>
+                        <label for="ic_number">IC Number</label>
+                        <input type="text" id="ic_number" name="ic_number" placeholder="Enter your IC number" required>
 
-                    <label for="phone_number">Phone Number</label>
-                    <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
+                        <label for="phone_number">Phone Number</label>
+                        <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
 
-                    <div class="preset-values">
-                        <p><strong>Start Location:</strong> {{ data["originLocation"] }}</p>
-                        <p><strong>Destination:</strong> {{ data["destinationLocation"] }}</p>
-                        <p><strong>Departure Time:</strong> {{ data["departureTime"]}}</p>
-                        <p><strong>Estimated Arrival:</strong> {{ data["arrivalTime"]}}</p>
-                        <p><strong>Flight Date:</strong> {{ data["date"] }}</p>
-                        <p><strong>Airline:</strong> {{ data["airline"] }}</p>
-                        <p><strong>Flight Number:</strong> {{ data["flightNumber"] }}</p>
-                    </div>
+                        <div class="preset-values">
+                            <p><strong>Start Location:</strong> {{ data["originLocation"] }}</p>
+                            <p><strong>Destination:</strong> {{ data["destinationLocation"] }}</p>
+                            <p><strong>Departure Time:</strong> {{ data["departureTime"]}}</p>
+                            <p><strong>Estimated Arrival:</strong> {{ data["arrivalTime"]}}</p>
+                            <p><strong>Flight Date:</strong> {{ data["date"] }}</p>
+                            <p><strong>Airline:</strong> {{ data["airline"] }}</p>
+                            <p><strong>Flight Number:</strong> {{ data["flightNumber"] }}</p>
+                        </div>
 
-                    <label for="seat_selection">Choose a Seat</label>
-                    <button type="button" id="choose_seat" onclick="alert('Seat selection feature is under development.')">
-                        Choose Seat
-                    </button>
+                        <label for="seat_selection">Choose a Seat</label>
+                        <button type="button" id="choose_seat" onclick="alert('Seat selection feature is under development.')">
+                            Choose Seat
+                        </button>
 
-                    <button type="submit">Submit Booking</button>
-                </form>
+                        <button type="submit">Submit Booking</button>
+                    </form>
+                {% endfor %}
             {% endfor %}
         </div>
     {% elif tripType == "multi-city" %}

@@ -67,6 +67,13 @@
             <button class="next">❯</button>
         </div>
         <div class="booking-form">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <p style="color: red;" id="flashed-msg">*{{ msg }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             <form method="POST" id="select-flight-form" name="select-flight-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div id="container">
@@ -135,7 +142,7 @@
                 
                 <div class="actions">
                     <a class="add-stops-button" id="addFlight">+ Add Stops</a>
-                    <input type="text" placeholder="Add promo code">
+                    <input type="text" name="promo-code" placeholder="Add promo code">
                     <button type="submit">Search Flights</button>
                 </div>
             </form>
