@@ -139,6 +139,7 @@
 #recent-flight-times{
   margin: 0;
   display: flex;
+  margin-bottom: 1rem;
 }
 
 #arrival-time,
@@ -174,6 +175,91 @@
   transition: background-color 0.5s ease, color 0.5s ease;
 }
 
+.flight-details {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  right: 0;
+  margin: 0;
+  width: 40%;
+  height: 100%;
+  background-color: var(--background-light);
+  color: var(--text-light-mode);
+  z-index: 1000;
+  box-shadow: -2.5px 0 5px var(--background-dark);
+  border-radius: 1em;
+}
+
+.hidden {
+  display: none;
+}
+
+.transparent-button{
+  background-color: transparent;
+  cursor: pointer;
+  color: var(--text-light-mode);
+  border: none;
+  font-size: large;
+}
+
+.first-name,
+.last-name{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.first-name h2, .last-name h2{
+  font-size: medium;
+}
+
+.first-name p, .last-name p{
+  margin-left: 1em;
+  color: var(--text-light-mode);
+}
+
+#selected-seat{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cancel-flight-button{
+  display:flex;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  bottom: 1rem;
+  width: 35%;
+  height: 7.5%;
+  background-color: rgb(230, 65, 65);
+  color: white;
+  border: 5px solid white;
+  border-radius: 1em;
+  cursor: pointer;
+  transition: background-color 0.5s ease;
+}
+
+.cancel-flight-button:hover{
+  background-color: rgb(255, 73, 73);
+  font-weight: bold;
+}
+
 body.dark-mode .user-profile{
   background-color: #333333;
+}
+
+body.dark-mode #recent-flight-list-container{
+  background-color: #1e1e1e;
+  box-shadow: 0 0 5px var(--background-light);
+}
+
+body.dark-mode #flight-details{
+  background-color: #1e1e1e;
+}
+
+body.dark-mode .transparent-button{
+  color: var(--text-dark-mode);
+  
 }

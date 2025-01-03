@@ -1,68 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
-    <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='profile.css') }}"
+    />
+    <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}" />
     <title>Profile | SkyLink</title>
   </head>
   <body>
     <header class="header">
       <div class="header-container">
-          <div class="logo">
-              <a class="navbar-brand" href="/home">
-                  <img src="{{url_for('static', filename='img/logo.png')}}" height="80" alt="SkyLink" href="/">
-              </a>
+        <div class="logo">
+          <a class="navbar-brand" href="/home">
+            <img
+              src="{{url_for('static', filename='img/logo.png')}}"
+              height="80"
+              alt="SkyLink"
+              href="/"
+            />
+          </a>
+        </div>
+        <div class="useful-links">
+          <div class="link">
+            <a class="nav-link" href="#">
+              <p>Purchases</p>
+            </a>
           </div>
-          <div class="useful-links">
-              <div class="link">
-                  <a class="nav-link" href="#">
-                      <p>Purchases</p>
-                  </a>
-              </div>
-              <div class="link">
-                  <a class="nav-link" href="/check-in">
-                      <p>Check-in</p>
-                  </a>
-              </div>
-              <div class="link">
-                  <a class="nav-link" href="#">
-                      <p>Flight Status</p>
-                  </a>
-              </div>
-              <div class="link">
-                  <a class="nav-link" href="/support">
-                      <p>Support</p>
-                  </a>
-              </div>
-              <div class="profile">
-                  <a class="nav-link" href="#">
-                      <svg xmlns="http://www.w3.org/2000/svg" display="flex" width="25" fill=currentColor class="bi bi-person-circle" viewBox="0 0 16 16">
-                          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                      </svg>
-                      <p class="profile-text">{{ profile_Name }}</p>
-                  </a>
-                  <div class="dropdown">
-                      <div class="dropdown-content">
-                          <a href="/profile">Profile</a>
-                          <a href="/settings">Settings</a>
-                          <a href="/logout">Logout</a>
-                      </div>
-                  </div>
-              </div>
+          <div class="link">
+            <a class="nav-link" href="/check-in">
+              <p>Check-in</p>
+            </a>
           </div>
+          <div class="link">
+            <a class="nav-link" href="#">
+              <p>Flight Status</p>
+            </a>
+          </div>
+          <div class="link">
+            <a class="nav-link" href="/support">
+              <p>Support</p>
+            </a>
+          </div>
+          <div class="profile">
+            <a class="nav-link" href="#">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                display="flex"
+                width="25"
+                fill="currentColor"
+                class="bi bi-person-circle"
+                viewBox="0 0 16 16"
+              >
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                <path
+                  fill-rule="evenodd"
+                  d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+                />
+              </svg>
+              <p class="profile-text">{{ profile_Name }}</p>
+            </a>
+            <div class="dropdown">
+              <div class="dropdown-content">
+                <a href="/profile">Profile</a>
+                <a href="/settings">Settings</a>
+                <a href="/logout">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
-  
+
     <main id="user-profile-main">
       <div class="user-profile">
         <div class="user-profile-img">
           <div class="user-background">
-            <img src="{{ url_for('static', filename='img/profile-background.png') }}" alt="Profile Background" id="profile-background">
-            <img src="{{ url_for('static', filename='img/profile-picture.png') }}" alt="Profile Picture" id="profile-picture">
+            <img
+              src="{{ url_for('static', filename='img/profile-background.png') }}"
+              alt="Profile Background"
+              id="profile-background"
+            />
+            <img
+              src="{{ url_for('static', filename='img/profile-picture.png') }}"
+              alt="Profile Picture"
+              id="profile-picture"
+            />
           </div>
         </div>
 
@@ -90,13 +119,16 @@
         </div>
 
         <div class="profile-content">
-          <div class="profile-content-header">
+          <div class="profile-content-header" style="justify-content: space-between;">
             <a>Flight Booking History</a>
             <a>Sign Out</a>
           </div>
           <div class="profile-content">
             <div class="recent-flight-list" id="cont-1">
-              <div id="recent-flight-list-container" class="departure-container">
+              <div
+                id="recent-flight-list-container"
+                class="departure-container"
+              >
                 <div id="recent-flight-list-left">
                   <h3 id="airline">Malaysia Airlines</h3>
                   <h3 id="flight-number">MH1430</h3>
@@ -112,15 +144,18 @@
                       </div>
                       <div id="arrival-time">
                         <p>Arrival Time</p>
-                        <p>4:10 p.m</p></div>
+                        <p>4:10 p.m</p>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div id="recent-flight-list-right">
                   <p id="flight-price-text">RM 350</p>
                   <div id="recent-button-actions">
-                    <button>View ticket</button>
-                    <button>View details</button>
+                    <button id="ticket-view">View ticket</button>
+                    <button id="flight-info" onclick="showDetails()">
+                      View details
+                    </button>
                   </div>
                 </div>
               </div>
@@ -129,14 +164,65 @@
         </div>
       </div>
     </main>
+
+    <div id="flight-details" class="flight-details hidden">
+      <button
+        onclick="showDetails()"
+        class="transparent-button"
+        style="position: absolute; top: 1rem; left: 1rem"
+      >
+        X Close
+      </button>
+      <div class="flight-info" style="width: 85%; position: absolute; top: 3em;">
+        <h1>Flight Details</h1>
+        <h3 id="airline">Malaysia Airlines</h3>
+        <h3 id="flight-number">MH1430</h3>
+        <div id="recent-flight-date-time">
+          <div id="flight-date" style="align-items: flex-start;">
+            <p>Flight Date</p>
+            <p>30/12/2024</p>
+          </div>
+          <div id="recent-flight-times" style="display: flex; justify-content: space-between;">
+            <div id="departure-time">
+              <p>Departure Time</p>
+              <p>2:50 p.m</p>
+            </div>
+            <div id="arrival-time">
+              <p>Arrival Time</p>
+              <p>4:10 p.m</p>
+            </div>
+          </div>
+
+          <div id="selected-seat">
+            <p>Selected Seat</p>
+            <p>Seat 1A</p>
+          </div>
+        </div>
+        <div class="passengers-details" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div class="first-name">
+          <h2>First Name</h2>
+          <p>John</p>
+        </div>
+        <div class="last-name">
+          <h2>Last Name</h2>
+          <p>Doe</p>
+        </div>
+        <button class="cancel-flight-button">Cancel Flight</button>
+      </div>
+    </div>
+
     <script>
-      const theme = localStorage.getItem('theme');
-      if (theme === 'dark') {
-          document.body.classList.add('dark-mode');
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark") {
+        document.body.classList.add("dark-mode");
+      } else if (theme === "light") {
+        document.body.classList.add("light-mode");
       }
-      else if (theme === 'light') {
-          document.body.classList.add('light-mode');
+
+      function showDetails() {
+        const flightDetails = document.getElementById("flight-details");
+        flightDetails.classList.toggle("hidden");
       }
-  </script>
+    </script>
   </body>
 </html>
