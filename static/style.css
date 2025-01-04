@@ -215,19 +215,14 @@ body{
     margin-bottom: 20px;
 }
   
-.departure p{
+.departure p,
+.return p{
     margin: 0 0 5px 0;
     font-size: small;
 }
 
 .return {
     display: block;
-    margin: 0 0 5px 0;
-}
-
-.return p{
-    margin: 0 0 5px 0;
-    font-size: small;
 }
 
 .fields {
@@ -239,10 +234,10 @@ body{
   
 .fields input,
 .fields select {
-    flex: 1;
     padding: 0 10px 0 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    height: 2em;
 }
 
 .duplicateFields {
@@ -254,10 +249,10 @@ body{
   
 .duplicateFields input,
 .duplicateFields select {
-    flex: 1;
     padding: 0 10px 0 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    height: 2em;
 }
 
 .duplicateFields .departure{
@@ -751,6 +746,22 @@ footer{
         width: 20rem;
     }
 
+    .carousel{
+        width: 500px;
+        height: fit-content;
+        top: 3em;
+        right: 0;
+        left: 0;
+    }
+
+    .booking-form{
+        margin: 10em auto 2rem auto;
+    }
+
+    .fields{
+        flex-direction: column;
+    }
+
     #image1{
         background-image: url("__url_for('static',filename='img/promo1(500).png')");
     }
@@ -758,11 +769,38 @@ footer{
     #image2{
         background-image: url("__url_for('static',filename='img/promo2(500).png')");
     }
+
+    .title-profile{
+        left: 1em;
+        top: 1.5em;
+    }
+
+    .settings-content{
+        width: 100vw;
+        left: 0;
+        top: 7em;
+    }
 }
 
 @media only screen and (min-width: 501px) and (max-width: 650px) {
     #cont-login{
         width: 25rem;
+    }
+
+    .carousel{
+        width: 650px;
+        height: fit-content;
+        top: 3em;
+        right: 0;
+        left: 0;
+    }
+
+    .booking-form{
+        margin: 13em auto auto;
+    }
+
+    .fields{
+        flex-direction: column;
     }
 
     #image1{
@@ -773,8 +811,15 @@ footer{
         background-image: url("__url_for('static',filename='img/promo2(650).png')");
     }
 
-    .footer{
-        width: 100%;
+    .title-profile{
+        left: 1em;
+        top: 1.5em;
+    }
+
+    .settings-content{
+        width: 100vw;
+        left: 0;
+        top: 7em;
     }
 }
 

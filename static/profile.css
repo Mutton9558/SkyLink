@@ -9,7 +9,7 @@
 .user-profile{
   background-color: white;
   width: 65em;
-  position: absolute;
+  position: relative;
   left: 10em;
   top: 6em;
   border-radius: 1em;
@@ -22,11 +22,12 @@
 }
 
 #profile-picture{
-  position: absolute;
-  top: 15em;
-  right: 55.5em;
-  width: 8em;
-  margin: 1em;
+  position: relative;
+  top: -5em;
+  right: 0;
+  width: 15%;
+  height: auto;
+  margin-left: 1em;
   
 }
 
@@ -35,6 +36,8 @@
   flex-direction: row;
   justify-content: space-between;
   margin: 1em;
+  position: relative;
+  top: -5em;
 }
 
 .name-username h1, p{
@@ -48,7 +51,8 @@
 .personal-info{
   display: flex;
   flex-direction: row;
-  
+  position: relative;
+  top: -5em;
 }
 
 .personal-info-details{
@@ -83,17 +87,21 @@
 }
 
 .profile-content{
-  border-top: 1px black solid;
+  position: relative;
+  top: -5em;
 }
 
 .profile-content-header{
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  border-top: 1px black solid;
+  border-bottom: 1px black solid;
   margin: 0.5em;
 }
 
 .profile-content-header a{
-  padding: 0.5em;
+  padding: 0.75em;
 }
 
 .profile-content-header :hover{
@@ -262,4 +270,50 @@ body.dark-mode #flight-details{
 body.dark-mode .transparent-button{
   color: var(--text-dark-mode);
   
+}
+
+@media only screen and (max-width: 500px) {
+  .user-profile{
+    width: 100%;
+    left: 0;
+    top: 5em;
+  }
+
+  #profile-background{
+    width: 450px;
+  }
+
+  #profile-picture{
+    width: 15%;
+  }
+
+  .flight-details{
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 501px) and (max-width: 650px) {
+  .user-profile{
+    width: 100%;
+    left: 0;
+    top: 5em;
+  }
+
+  #profile-background{
+    width: 95%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  #profile-picture{
+    width: 20%;
+  }
+
+  .flight-details{
+    width: 100%;
+  }
+
+  #recent-flight-list-container{
+    width: 95%;
+  }
 }
