@@ -735,7 +735,17 @@ def booking():
             dataList = [dataDeparture, dataReturn]
 
             passengerNum = int(str(request.args.get('passengerNum'))[0])
-            return render_template("booking.html", dataList=dataList, passengerNum=passengerNum, tripType=tripType, profile_Name = session["user"])
+            return render_template(
+                "booking.html", 
+                rowDict=rowTag, 
+                taken_seats=taken_seats,
+                taken_seats_json = json.dumps(list(taken_seats)),
+                quadrant_taken_json=quadrant_taken_json,
+                dataList=dataList, 
+                passengerNum=passengerNum, 
+                tripType=tripType, 
+                profile_Name = session["user"]
+                )
         elif tripType == "multi-city":
             try:
                 flightList = json.loads(request.args.get('chosenFlightList'))
@@ -756,7 +766,17 @@ def booking():
                 passengerNum = int(str(request.args.get('passengerNum'))[0])
                 print(dataList)
 
-                return render_template("booking.html", dataList=dataList, passengerNum=passengerNum, tripType=tripType, profile_Name = session["user"])
+                return render_template(
+                "booking.html",
+                rowDict=rowTag, 
+                taken_seats=taken_seats,
+                taken_seats_json = json.dumps(list(taken_seats)),
+                quadrant_taken_json=quadrant_taken_json,  
+                dataList=dataList, 
+                passengerNum=passengerNum, 
+                tripType=tripType, 
+                profile_Name = session["user"]
+                )
             except Exception as e:
                 print(f"{e}")
         # return redirect(url_for("home"))   
