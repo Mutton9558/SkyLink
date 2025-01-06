@@ -76,11 +76,9 @@ token_cache = {
 }
 
 def get_access_token(client_id, client_secret):
-    # Check if the cached token is still valid
     if token_cache["access_token"] and time.time() < token_cache["expires_at"]:
         return token_cache["access_token"]
-
-    # fetch a new token
+    
     url = "https://test.api.amadeus.com/v1/security/oauth2/token"
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     data = {
@@ -92,10 +90,9 @@ def get_access_token(client_id, client_secret):
     response = requests.post(url, headers=headers, data=data)
     if response.status_code == 200:
         token_data = response.json()
-        # Cache the token and its expiration time
         token_cache["access_token"] = token_data.get("access_token")
-        expires_in = token_data.get("expires_in", 0)  # Expiration time in seconds
-        token_cache["expires_at"] = time.time() + expires_in - 60  # Refresh slightly before expiry
+        expires_in = token_data.get("expires_in", 0)  # Time in seconds
+        token_cache["expires_at"] = time.time() + expires_in - 60  # Refresh before expiry
         return token_cache["access_token"]
     else:
         raise Exception(f"Failed to authenticate: {response.status_code}, {response.text}")
@@ -438,9 +435,7 @@ def flights():
             passengerNum = int(passengers[0])
 
             departure_flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
-            print(departure_flights)
             flight_details = extract_flight_details(departure_flights)
-            print(flight_details)
 
             if flight_details == [] or flight_details == "":
                 flash(f"Sorry, there are no flights for this trip. ({origin_location} to {destination_location})")
@@ -739,8 +734,8 @@ def booking():
             dataReturn["arrivalTime"] = str(request.args.get('arrivalTimeRound')).strip().split("T")[1]
             dataReturn["date"] = str(request.args.get('departureTimeRound')).strip().split("T")[0]
             dataReturn["price"] = request.args.get('priceReturn')
-            dataReturn["originLocation"] = request.args.get('origin_location')
-            dataReturn["destinationLocation"] = request.args.get('destination_location')
+            dataReturn["originLocation"] = request.args.get('destination_location')
+            dataReturn["destinationLocation"] = request.args.get('origin_location')
             dataList = [dataDeparture, dataReturn]
 
             passengerNum = int(str(request.args.get('passengerNum'))[0])
