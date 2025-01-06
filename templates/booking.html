@@ -99,7 +99,7 @@
 
 
         #column-left-seats, #column-right-seats{
-            margin-top: 1rem;
+            margin-top: 2.8rem;
             width: 50%;
             display: flex;
             justify-content: center;
@@ -138,6 +138,12 @@
             display: flex;
             flex-direction: row;
             justify-content: flex-end;
+        }
+
+        #seat-form-header{
+            position: absolute;
+            top: 0;
+            left: 35%;
         }
     </style>    
 </head>
@@ -269,7 +275,7 @@
             {% for i in range(1, passengerNum+1) %}
                 <h1>Passenger {{ i }}</h1>
                 {% for data in dataList %}
-                    <form method="POST" action="{{ url_for('booking') }}">
+                    <form method="POST" id="booking-form" action="{{ url_for('booking') }}">
                         <label for="first_name">First Name</label>
                         <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
 
@@ -293,10 +299,47 @@
                         </div>
 
                         <label for="seat_selection">Choose a Seat</label>
-                        <button type="button" id="choose_seat" onclick="alert('Seat selection feature is under development.')">
+                        <button type="button" id="choose_seat" onclick="showForm(event)">
                             Choose Seat
                         </button>
-
+                        <div id="seating-form">
+                            <div id="seats">
+                                <h3 id="seat-form-header">Choose your seat:</h3>
+                                <button type="button" id="closeBtn" onclick="closeForm(event)"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAmdJREFUSEu1lr9uE0EQxn+TuKJLn2dA4g2QFQTCsqCgsEBKSQsFD0QRUkQIWYiOBoGUxijwKoCFiSiG+7N33r3dub2NxBXWeXdv/nzzfTMrDB8BtPmJtvqFaDtx3i355vxT9XviCQ3t/2UCSmcRrnoBgWXPjzob3uBADrQoGwtqK4jovCBoslC+rxbq0egycNhMGNkRpLRqUaA5SA2aeuSyLSTQ3JP+RpG3IBfRZiiJQHQFVTEcu7K3ho4E1iq8QPk+qhjhHspL4DHwdyynXMYHwDfgNvADZA56ZZBxWZ17B8yAD8ByjLWB45DuvSROgdeO+z+BE2DTG20/WgBrhBnKtcBS4WNSMJ0sp9RM4FT3zrcI88rZxkHZOm0zvQYeAJ86mM2yRxuJhaYhCCuUc5f51sF+DFyAzATdKTz0ndaopJtJvV72PAXeuE+2wC3gAOQP6P0Kic9js8V3NaFzRRRZAWcghy6bHcgJ6GVJDpMayCDSlTaOOXTrO0e4y47t6bqGqyarjXn8rMm2teFD/Ru0JtWXpIQSkcRQ2zSvIT4XEKV22mj6GOEClRloxOiQXCHRcg2kmwmhnGAOsnGoLEDWoGVyGjKt7b0BNkYDCU6ZWvabkl++nJzqlvkVuAP8Arkr6FV8JWvM+y3zfdVqH42x3JvHBgNUjgR9W9X1levbwQQJwBEWKM+BJ/GQCMmTy3jkepJgodUfXerhLChR/cjozms3peNuYvTXlCmhW6XxSRcZ7nO/2Z0rLYVwUk6IvejqM1oZP8Hm3TWNaN28c1nmLejKiTKB1QVG7XY7MPKf7tWZ8jZB/AM5t/Em43PHggAAAABJRU5ErkJggg=="/></button>
+                                <div id="column-left-seats">
+                                    {% for i in range(0, 10) %}
+                                        <div id="row-left-seats">
+                                            {% for j in range(0, 3) %}
+                                                {% set seat_id = i ~ '-' ~ rowDict[j] %}
+                                                <!-- onclick="sendId('{{ seat_id }}')" -->
+                                                {% if seat_id in taken_seats %}
+                                                    <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn taken">{{ seat_id }}</button>
+                                                {% else %}
+                                                    <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn">{{ seat_id }}</button>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div id="column-right-seats">
+                                    {% for i in range(0, 10) %}
+                                        <div id="row-right-seats">
+                                            {% for j in range(3, 6) %}
+                                                {% set seat_id = i ~ '-' ~ rowDict[j] %}
+                                                <!-- onclick="sendId('{{ seat_id }}')" -->
+                                                {% if seat_id in taken_seats %}
+                                                    <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn taken">{{ seat_id }}</button>
+                                                {% else %}
+                                                    <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn">{{ seat_id }}</button>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="seat-input" name="chosen-seat">
+                        <p id="chosen-seat-text"></p>
                         <button type="submit">Submit Booking</button>
                     </form>
                 {% endfor %}
@@ -306,7 +349,7 @@
         <div class="container">
             <h1>Flight Booking</h1>
             {% for data in dataList %}
-                <form method="POST" action="{{ url_for('booking') }}">
+                <form method="POST" id="booking-form" action="{{ url_for('booking') }}">
                     <label for="first_name">First Name</label>
                     <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
 
@@ -330,10 +373,47 @@
                     </div>
 
                     <label for="seat_selection">Choose a Seat</label>
-                    <button type="button" id="choose_seat" onclick="alert('Seat selection feature is under development.')">
+                    <button type="button" id="choose_seat" onclick="showForm(event)">
                         Choose Seat
                     </button>
-
+                    <div id="seating-form">
+                        <div id="seats">
+                            <h3 id="seat-form-header">Choose your seat:</h3>
+                            <button type="button" id="closeBtn" onclick="closeForm(event)"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAmdJREFUSEu1lr9uE0EQxn+TuKJLn2dA4g2QFQTCsqCgsEBKSQsFD0QRUkQIWYiOBoGUxijwKoCFiSiG+7N33r3dub2NxBXWeXdv/nzzfTMrDB8BtPmJtvqFaDtx3i355vxT9XviCQ3t/2UCSmcRrnoBgWXPjzob3uBADrQoGwtqK4jovCBoslC+rxbq0egycNhMGNkRpLRqUaA5SA2aeuSyLSTQ3JP+RpG3IBfRZiiJQHQFVTEcu7K3ho4E1iq8QPk+qhjhHspL4DHwdyynXMYHwDfgNvADZA56ZZBxWZ17B8yAD8ByjLWB45DuvSROgdeO+z+BE2DTG20/WgBrhBnKtcBS4WNSMJ0sp9RM4FT3zrcI88rZxkHZOm0zvQYeAJ86mM2yRxuJhaYhCCuUc5f51sF+DFyAzATdKTz0ndaopJtJvV72PAXeuE+2wC3gAOQP6P0Kic9js8V3NaFzRRRZAWcghy6bHcgJ6GVJDpMayCDSlTaOOXTrO0e4y47t6bqGqyarjXn8rMm2teFD/Ru0JtWXpIQSkcRQ2zSvIT4XEKV22mj6GOEClRloxOiQXCHRcg2kmwmhnGAOsnGoLEDWoGVyGjKt7b0BNkYDCU6ZWvabkl++nJzqlvkVuAP8Arkr6FV8JWvM+y3zfdVqH42x3JvHBgNUjgR9W9X1levbwQQJwBEWKM+BJ/GQCMmTy3jkepJgodUfXerhLChR/cjozms3peNuYvTXlCmhW6XxSRcZ7nO/2Z0rLYVwUk6IvejqM1oZP8Hm3TWNaN28c1nmLejKiTKB1QVG7XY7MPKf7tWZ8jZB/AM5t/Em43PHggAAAABJRU5ErkJggg=="/></button>
+                            <div id="column-left-seats">
+                                {% for i in range(0, 10) %}
+                                    <div id="row-left-seats">
+                                        {% for j in range(0, 3) %}
+                                            {% set seat_id = i ~ '-' ~ rowDict[j] %}
+                                            <!-- onclick="sendId('{{ seat_id }}')" -->
+                                            {% if seat_id in taken_seats %}
+                                                <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn taken">{{ seat_id }}</button>
+                                            {% else %}
+                                                <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn">{{ seat_id }}</button>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div id="column-right-seats">
+                                {% for i in range(0, 10) %}
+                                    <div id="row-right-seats">
+                                        {% for j in range(3, 6) %}
+                                            {% set seat_id = i ~ '-' ~ rowDict[j] %}
+                                            <!-- onclick="sendId('{{ seat_id }}')" -->
+                                            {% if seat_id in taken_seats %}
+                                                <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn taken">{{ seat_id }}</button>
+                                            {% else %}
+                                                <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn">{{ seat_id }}</button>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="seat-input" name="chosen-seat">
+                    <p id="chosen-seat-text"></p>
                     <button type="submit">Submit Booking</button>
                 </form>
             {% endfor %}
@@ -355,10 +435,6 @@
     
                 let quadrantX = null;
                 let quadrantY = null;
-                console.log(quadrantTaken.right);
-                console.log(quadrantTaken.left);
-                console.log(quadrantTaken.bottom);
-                console.log(quadrantTaken.top);
     
                 // Assign seats to quadrants
                 if (colIndex < 3){
@@ -452,7 +528,7 @@
         });
 
         function removeOldSeats(form){
-            const seats = form.querySelectorAll('.seat-btn');
+            const seats = document.querySelectorAll('.seat-btn');
             const selectedSeatText = form.querySelector('#chosen-seat-text');
             const selectedSeatInput = form.querySelector('#seat-input');
             seats.forEach((seat)=>{
@@ -511,8 +587,10 @@
                 quadrantTaken.top += 1;
             };
             seatAvailability();
-            newChosen = document.querySelector(`[id="${buttonId}"]`);
-            newChosen.classList.add('taken');
+            newChosen = document.querySelectorAll(`[id="${buttonId}"]`);
+            newChosen.forEach((b)=>{
+                b.classList.add('taken');
+            });
             selectedForm.querySelector("#seating-form").style.display = "none";
             const seatText = selectedForm.querySelector("#chosen-seat-text");
             const seatInput = selectedForm.querySelector("#seat-input");

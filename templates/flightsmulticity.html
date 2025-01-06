@@ -155,6 +155,12 @@
                     }
                 });
 
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = "csrf_token";
+                csrfInput.value = "{{ csrf_token() }}"
+                finalForm.appendChild(csrfInput);
+
                 // Log the final form to console for debugging
                 console.log(finalForm);
 
