@@ -240,16 +240,26 @@
                             <p>Selected Flight: </p>
                             <form method="POST" id="departure-form">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <label>Airline: </label>
-                                <input name="departure-airline-name-0" value="${airlineName}" readonly>
-                                <label>Flight Number: </label>
-                                <input name="departure-flight-number-0" value="${flightNumber}" readonly>
-                                <label>Departure Time: </label>
-                                <input name="selected-departure-time-0" value="${departureTime}" readonly>
-                                <label>Arrival Time: </label>
-                                <input name="selected-arrival-time-0" value="${arrivalTime}" readonly>
-                                <label>Price: </label>
-                                <input name="selected-departure-price-0" value="${flightPrice}" readonly>
+                                <div>
+                                    <label>Airline: </label>
+                                    <input name="departure-airline-name-0" value="${airlineName}" readonly>
+                                </div>
+                                <div>
+                                    <label>Flight Number: </label>
+                                    <input name="departure-flight-number-0" value="${flightNumber}" readonly>
+                                </div>
+                                <div>
+                                    <label>Departure Time: </label>
+                                    <input name="selected-departure-time-0" value="${departureTime}" readonly>
+                                </div>
+                                <div>
+                                    <label>Arrival Time: </label>
+                                    <input name="selected-arrival-time-0" value="${arrivalTime}" readonly>
+                                </div>
+                                <div>
+                                    <label>Price: </label>
+                                    <input name="selected-departure-price-0" value="${flightPrice}" readonly>
+                                </div>
                                 <button id="change-flight-btn" type="button">Change Flight</button>
                             </form>
                         </div>
@@ -304,16 +314,26 @@
                                         <p>Selected Flight: </p>
                                         <form method="POST" id="return-form">
                                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                            <label>Airline: </label>
-                                            <input name="return-airline-name-0" value="${returnAirlineName}" readonly>
-                                            <label>Flight Number: </label>
-                                            <input name="return-flight-number-0" value="${returnFlightNumber}" readonly>
-                                            <label>Departure Time: </label>
-                                            <input name="return-departure-time-0" value="${returnDepartureTime}" readonly>
-                                            <label>Arrival Time: </label>
-                                            <input name="return-arrival-time-0" value="${returnArrivalTime}" readonly>
-                                            <label>Price: </label>
-                                            <input name="selected-return-price-0" value="${returnFlightPrice}" readonly>
+                                            <div>
+                                                <label>Airline: </label>
+                                                <input name="return-airline-name-0" value="${returnAirlineName}" readonly>
+                                            </div>
+                                            <div>
+                                                <label>Flight Number: </label>
+                                                <input name="return-flight-number-0" value="${returnFlightNumber}" readonly>
+                                            </div>
+                                            <div>
+                                                <label>Departure Time: </label>
+                                                <input name="return-departure-time-0" value="${returnDepartureTime}" readonly>
+                                            </div>
+                                            <div>
+                                                <label>Arrival Time: </label>
+                                                <input name="return-arrival-time-0" value="${returnArrivalTime}" readonly>
+                                            </div>
+                                            <div>
+                                                <label>Price: </label>
+                                                <input name="selected-return-price-0" value="${returnFlightPrice}" readonly>
+                                            </div>
                                             <button id="change-flight-btn" class="change-return-flight" type="button">Change Flight</button>
                                         </form>
                                     </div>
