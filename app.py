@@ -422,6 +422,8 @@ def flights():
             )
         except Exception as e:
             print(f"Error: {e}")
+            flash("No flights available for this trip")
+            return redirect(url_for("home"))
     elif trip == "round-trip":
         try:
             origin_location = (origin_locations.split(",")[0])
@@ -436,8 +438,11 @@ def flights():
             passengerNum = int(passengers[0])
 
             departure_flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
+            print(departure_flights)
             flight_details = extract_flight_details(departure_flights)
-            if flight_details == []:
+            print(flight_details)
+
+            if flight_details == [] or flight_details == "":
                 flash(f"Sorry, there are no flights for this trip. ({origin_location} to {destination_location})")
                 return redirect(url_for("home"))
 
@@ -452,7 +457,8 @@ def flights():
             
             return_flights = get_flights(destinationCode, originCode, passengerNum, return_date, access_token)
             return_flight_details = extract_flight_details(return_flights)
-            if return_flight_details == []:
+
+            if return_flight_details == [] or return_flight_details == "":
                 flash(f"Sorry, there are no flights for this trip. ({destination_location} to {origin_location})")
                 return redirect(url_for("home"))
             
@@ -513,6 +519,8 @@ def flights():
                 )
         except Exception as e:
             print(f"Error: {e}")
+            flash("No flights available for this trip.")
+            return redirect(url_for("home"))
     return render_template("flights.html", profile_Name = session["user"])
 
 @app.route('/flightsmulticity', methods=["GET", "POST"])
@@ -595,6 +603,7 @@ def flightsmulticity():
             )
         except Exception as e:
             print(f"{e}")
+            flash("No flights available for this trip.")
             return redirect(url_for("home"))
     else:
         return redirect(url_for("login"))
