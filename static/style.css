@@ -722,26 +722,62 @@ footer{
     text-shadow: 0 0 5px var(--background-dark);
 }
 
-.change-password input{
+.security{
+    display: flex;
+    flex-direction: column;
+    margin-left: 1em;
+}
+
+.security input{
     width: 40vw;
     height: 5vh;
 }
 
-.change-password #submit{
+.security #submit{
     width: 25%;
     font-size: 16px;
 }
 
-.change-password #submit:focus{
+.security #submit:focus{
     transform: scaleX(1);
 }
 
-.change-password #submit:hover{
+.security #submit:hover{
     background: linear-gradient(to right, var(--primary), var(--secondary));
     color: var(--text-dark-mode);
     text-shadow: 0 0 5px var(--background-dark);
 }
 
+#email-2fa-cont{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 5rem;
+    width: 100%;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 2px gray solid;
+}
+
+#inputs-2fa{
+    display: flex;
+    flex-direction: row;
+}
+
+#inputs-2fa input{
+    width: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+#email-2fa label{
+    margin-left: 1rem;
+}
+
+#email-2fa input[type=submit]{
+    margin-top: 1em;
+}
+  
 @media only screen and (max-width: 500px) {
     #cont-login{
         width: 20rem;

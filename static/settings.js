@@ -4,17 +4,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const preferencesBtn = document.getElementById("preferences-button");
 
   const editProfileDivider = document.querySelector(".edit-profile");
-  const changePasswordDivider = document.querySelector(".change-password");
+  const securityDivider = document.querySelector(".security");
   const preferencesDivider = document.querySelector(".preferences");
 
   // Initially display edit profile section and hide others
   editProfileDivider.style.display = "flex";
-  changePasswordDivider.style.display = "none";
+  securityDivider.style.display = "none";
   preferencesDivider.style.display = "none";
 
   function hideAllDividers() {
     editProfileDivider.style.display = "none";
-    changePasswordDivider.style.display = "none";
+    securityDivider.style.display = "none";
     preferencesDivider.style.display = "none";
   }
 
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   changePasswordBtn.addEventListener("click", function () {
     hideAllDividers();
-    changePasswordDivider.style.display = "flex";
+    securityDivider.style.display = "flex";
   });
 
   preferencesBtn.addEventListener("click", function () {

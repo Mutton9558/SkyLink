@@ -78,7 +78,7 @@
       <div class="settings-content">
         <div class="settings-option">
           <a id="edit-profile-button">Edit Profile</a>
-          <a id="change-password-button">Change Password</a>
+          <a id="change-password-button">Security</a>
           <a id="preferences-button">Preference</a>
         </div>
         <div>
@@ -137,7 +137,7 @@
               <input type="submit" name="submit" id="submit" />
             </form>
           </div>
-          <div class="change-password">
+          <div class="security">
             <form method="POST" action="{{ url_for('change_password') }}">
               <input
                 type="hidden"
@@ -165,6 +165,19 @@
               {% endfor %} {% endif %} {% endwith %}
               <input type="submit" name="submit" id="submit" />
             </form>
+            <div id="email-2fa-cont">
+              <p>Turn on Email 2FA?</p>
+              <form id="email-2fa" method="POST" action="{{ url_for('home') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div id="inputs-2fa">
+                  <input type="radio" id="toggleEmail2FAOn" name="toggle-2fa" value="2fa-on" style="height: 15px;width: 15px;" required>
+                  <label for="toggleEmail2FAOn">On</label>
+                  <input type="radio" id="toggleEmail2FAOff" name="toggle-2fa" value="2fa-off" style="height: 15px;width: 15px;margin-left: 4rem;" required checked>
+                  <label for="toggleEmail2FAOff">Off</label>
+                </div>
+                <input type="submit" name="submit" id="submit" />
+              </form>
+            </div>
           </div>
           <div class="preferences">
             <div
