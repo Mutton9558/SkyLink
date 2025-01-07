@@ -266,3 +266,39 @@ function showPassword() {
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAA/dJREFUSEuVl0uoVlUUx39LKxTKIs0iIsKoQRQNHEg0UCgwsps9QHtjVwxBQggnQjgRhz0GIkbeGpQGWXELswe9oaIIB4oQmSAVDXrebkWZXVdnnb3OOevsb58Lncn9zjp7r+f/v9a6QvERQMH/1Efq31EQRUPno/K+MnvrGxhxpKDUz4z4VY6i1R997xn2DwtQma4jdq8EbYPtjPWj72wWslJwKBnunkuBz4AtAnuzzA7pHsrRUPxtkpsDZwBHEa5ERUHvAl4cvi3UmZhV/VCNU/YjSsaBPSYRmFG4A3itfL1geCj7hZzkqbYjZnzCdcwAtwIHEc5GWStwnQpLUOYI/KXwE/Az8BWwF/itnAR3NGC1dG69R27fTgEvAGuAeUMscH2nQF4C3VGXrXkGqDhUpWg8PzMFHHehAfKCLMtW+gngEYHfO35ErgS3Im1cXBsPDlv9t1fl+Cbz5FxgOXALyLoq4jPTd/kY9Ebg79zzUOPW57nAUoHPnU51zV3RlKA3KBzqd4We2ouAZxFucvK/BdwMnI5lGm0gsBt4AFhVRfG+qwzGmULYhtaIN1C9BzwFGBAjRUy2we8/YWnP2RHfVyK86W36gMJYqMQ42kQeTKSfHwErUoNv2TkX5V2B5V5jC+RgxFvz21J8uGoaVwHfCVyjYCCKsyJFXkBpBbb7gef7SMbSfgRYVNX+BOjlTcojj2Mt7xV0XwmNDc/NnaxzPeclyv26G9jnDt3j1PTOlWqzCXSnJ/F2QSdH22ELwI5qXUPYr8Kadpp28gcVnnHDDwFPJ6e73Jwn6DGt08K3wLXAr1nqYnFznu9AeDRr3ucAXwOLQX4BvRg4WYeZjbnNwJNu7I3ES6dBTsT0Ho0bXe4EJh3cc1CZFHTMM7epcmBX43neq88CPjEeu53HbESWbbbScZAJ31hmUFYJvKNp2KzzU58C1zeozyJuFV1SRfoFcKFLXgE2Aj9mCI/+pMgT2k+C2n0zZKLjmqhmTAnrRbgePlwGvF1NmyucTP9QA0QOgH6I8Ee+knVod4VJ2QcCqxWm86yFGo8sbwuBxxuK9C4KP6B1v/4TsK70qn/vKJkMjwlYIxp5eoYHarmsQuJWb6G2peSPjc3VgIHRkrte0D1u7F/gNuD1vEylRaBTHIa2wvkVNe4DlngnWijofE2oP1b17YcBK4k9Ee3Ww9eCvBxX5lHD/2N96aBS3JDbNcopaTvc/iaqnuHI6a4dDnuSo7TQYmMb/hL06maKlebxLBt+f28aRUxkauQ5tgpZb/jecRBbZuE/lgG0NeNq1qpEfAgLUKbjUBtIdbTYR9iQL2X5LGXKenXL/sL+lcjSZrOgdMhOQf4fmThYMyvEgtMAAAAASUVORK5CYII=";
   }
 }
+
+async function generatePDF(data) {
+  const response = await fetch('/generate_pdf', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+  });
+
+  if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'boarding_pass.pdf';
+      link.click();
+  } else {
+      alert('Failed to generate PDF.');
+  }
+}
+
+document.querySelector('.button').addEventListener('click', (event) => {
+  event.preventDefault();
+
+  const ticketData = {
+      flight: '{{ flight_details["flight_number"] }}',
+      date: '{{ flight_details["date"] }}',
+      time: '{{ flight_details["time"] }}',
+      seat: '{{ flight_details["seat"] }}',
+      boarding_ref: '{{ flight_details["boarding_ref"] }}',
+      passenger: '{{ flight_details["passenger"] }}',
+  };
+
+  generatePDF(ticketData);
+});

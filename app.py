@@ -847,6 +847,29 @@ def profile():
         return render_template("profile.html", profile_Name = session["user"], user=current_user)
     else:
         return redirect(url_for("login"))
+    
+@app.route('/ticket/<booking_id>')
+def ticket(booking_id):
+    # Fetch flight details from your database or backend logic
+    flight_details = {
+        "flight_number": "AA1234",
+        "date": "2025-01-10",
+        "time": "12:30 PM",
+        "seat": "22A",
+        "boarding_ref": "XYZ98765",
+        "passenger": "John Doe",
+        "booking_id": booking_id,
+        "qr_code_url": f"/download_pdf/{booking_id}"  # QR code leads to the PDF
+    }
+
+    # Render the HTML with flight details
+    return render_template('ticket.html', flight_details=flight_details)
+
+@app.route('/download_pdf/<booking_id>')
+def download_pdf(booking_id):
+    # Serve the PDF file for the given booking ID
+    pdf_path = f"./generated_pdfs/{booking_id}.pdf"
+    return send_file(pdf_path, as_attachment=True)
 
 
 if __name__ == "__main__":
