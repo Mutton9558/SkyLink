@@ -308,7 +308,7 @@ def support():
                 smtp_server = "smtp.gmail.com"
                 smtp_port = 587
                 smtp_user = os.getenv("EMAIL_USER")  # Use environment variables
-                smtp_password = os.getenv("EMAIL_PASSWORD")
+                smtp_password = os.getenv("EMAIL_PASSWORD").replace('\xa0', ' ')
 
                 with smtplib.SMTP(smtp_server, smtp_port) as smtp:
                     smtp.starttls()
@@ -817,7 +817,8 @@ def forgotpassword():
         </body>
         </html>
         '''
-            msg.attach(MIMEText(text, "html"))
+            msg.attach(MIMEText(text, "html", "utf-8"))
+            msg['Content-Type'] = 'text/html; charset=utf-8'
 
             image_path = os.path.join(current_app.root_path, 'static', 'img', 'logo.png')
             if image_path and os.path.isfile(image_path):
@@ -829,7 +830,7 @@ def forgotpassword():
             smtp_server = "smtp.gmail.com"
             smtp_port = 587
             smtp_user = os.getenv("EMAIL_USER")  # Use environment variables
-            smtp_password = os.getenv("EMAIL_PASSWORD")
+            smtp_password = os.getenv("EMAIL_PASSWORD").replace('\xa0', ' ')
 
             with smtplib.SMTP(smtp_server, smtp_port) as smtp:
                 smtp.starttls()
