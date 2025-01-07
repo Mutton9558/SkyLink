@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boarding Pass</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -65,9 +66,8 @@
             margin: 20px 0;
         }
 
-        .qr-code img {
+        .qr-code canvas {
             max-width: 150px;
-            height: auto;
         }
 
         .button {
@@ -79,15 +79,32 @@
             text-decoration: none;
             font-size: 16px;
             margin-top: 10px;
+            cursor: pointer;
+            text-align: center;
         }
 
         .button:hover {
             background: #2980b9;
         }
+
+        @media (max-width: 600px) {
+            .ticket-container {
+                margin: 20px;
+                padding: 10px;
+            }
+
+            .ticket-header h1 {
+                font-size: 18px;
+            }
+
+            .button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
     </style>
 </head>
 <body>
-
 <div class="ticket-container">
     <div class="ticket-header">
         <h1>Boarding Pass</h1>
@@ -95,63 +112,48 @@
 
     <div class="ticket-body">
         <div class="ticket-info">
-            <h2>Flight: {{ flight_details['flight_number'] }}</h2>
-            <p><strong>Date:</strong> {{ flight_details['date'] }}</p>
-            <p><strong>Time:</strong> {{ flight_details['time'] }}</p>
-            <p><strong>Seat:</strong> {{ flight_details['seat'] }}</p>
-            <p><strong>Boarding Ref:</strong> {{ flight_details['boarding_ref'] }}</p>
-            <p><strong>Passenger:</strong> {{ flight_details['passenger'] }}</p>
+            <h2>Flight: {{ flight_details['flight_number'] or 'N/A' }}</h2>
+            <p><strong>Date:</strong> {{ flight_details['date'] or 'N/A' }}</p>
+            <p><strong>Time:</strong> {{ flight_details['time'] or 'N/A' }}</p>
+            <p><strong>Seat:</strong> {{ flight_details['seat'] or 'N/A' }}</p>
+            <p><strong>Boarding Ref:</strong> {{ flight_details['boarding_ref'] or 'N/A' }}</p>
+            <p><strong>Passenger:</strong> {{ flight_details['passenger'] or 'N/A' }}</p>
         </div>
 
         <div class="qr-code">
-            <img src="{{ flight_details['qr_code_url'] }}" alt="QR Code">
+            <canvas id="qrCodeCanvas"></canvas>
         </div>
 
-        <a href="/generate_pdf" class="button">Download Boarding Pass</a>
+        <button class="button" aria-label="Download your boarding pass as a PDF">Download Boarding Pass</button>
     </div>
 
     <div class="ticket-footer">
-        Please arrive at the gate 30 minutes before departure. Have a safe flight!
+        Please arrive at the gate 30 minutes before departure.
     </div>
 </div>
 
 <script>
-    async function generatePDF(data) {
-        const response = await fetch('/generate_pdf', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
+    // Generate QR Code
+    const bookingId = '{{ flight_details["booking_id"] or "12345" }}'; // Use a unique identifier for the booking
+    const pdfUrl = `/download_pdf/${bookingId}`; // Backend endpoint for the PDF
 
-        if (response.ok) {
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'boarding_pass.pdf';
-            link.click();
-        } else {
-            alert('Failed to generate PDF.');
+    // Use QRCode library to generate the QR code
+    QRCode.toCanvas(
+        document.getElementById('qrCodeCanvas'), 
+        pdfUrl, 
+        { width: 150 },
+        function (error) {
+            if (error) {
+                console.error('Error generating QR code:', error);
+            }
         }
-    }
+    );
 
+    // Download Button
     document.querySelector('.button').addEventListener('click', (event) => {
         event.preventDefault();
-
-        const ticketData = {
-            flight: '{{ flight_details["flight_number"] }}',
-            date: '{{ flight_details["date"] }}',
-            time: '{{ flight_details["time"] }}',
-            seat: '{{ flight_details["seat"] }}',
-            boarding_ref: '{{ flight_details["boarding_ref"] }}',
-            passenger: '{{ flight_details["passenger"] }}',
-        };
-
-        generatePDF(ticketData);
+        window.location.href = pdfUrl; // Redirect to the PDF download
     });
 </script>
-
 </body>
 </html>
