@@ -1,186 +1,277 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}">
-  <title>SkyLink</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}" />
+    <title>SkyLink</title>
+  </head>
+  <body>
     <!-- Navbar with menu items -->
     <header class="header">
-        <div class="header-container">
-            <div class="logo">
-                <a class="navbar-brand" href="/home">
-                    <img src="{{url_for('static', filename='img/logo.png')}}" height="80" alt="SkyLink" href="/">
-                </a>
-            </div>
-            <div class="useful-links">
-                <div class="link">
-                    <a class="nav-link" href="#">
-                        <p>Purchases</p>
-                    </a>
-                </div>
-                <div class="link">
-                    <a class="nav-link" href="/check-in">
-                        <p>Check-in</p>
-                    </a>
-                </div>
-                <div class="link">
-                    <a class="nav-link" href="#">
-                        <p>Flight Status</p>
-                    </a>
-                </div>
-                <div class="link">
-                    <a class="nav-link" href="/support">
-                        <p>Support</p>
-                    </a>
-                </div>
-                <div class="profile">
-                    <a class="nav-link" href="#">
-                        <svg xmlns="http://www.w3.org/2000/svg" display="flex" width="25" fill=currentColor class="bi bi-person-circle" viewBox="0 0 16 16">
-                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                        </svg>
-                        <p class="profile-text">{{ profile_Name }}</p>
-                    </a>
-                    <div class="dropdown">
-                        <div class="dropdown-content">
-                            <a href="/profile">Profile</a>
-                            <a href="/settings">Settings</a>
-                            <a href="/logout">Logout</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="header-container">
+        <div class="logo">
+          <a class="navbar-brand" href="/home">
+            <img
+              src="{{url_for('static', filename='img/logo.png')}}"
+              height="80"
+              alt="SkyLink"
+              href="/"
+            />
+          </a>
         </div>
+        <div class="useful-links">
+          <div class="link">
+            <a class="nav-link" href="#">
+              <p>Purchases</p>
+            </a>
+          </div>
+          <div class="link">
+            <a class="nav-link" href="/check-in">
+              <p>Check-in</p>
+            </a>
+          </div>
+          <div class="link">
+            <a class="nav-link" href="#">
+              <p>Flight Status</p>
+            </a>
+          </div>
+          <div class="link">
+            <a class="nav-link" href="/support">
+              <p>Support</p>
+            </a>
+          </div>
+          <div class="profile">
+            <a class="nav-link" href="#">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                display="flex"
+                width="25"
+                fill="currentColor"
+                class="bi bi-person-circle"
+                viewBox="0 0 16 16"
+              >
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                <path
+                  fill-rule="evenodd"
+                  d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+                />
+              </svg>
+              <p class="profile-text">{{ profile_Name }}</p>
+            </a>
+            <div class="dropdown">
+              <div class="dropdown-content">
+                <a href="/profile">Profile</a>
+                <a href="/settings">Settings</a>
+                <a href="/logout">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </header>
-    
-    <main id="home-page-main">
-        <div class="carousel">
-            <button class="prev">❮</button>
-            <div class="carousel-images">
-                <img src="{{url_for('static',filename='img/promo1.png')}}" id="image 1">
-                <img src="{{url_for('static',filename='img/promo2.png')}}" id="image 2">
-            </div>
-            <button class="next">❯</button>
-        </div>
-        <div class="booking-form">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for msg in messages %}
-                        <p style="color: red;" id="flashed-msg">*{{ msg }}</p>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            <form method="POST" id="select-flight-form" name="select-flight-form">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <div id="container">
-                    <div class="trip-options">
-                        <label><input type="radio" name="trip" value="round-trip" class="trip-class" required checked> Return</label>
-                        <label><input type="radio" name="trip" value="one-way" class="trip-class" required> One way</label>
-                        <label><input type="radio" name="trip" value="multi-city" class="trip-class" required> Multi-city</label>
-                    </div>
-                    
-                    <div class="fields" id="stop-fields-container">
-                        <div class="fields">
-                            <select type="text" placeholder="From" name="origin-location" required>
-                                <option value="">Select an option (Origin)  </option>
-                                {% for option in options %}
-                                <option value="{{option}}">{{option}}</option>
-                                {% endfor %}
-                            </select>
-                            <select type="text" placeholder="To" name="destination-location" required>
-                                <option value="">Select an option (Destination)</option>
-                                {% for option in options %}
-                                <option value="{{option}}">{{option}}</option>
-                                {% endfor %}
-                            </select>
-                            
-                            <div class="departure">
-                                <p>Departure date</p>
-                                <input type="date" name="departure-date" class="departureDate" required>
-                            </div>
-                        
-                            <div class="return">
-                                <p>Return Date</p>
-                                <input type="date" name="return-date" class="returnDate" required>
-                            </div>
-                            <div class="NumberPassenger">
-                                <p style="font-size: small; margin: 0 0 5px 0;">Number of Passengers</p>
-                                <select name="number-of-passengers">
-                                    <option>1 Passenger Economy</option>
-                                    <option>2 Passengers Economy</option>
-                                </select>
-                            </div>
-                        </div>   
-                    </div>
 
-                    <div class="duplicateFields">
-                        <div class="fields">
-                            <select type="text" placeholder="From" name="origin-location-0">
-                                <option value="">Select an option (Origin)  </option>
-                                {% for option in options %}
-                                <option value="{{option}}">{{option}}</option>
-                                {% endfor %}
-                            </select>
-                            <select type="text" placeholder="To" name="destination-location-0">
-                                <option value="">Select an option (Destination)</option>
-                                {% for option in options %}
-                                <option value="{{option}}">{{option}}</option>
-                                {% endfor %}
-                            </select>
-                            
-                            <div class="departure">
-                                <p>Departure date</p>
-                                <input type="date" name="departure-date-0" class="departure-date-0">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="actions">
-                    <a class="add-stops-button" id="addFlight">+ Add Stops</a>
-                    <input type="text" name="promo-code" placeholder="Add promo code">
-                    <button type="submit">Search Flights</button>
-                </div>
-            </form>
+    <main id="home-page-main">
+      <div class="carousel">
+        <button class="prev">❮</button>
+        <div class="carousel-images">
+          <img
+            src="{{url_for('static',filename='img/promo1.png')}}"
+            id="image 1"
+          />
+          <img
+            src="{{url_for('static',filename='img/promo2.png')}}"
+            id="image 2"
+          />
         </div>
+        <button class="next">❯</button>
+      </div>
+      <div class="booking-form">
+        {% with messages = get_flashed_messages() %} {% if messages %} {% for
+        msg in messages %}
+        <p style="color: red" id="flashed-msg">*{{ msg }}</p>
+        {% endfor %} {% endif %} {% endwith %}
+        <form method="POST" id="select-flight-form" name="select-flight-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <div id="container">
+            <div class="trip-options">
+              <label
+                ><input
+                  type="radio"
+                  name="trip"
+                  value="round-trip"
+                  class="trip-class"
+                  required
+                  checked
+                />
+                Return</label
+              >
+              <label
+                ><input
+                  type="radio"
+                  name="trip"
+                  value="one-way"
+                  class="trip-class"
+                  required
+                />
+                One way</label
+              >
+              <label
+                ><input
+                  type="radio"
+                  name="trip"
+                  value="multi-city"
+                  class="trip-class"
+                  required
+                />
+                Multi-city</label
+              >
+            </div>
+
+            <div class="fields" id="stop-fields-container">
+              <div class="fields">
+                <select
+                  type="text"
+                  placeholder="From"
+                  name="origin-location"
+                  required
+                >
+                  <option value="">Select an option (Origin)</option>
+                  {% for option in options %}
+                  <option value="{{option}}">{{option}}</option>
+                  {% endfor %}
+                </select>
+                <select
+                  type="text"
+                  placeholder="To"
+                  name="destination-location"
+                  required
+                >
+                  <option value="">Select an option (Destination)</option>
+                  {% for option in options %}
+                  <option value="{{option}}">{{option}}</option>
+                  {% endfor %}
+                </select>
+
+                <div
+                  class="dates"
+                  style="display: flex; flex-direction: row; text-align: center"
+                >
+                  <div class="departure" style="margin-right: 1em">
+                    <p>Departure date</p>
+                    <input
+                      type="date"
+                      name="departure-date"
+                      class="departureDate"
+                      required
+                    />
+                  </div>
+
+                  <div class="return" style="margin-left: 1em">
+                    <p>Return Date</p>
+                    <input
+                      type="date"
+                      name="return-date"
+                      class="returnDate"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="NumberPassenger" style="text-align: center">
+                  <p style="font-size: small; margin: 0 0 5px 0">
+                    Number of Passengers
+                  </p>
+                  <select name="number-of-passengers">
+                    <option>1 Passenger Economy</option>
+                    <option>2 Passengers Economy</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="duplicateFields">
+              <div class="fields">
+                <select type="text" placeholder="From" name="origin-location-0">
+                  <option value="">Select an option (Origin)</option>
+                  {% for option in options %}
+                  <option value="{{option}}">{{option}}</option>
+                  {% endfor %}
+                </select>
+                <select
+                  type="text"
+                  placeholder="To"
+                  name="destination-location-0"
+                >
+                  <option value="">Select an option (Destination)</option>
+                  {% for option in options %}
+                  <option value="{{option}}">{{option}}</option>
+                  {% endfor %}
+                </select>
+
+                <div
+                  class="departure"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    text-align: center;
+                  "
+                >
+                  <p>Departure date</p>
+                  <input
+                    type="date"
+                    name="departure-date-0"
+                    class="departure-date-0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <a class="add-stops-button" id="addFlight">+ Add Stops</a>
+            <input type="text" name="promo-code" placeholder="Add promo code" />
+            <button type="submit">Search Flights</button>
+          </div>
+        </form>
+      </div>
     </main>
     <script>
-        const theme = localStorage.getItem('theme');
-        if (theme === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-        else if (theme === 'light') {
-            document.body.classList.add('light-mode');
-        }
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark") {
+        document.body.classList.add("dark-mode");
+      } else if (theme === "light") {
+        document.body.classList.add("light-mode");
+      }
     </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <footer>
-        <div class="footer-content">
-            <div class="left-content-footer">
-                <div id="items-footer-left">
-                    <h3>Explore</h3>
-                    <a href="#">About Us</a>
-                    <a href="#">Our Partners</a>
-                    <a href="#">Special Offers</a>
-                    <a href="#">Credits</a>
-                </div>
-            </div>
-            <div class="right-content-footer">
-                <div id="items-footer-right">
-                    <h3>Need Help?</h3>
-                    <a href="/support">Customer Service</a>
-                    <a href="#">Contact Us</a>
-                    <a href="#">FAQs</a>
-                </div>
-            </div>
+      <div class="footer-content">
+        <div class="left-content-footer">
+          <div id="items-footer-left">
+            <h3>Explore</h3>
+            <a href="#">About Us</a>
+            <a href="#">Our Partners</a>
+            <a href="#">Special Offers</a>
+            <a href="#">Credits</a>
+          </div>
         </div>
-        <div id="copyright-footer">
-            <p>© 2024 Skylink. All Rights Reserved.</p>
+        <div class="right-content-footer">
+          <div id="items-footer-right">
+            <h3>Need Help?</h3>
+            <a href="/support">Customer Service</a>
+            <a href="#">Contact Us</a>
+            <a href="#">FAQs</a>
+          </div>
         </div>
+      </div>
+      <div id="copyright-footer">
+        <p>© 2024 Skylink. All Rights Reserved.</p>
+      </div>
     </footer>
-</body>
+  </body>
 </html>

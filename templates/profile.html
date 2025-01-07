@@ -119,23 +119,24 @@
         </div>
 
         <div class="profile-content">
-          <div class="profile-content-header" style="justify-content: space-between;">
+          <div class="profile-content-header">
             <a>Flight Booking History</a>
             <a>Sign Out</a>
           </div>
-          <div class="profile-content">
+          <div class="profile-content-content">
             <div class="recent-flight-list" id="cont-1">
               <div
                 id="recent-flight-list-container"
                 class="departure-container"
+                style="justify-content: space-between;"
               >
                 <div id="recent-flight-list-left">
                   <h3 id="airline">Malaysia Airlines</h3>
                   <h3 id="flight-number">MH1430</h3>
-                  <div id="recent-flight-date-time">
+                  <div id="recent-flight-date-time" style="text-align: center;">
                     <div id="flight-date">
                       <p>Flight Date</p>
-                      <p>30/12/2024</p>
+                      <p>28/02/2025</p>
                     </div>
                     <div id="recent-flight-times">
                       <div id="departure-time">
@@ -180,21 +181,31 @@
         <div id="recent-flight-date-time">
           <div id="flight-date" style="align-items: flex-start;">
             <p>Flight Date</p>
-            <p>30/12/2024</p>
+            <p>28/02/2025</p>
           </div>
-          <div id="recent-flight-times" style="display: flex; justify-content: space-between;">
-            <div id="departure-time">
+          <div class="recent-flight-departure-arrival-loc" style="display: flex; flex-direction: row; text-align: center; margin-bottom: 1em;">
+            <div class="departure-location">
+              <p>Departure Location</p>
+              <p>Kuala Lumpur International Airport (KUL)</p>
+            </div>
+            <div class="arrival-location">
+              <p>Arrival Location</p>
+              <p>Bayan Lepas International Airport (PEN)</p>
+            </div>
+          </div>
+          <div id="recent-flight-times" style="display: flex; flex-direction: row; justify-content: center; text-align: center;">
+            <div id="departure-time" style="margin-right: 3em;">
               <p>Departure Time</p>
               <p>2:50 p.m</p>
             </div>
-            <div id="arrival-time">
+            <div id="arrival-time" style="margin-left: 3em;">
               <p>Arrival Time</p>
               <p>4:10 p.m</p>
             </div>
           </div>
 
           <div id="selected-seat">
-            <p>Selected Seat</p>
+            <p>Your Seat Number</p>
             <p>Seat 1A</p>
           </div>
         </div>
@@ -207,7 +218,7 @@
           <h2>Last Name</h2>
           <p>Doe</p>
         </div>
-        <button class="cancel-flight-button">Cancel Flight</button>
+        <button id="cancel-flight-button" class="cancel-flight-button">Cancel Flight</button>
       </div>
     </div>
 
@@ -223,6 +234,19 @@
         const flightDetails = document.getElementById("flight-details");
         flightDetails.classList.toggle("hidden");
       }
+
+      function hideCancelButtonIfPastDate() {
+        const flightDateElement = document.querySelector("#flight-date p:nth-child(2)");
+        const cancelButton = document.getElementById("cancel-flight-button");
+        const flightDate = new Date(flightDateElement.textContent.split('/').reverse().join('-'));
+        const currentDate = new Date();
+
+        if (flightDate < currentDate) {
+          cancelButton.style.display = "none";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", hideCancelButtonIfPastDate);
     </script>
   </body>
 </html>
