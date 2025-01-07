@@ -2,16 +2,17 @@
   height: 55%;
 }
 
-.user-profile-main{
+#user-profile-main{
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
 }
 
 .user-profile{
   background-color: white;
-  width: 65em;
+  width: 80%;
   position: relative;
-  left: 10em;
-  top: 6em;
   border-radius: 1em;
 }
 
@@ -275,7 +276,6 @@ body.dark-mode .transparent-button{
 @media only screen and (max-width: 500px) {
   .user-profile{
     width: 100%;
-    left: 0;
     top: 5em;
   }
 
@@ -284,7 +284,7 @@ body.dark-mode .transparent-button{
   }
 
   #profile-picture{
-    width: 15%;
+    width: 20%;
   }
 
   .flight-details{
@@ -295,7 +295,6 @@ body.dark-mode .transparent-button{
 @media only screen and (min-width: 501px) and (max-width: 650px) {
   .user-profile{
     width: 100%;
-    left: 0;
     top: 5em;
   }
 
@@ -315,5 +314,17 @@ body.dark-mode .transparent-button{
 
   #recent-flight-list-container{
     width: 95%;
+  }
+}
+
+@media only screen and (min-width: 651px) and (max-width: 1399px) {
+  #profile-background{
+    width: 96%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .user-profile{
+    top: 5em;
   }
 }

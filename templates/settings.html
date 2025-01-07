@@ -167,22 +167,29 @@
             </form>
           </div>
           <div class="preferences">
-            <div class="theme-toggle">
+            <div
+              class="theme-toggle"
+              style="display: flex; flex-direction: column"
+            >
               <h2>Appearence</h2>
-              <input
-                type="radio"
-                id="dark-mode-toggle"
-                name="theme"
-                value="dark"
-              />
-              <label for="dark-mode-toggle">Dark Mode</label>
-              <input
-                type="radio"
-                id="light-mode-toggle"
-                name="theme"
-                value="light"
-              />
-              <label for="light-mode-toggle">Light Mode</label>
+              <div class="dark-mode" style="margin-bottom: 1em">
+                <input
+                  type="radio"
+                  id="dark-mode-toggle"
+                  name="theme"
+                  value="dark"
+                />
+                <label for="dark-mode-toggle">Dark Mode</label>
+              </div>
+              <div class="light-mode" style="margin-bottom: 1em">
+                <input
+                  type="radio"
+                  id="light-mode-toggle"
+                  name="theme"
+                  value="light"
+                />
+                <label for="light-mode-toggle">Light Mode</label>
+              </div>
             </div>
           </div>
         </div>
