@@ -198,7 +198,10 @@ def home():
                 originLocations = ",".join(value for stop in stops for key, value in stop.items() if key.startswith('origin-location'))
                 destinationLocations = ",".join(value2 for stop2 in stops for key2, value2 in stop2.items() if key2.startswith('destination-location'))
                 departures = ",".join(value3 for date in departureDates for key3, value3 in date.items() if key3.startswith('departure-date'))
-                if (("Sultan Haji Ahmad Shah (KUA)" in destinationLocations.split(',') and promo_code=="KUANTAN20")  or ("Sultan Mahmud Airport (TGG)" in destinationLocations.split(',') and promo_code=="GANU10")) or (promo_code == ""):
+                print(destinationLocations.split(','))
+                if (('Sultan Haji Ahmad Shah Airport (KUA)' in destinationLocations.split(',') and promo_code=="KUANTAN20")  or ("Sultan Mahmud Airport (TGG)" in destinationLocations.split(',') and promo_code=="GANU10")) or (promo_code == ""):
+                    
+                    print("Hi")
                     if selected_trip != "multi-city":
                         return redirect(url_for(
                             "flights",
@@ -379,9 +382,9 @@ def flights():
             priceList = []
             for flight in flight_details:
                 if promo_code == "KUANTAN20" and destinationCode == "KUA":
-                    flight['price'] = flight['price']*0.8
+                    flight['price'] = round(float(flight['price'])*0.8, 2)
                 if promo_code == "GANU10" and destinationCode == "TGG":
-                    flight['price'] = flight['price']*0.9
+                    flight['price'] = round(float(flight['price'])*0.9, 2)
                 priceList.append(flight['price'])
             priceList.sort()
 
@@ -444,15 +447,14 @@ def flights():
             priceList = []
             for flight in flight_details:
                 if promo_code == "KUANTAN20" and destinationCode == "KUA":
-                    flight['price'] = flight['price']*0.8
+                    flight['price'] = round(float(flight['price'])*0.8, 2)
                 if promo_code == "GANU10" and destinationCode == "TGG":
-                    flight['price'] = flight['price']*0.9
+                    flight['price'] = round(float(flight['price'])*0.9, 2)
                 priceList.append(flight['price'])
             priceList.sort()
             
             return_flights = get_flights(destinationCode, originCode, passengerNum, return_date, access_token)
             return_flight_details = extract_flight_details(return_flights)
-
             if return_flight_details == [] or return_flight_details == "":
                 flash(f"Sorry, there are no flights for this trip. ({destination_location} to {origin_location})")
                 return redirect(url_for("home"))
@@ -460,9 +462,9 @@ def flights():
             returnPriceList = []
             for flight in return_flight_details:
                 if promo_code == "KUANTAN20" and originCode == "KUA":
-                    flight['price'] = flight['price']*0.8
+                    flight['price'] = round(float(flight['price'])*0.8, 2)
                 if promo_code == "GANU10" and originCode == "TGG":
-                    flight['price'] = flight['price']*0.9
+                    flight['price'] = round(float(flight['price'])*0.9, 2)
                 returnPriceList.append(flight['price'])
             returnPriceList.sort()
 
@@ -556,9 +558,9 @@ def flightsmulticity():
                     return redirect(url_for("home"))
                 for item in flight_details[detail]:
                     if promo_code == "KUANTAN20" and stops[detail]['destination'][-4:-1] == "KUA":
-                        item['price'] = item['price']*0.8
+                        item['price'] = round(float(item['price'])*0.8, 2)
                     if promo_code == "GANU10" and stops[detail]['destination'][-4:-1] == "TGG":
-                        item['price'] = item['price']*0.9
+                        item['price'] = round(float(item['price'])*0.9, 2)
                     priceList.append(item['price'])
                 priceList.sort()
                 cheapestFlights.append(priceList[0])
