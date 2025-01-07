@@ -1108,6 +1108,78 @@ footer{
     margin-bottom: 1rem;
 }
 
+.selected-flight{
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+#return-form, #departure-form{
+    width: 25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px gray solid;
+    border-radius: 10px;
+    padding: 0.6rem;
+    cursor: pointer;
+}
+
+#departure-form input, #return-form input{
+    cursor: not-allowed;
+    position: absolute;
+    right: 0;
+    margin-right: 0.4rem;
+    background-color: #e9ecef;
+    color: #6c757d;
+    pointer-events: none;
+    border-radius: 5px;
+}
+
+#departure-form label, #return-form label{
+    position: absolute;
+    left: 0;
+    margin-left: 0.4rem;
+}
+
+#return-form div, #departure-form div{
+    margin-top: 2rem;
+    width: 100%;
+    position: relative;
+}
+
+#change-flight-btn{
+    margin-top: 2.2rem;
+    background-color: #82C26E;
+    width: 8rem;
+    height: 2rem;
+    border-radius: 10px;
+}
+
+#change-flight-btn:hover{
+    background-color:var(--secondary);
+}
+
+#submit-btn-flights{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#submit-btn-flights button{
+    background-color: white;
+    width: 7rem;
+    height: 2rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 body.dark-mode {
     background-color: var(--background-dark);
     color: #ffffff;
@@ -1167,4 +1239,84 @@ body.dark-mode details{
 body.dark-mode #departure-flight-details,
 body.dark-mode #flight-list-container{
     background-color: #333333;
+}
+
+@media only screen and (max-width: 500px) {
+    #cont-login{
+        width: 20rem;
+    }
+
+    #image1{
+        background-image: url("__url_for('static',filename='img/promo1(500).png')");
+    }
+        
+    #image2{
+        background-image: url("__url_for('static',filename='img/promo2(500).png')");
+    }
+
+    #journey-departure{
+        display: flex;
+        flex-direction: column;
+        font-size: 12px;
+    }
+
+    #date-departure-info{
+        font-size: 12px;
+    }
+
+    #passenger-departure-total{
+        font-size: 12px;
+    }
+}
+
+@media only screen and (min-width: 501px) and (max-width: 650px) {
+    #cont-login{
+        width: 25rem;
+    }
+
+    #image1{
+        background-image: url("__url_for('static',filename='img/promo1(650).png')");
+    }
+        
+    #image2{
+        background-image: url("__url_for('static',filename='img/promo2(650).png')");
+    }
+
+    .footer{
+        width: 100%;
+    }
+
+    #journey-departure{
+        display: flex;
+        flex-direction: column;
+        font-size: 15px;
+    }
+
+    #date-departure-info{
+        font-size: 15px;
+    }
+
+    #passenger-departure-total{
+        font-size: 15px;
+    }
+}
+
+@media only screen and (min-width: 651px) and (max-width: 1399px) {
+    #cont-login{
+        width: 30rem;
+    }
+
+    #journey-departure{
+        display: flex;
+        flex-direction: column;
+        font-size: 18px;
+    }
+
+    #date-departure-info{
+        font-size: 18px;
+    }
+
+    #passenger-departure-total{
+        font-size: 18px;
+    }
 }

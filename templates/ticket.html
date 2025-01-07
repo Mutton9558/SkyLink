@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boarding Pass</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .ticket-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .ticket-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .ticket-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .ticket-body {
+            padding: 20px;
+        }
+
+        .ticket-info {
+            margin-bottom: 20px;
+        }
+
+        .ticket-info h2 {
+            margin: 0 0 10px;
+            font-size: 20px;
+        }
+
+        .ticket-info p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .ticket-footer {
+            background: #ecf0f1;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .qr-code {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .qr-code canvas {
+            max-width: 150px;
+        }
+
+        .button {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .button:hover {
+            background: #2980b9;
+        }
+
+        @media (max-width: 600px) {
+            .ticket-container {
+                margin: 20px;
+                padding: 10px;
+            }
+
+            .ticket-header h1 {
+                font-size: 18px;
+            }
+
+            .button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="ticket-container">
+    <div class="ticket-header">
+        <h1>Boarding Pass</h1>
+    </div>
+
+    <div class="ticket-body">
+        <div class="ticket-info">
+            <h2>Flight: {{ flight_details['flight_number'] or 'N/A' }}</h2>
+            <p><strong>Date:</strong> {{ flight_details['date'] or 'N/A' }}</p>
+            <p><strong>Time:</strong> {{ flight_details['time'] or 'N/A' }}</p>
+            <p><strong>Seat:</strong> {{ flight_details['seat'] or 'N/A' }}</p>
+            <p><strong>Boarding Ref:</strong> {{ flight_details['boarding_ref'] or 'N/A' }}</p>
+            <p><strong>Passenger:</strong> {{ flight_details['passenger'] or 'N/A' }}</p>
+        </div>
+
+        <div class="qr-code">
+            <canvas id="qrCodeCanvas"></canvas>
+        </div>
+
+        <button class="button" aria-label="Download your boarding pass as a PDF">Download Boarding Pass</button>
+    </div>
+
+    <div class="ticket-footer">
+        Please arrive at the gate 30 minutes before departure.
+    </div>
+</div>
+
+<script>
+    // Generate QR Code
+    const bookingId = '{{ flight_details["booking_id"] or "12345" }}'; // Use a unique identifier for the booking
+    const pdfUrl = `/download_pdf/${bookingId}`; // Backend endpoint for the PDF
+
+    // Use QRCode library to generate the QR code
+    QRCode.toCanvas(
+        document.getElementById('qrCodeCanvas'), 
+        pdfUrl, 
+        { width: 150 },
+        function (error) {
+            if (error) {
+                console.error('Error generating QR code:', error);
+            }
+        }
+    );
+
+    // Download Button
+    document.querySelector('.button').addEventListener('click', (event) => {
+        event.preventDefault();
+        window.location.href = pdfUrl; // Redirect to the PDF download
+    });
+</script>
+</body>
+</html>

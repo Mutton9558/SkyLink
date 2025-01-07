@@ -76,11 +76,9 @@ token_cache = {
 }
 
 def get_access_token(client_id, client_secret):
-    # Check if the cached token is still valid
     if token_cache["access_token"] and time.time() < token_cache["expires_at"]:
         return token_cache["access_token"]
-
-    # fetch a new token
+    
     url = "https://test.api.amadeus.com/v1/security/oauth2/token"
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     data = {
@@ -92,10 +90,9 @@ def get_access_token(client_id, client_secret):
     response = requests.post(url, headers=headers, data=data)
     if response.status_code == 200:
         token_data = response.json()
-        # Cache the token and its expiration time
         token_cache["access_token"] = token_data.get("access_token")
-        expires_in = token_data.get("expires_in", 0)  # Expiration time in seconds
-        token_cache["expires_at"] = time.time() + expires_in - 60  # Refresh slightly before expiry
+        expires_in = token_data.get("expires_in", 0)  # Time in seconds
+        token_cache["expires_at"] = time.time() + expires_in - 60  # Refresh before expiry
         return token_cache["access_token"]
     else:
         raise Exception(f"Failed to authenticate: {response.status_code}, {response.text}")
@@ -422,6 +419,8 @@ def flights():
             )
         except Exception as e:
             print(f"Error: {e}")
+            flash("No flights available for this trip")
+            return redirect(url_for("home"))
     elif trip == "round-trip":
         try:
             origin_location = (origin_locations.split(",")[0])
@@ -437,7 +436,8 @@ def flights():
 
             departure_flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
             flight_details = extract_flight_details(departure_flights)
-            if flight_details == []:
+
+            if flight_details == [] or flight_details == "":
                 flash(f"Sorry, there are no flights for this trip. ({origin_location} to {destination_location})")
                 return redirect(url_for("home"))
 
@@ -452,7 +452,8 @@ def flights():
             
             return_flights = get_flights(destinationCode, originCode, passengerNum, return_date, access_token)
             return_flight_details = extract_flight_details(return_flights)
-            if return_flight_details == []:
+
+            if return_flight_details == [] or return_flight_details == "":
                 flash(f"Sorry, there are no flights for this trip. ({destination_location} to {origin_location})")
                 return redirect(url_for("home"))
             
@@ -513,6 +514,8 @@ def flights():
                 )
         except Exception as e:
             print(f"Error: {e}")
+            flash("No flights available for this trip.")
+            return redirect(url_for("home"))
     return render_template("flights.html", profile_Name = session["user"])
 
 @app.route('/flightsmulticity', methods=["GET", "POST"])
@@ -595,6 +598,7 @@ def flightsmulticity():
             )
         except Exception as e:
             print(f"{e}")
+            flash("No flights available for this trip.")
             return redirect(url_for("home"))
     else:
         return redirect(url_for("login"))
@@ -730,12 +734,22 @@ def booking():
             dataReturn["arrivalTime"] = str(request.args.get('arrivalTimeRound')).strip().split("T")[1]
             dataReturn["date"] = str(request.args.get('departureTimeRound')).strip().split("T")[0]
             dataReturn["price"] = request.args.get('priceReturn')
-            dataReturn["originLocation"] = request.args.get('origin_location')
-            dataReturn["destinationLocation"] = request.args.get('destination_location')
+            dataReturn["originLocation"] = request.args.get('destination_location')
+            dataReturn["destinationLocation"] = request.args.get('origin_location')
             dataList = [dataDeparture, dataReturn]
 
             passengerNum = int(str(request.args.get('passengerNum'))[0])
-            return render_template("booking.html", dataList=dataList, passengerNum=passengerNum, tripType=tripType, profile_Name = session["user"])
+            return render_template(
+                "booking.html", 
+                rowDict=rowTag, 
+                taken_seats=taken_seats,
+                taken_seats_json = json.dumps(list(taken_seats)),
+                quadrant_taken_json=quadrant_taken_json,
+                dataList=dataList, 
+                passengerNum=passengerNum, 
+                tripType=tripType, 
+                profile_Name = session["user"]
+                )
         elif tripType == "multi-city":
             try:
                 flightList = json.loads(request.args.get('chosenFlightList'))
@@ -756,7 +770,17 @@ def booking():
                 passengerNum = int(str(request.args.get('passengerNum'))[0])
                 print(dataList)
 
-                return render_template("booking.html", dataList=dataList, passengerNum=passengerNum, tripType=tripType, profile_Name = session["user"])
+                return render_template(
+                "booking.html",
+                rowDict=rowTag, 
+                taken_seats=taken_seats,
+                taken_seats_json = json.dumps(list(taken_seats)),
+                quadrant_taken_json=quadrant_taken_json,  
+                dataList=dataList, 
+                passengerNum=passengerNum, 
+                tripType=tripType, 
+                profile_Name = session["user"]
+                )
             except Exception as e:
                 print(f"{e}")
         # return redirect(url_for("home"))   
@@ -823,6 +847,29 @@ def profile():
         return render_template("profile.html", profile_Name = session["user"], user=current_user)
     else:
         return redirect(url_for("login"))
+    
+@app.route('/ticket/<booking_id>')
+def ticket(booking_id):
+    # Fetch flight details from your database or backend logic
+    flight_details = {
+        "flight_number": "AA1234",
+        "date": "2025-01-10",
+        "time": "12:30 PM",
+        "seat": "22A",
+        "boarding_ref": "XYZ98765",
+        "passenger": "John Doe",
+        "booking_id": booking_id,
+        "qr_code_url": f"/download_pdf/{booking_id}"  # QR code leads to the PDF
+    }
+
+    # Render the HTML with flight details
+    return render_template('ticket.html', flight_details=flight_details)
+
+@app.route('/download_pdf/<booking_id>')
+def download_pdf(booking_id):
+    # Serve the PDF file for the given booking ID
+    pdf_path = f"./generated_pdfs/{booking_id}.pdf"
+    return send_file(pdf_path, as_attachment=True)
 
 
 if __name__ == "__main__":
