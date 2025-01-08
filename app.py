@@ -11,7 +11,7 @@ import requests
 import time
 from flask_wtf.csrf import CSRFProtect
 import random
-import ast
+import threading
 
 load_dotenv('.env')
 app = Flask(__name__)
@@ -33,14 +33,16 @@ class users(db.Model):
     email = db.Column("email", db.String(100), nullable=False, unique=True) # we do check to find valid email by splitting end domain
     username = db.Column("username", db.String(20), nullable=False, unique=True)
     password = db.Column("password", db.String(18), nullable=False)
+    two_factor_auth = db.Column("two_factor_auth", db.Integer, nullable=False, default=0)
 
-    def __init__(self, icNumber, name, phoneNumber, email, username, password):
+    def __init__(self, icNumber, name, phoneNumber, email, username, password, two_factor_auth):
         self.icNumber = icNumber
         self.name = name
         self.phoneNumber = phoneNumber
         self.email = email
         self.username = username
         self.password = password
+        self.two_factor_auth = two_factor_auth
 
 class bookings(db.Model):
     bookingNum = db.Column("bookingNum", db.String(5), primary_key=True, nullable=False, unique=True)
@@ -157,7 +159,7 @@ def automatedEmail(issue, username):
 </body>
 </html>
 '''
-    msg.attach(MIMEText(text, "html"))
+    msg.attach(MIMEText(text, "html", "utf-8"))
 
     image_path = os.path.join(current_app.root_path, 'static', 'img', 'logo.png')
     if image_path and os.path.isfile(image_path):
@@ -266,15 +268,15 @@ def register():
                     flash("Invalid email!")
                 isCode = new_hpNo[0]
                 if isCode == "+":
-                    new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password)
+                    new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password, two_factor_auth=0)
                     db.session.add(new_user)
                     db.session.commit()   
                     return redirect(url_for("login"))
                 else:
                         flash("Please include country calling code!")
-        except:
+        except Exception as e:
             flash("Please enter a valid IC Number.")
-        
+            print(e)
     return render_template("register.html")
 
 @app.route('/login', methods = ["POST", "GET"])
@@ -284,6 +286,9 @@ def login():
         passwordInput = request.form["login-password"]
 
         if users.query.filter_by(username = usernameInput).first() and users.query.filter_by(username = usernameInput).first().password == passwordInput:
+            if users.query.filter_by(username=usernameInput).first().two_factor_auth == 1:
+                attempted_email = users.query.filter_by(username=usernameInput).first().email
+                return redirect(url_for("email_2fa", attempted_email=attempted_email))
             session.permanent = True
             session["user"] = usernameInput
             return redirect(url_for("home"))
@@ -609,6 +614,7 @@ def flightsmulticity():
 def settings():
     if "user" in session and session["user"] != "":
         current_user = users.query.filter_by(username=session["user"]).first()
+        isToggled = current_user.two_factor_auth
         if request.method == "POST":
             new_name = request.form.get("new-full-name")
             new_username = request.form.get("new-username")
@@ -633,9 +639,9 @@ def settings():
                 db.session.commit()
                 session["user"] = current_user.username
                 flash("Profile updated successfully!", "success")
-            return redirect(url_for("settings", profile_Name = session["user"], user=current_user))
+            return redirect(url_for("settings", profile_Name = session["user"], user=current_user, isToggled=isToggled))
         
-        return render_template("settings.html", profile_Name = session["user"], user=current_user)
+        return render_template("settings.html", profile_Name = session["user"], user=current_user, isToggled=isToggled)
     else:
         return redirect(url_for("login"))
     
@@ -653,6 +659,19 @@ def change_password():
         else:
             flash("Invalid current password. Please try again.", "error")
 
+        return redirect(url_for("settings"))
+    else:
+        return redirect(url_for("login"))
+
+@app.route('/toggleAuth', methods=["GET", "POST"])
+def toggleAuth():
+    if "user" in session and session["user"] != "":
+        if request.method == "POST":
+            isToggledOn = request.form.get('toggle-2fa')
+            curUser = users.query.filter_by(username=session["user"]).first()
+            if isToggledOn == "2fa-on" and curUser.two_factor_auth == 0:
+                curUser.two_factor_auth = 1
+                db.session.commit()
         return redirect(url_for("settings"))
     else:
         return redirect(url_for("login"))
@@ -819,8 +838,7 @@ def forgotpassword():
         </body>
         </html>
         '''
-            msg.attach(MIMEText(text, "html", "utf-8"))
-            msg['Content-Type'] = 'text/html; charset=utf-8'
+            msg.attach(MIMEText(text, "html"))
 
             image_path = os.path.join(current_app.root_path, 'static', 'img', 'logo.png')
             if image_path and os.path.isfile(image_path):
@@ -874,6 +892,84 @@ def download_pdf(booking_id):
     pdf_path = f"./generated_pdfs/{booking_id}.pdf"
     return send_file(pdf_path, as_attachment=True)
 
+@app.route('/email_2fa', methods=["GET", "POST"])
+def email_2fa():
+    try:
+        attempted_email = request.args.get('attempted_email')
+        if attempted_email is None:
+            return redirect(url_for("login"))
+
+        user = users.query.filter_by(email=attempted_email).first().username
+
+        # Generate a new code only if one doesn't already exist in the session
+        if "auth_code" not in session:
+            session["auth_code"] = "".join(
+                str(chr(random.randint(65, 90))) if random.randint(0, 1) else str(random.randint(0, 9))
+                for _ in range(4)
+            )
+            threading.Thread(
+                target=send2FAEmail, 
+                args=(user, attempted_email, session["auth_code"], current_app.root_path)
+            ).start()
+
+        if request.method == "POST":
+            attemptedCode = request.form.get('auth-code')
+            print("User Entered Code:", attemptedCode)
+            print("Stored Code:", session["auth_code"])
+
+            if attemptedCode == session["auth_code"]:
+                session.permanent = True
+                session["user"] = user
+                session.pop("auth_code", None)  # Remove the code after successful login
+                return redirect(url_for("home"))
+
+        return render_template('email_2fa.html', email=attempted_email, user=user)
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return redirect(url_for("login"))
+
+
+def send2FAEmail(user, attempted_email, code, app_root):
+    time.sleep(5)
+    msg = MIMEMultipart()
+    msg['Subject'] = "Email Two Factor Authentication"
+    text = f'''
+<html>
+<body>
+    <p>Dear <b>{user}</b>,</p>
+    <p>This is your 4 DIGIT CODE. Enter it on our website to proceed with verification.</p>
+    <b>{code}</b>
+    <p>It is advised to not share this code with anyone.</p>
+    <br>
+    <p>Didn't send this request? You can change your password in the Change Password menu!</p>
+    <p>
+        Regards,<br>
+        <b>SkyLink Co.<b>
+    </p>
+</body>
+</html>
+'''
+    msg.attach(MIMEText(text, "html", "utf-8"))
+
+    image_path = os.path.join(app_root, 'static', 'img', 'logo.png')
+    if image_path and os.path.isfile(image_path):
+        with open(image_path, "rb") as img_file:
+            img = MIMEImage(img_file.read(), name=os.path.basename(image_path))
+            msg.attach(img)
+
+    to = [attempted_email]
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587
+    smtp_user = os.getenv("EMAIL_USER")  # Use environment variables
+    smtp_password = os.getenv("EMAIL_PASSWORD").replace('\xa0', ' ')
+
+    with smtplib.SMTP(smtp_server, smtp_port) as smtp:
+        smtp.starttls()
+        smtp.login(smtp_user, smtp_password)
+        smtp.sendmail(from_addr=smtp_user, to_addrs=to, msg=msg.as_string())
+
+    flash(f"An email has been sent to {attempted_email}!")
 
 if __name__ == "__main__":
     with app.app_context():
