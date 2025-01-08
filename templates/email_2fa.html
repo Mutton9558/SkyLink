@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email 2FA</title>
+</head>
+<body>
+    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Skylink logo" width="200px" height="200px">
+    <h1>This user ({{ user|safe }}) has enabled Two Factor Authentication via Email.</h1>
+    <div id="user-authentication-cont">
+        <h3>Please enter the 4 digit code that we have sent to your email ({{ email|safe }}) to verify.</h3>
+        <p>It may take 2-3 minutes to send an email.</p>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                    <p id="flashed-msg">*{{ msg }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form id="auth-form" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div id="auth-input-box">
+                <input type="text" name="auth-code">
+            </div>
+            <button type="submit" id="auth-submit-btn">Verify</button>
+        </form>
+        <a href="/login" id="auth-return-btn">Return to Login</a>
+    </div>
+</body>
+</html>

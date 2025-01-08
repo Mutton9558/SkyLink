@@ -159,15 +159,11 @@
                 required
                 style="margin-bottom: 1em"
               />
-              {% with messages = get_flashed_messages() %} {% if messages %} {%
-              for msg in messages %}
-              <p>*{{ msg }}</p>
-              {% endfor %} {% endif %} {% endwith %}
               <input type="submit" name="submit" id="submit" />
             </form>
             <div id="email-2fa-cont">
               <p>Turn on Email 2FA?</p>
-              <form id="email-2fa" method="POST" action="{{ url_for('home') }}">
+              <form id="email-2fa" method="POST" action="{{ url_for('toggleAuth') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div id="inputs-2fa">
                   <input type="radio" id="toggleEmail2FAOn" name="toggle-2fa" value="2fa-on" style="height: 15px;width: 15px;" required>
@@ -178,6 +174,13 @@
                 <input type="submit" name="submit" id="submit" />
               </form>
             </div>
+            {% with messages = get_flashed_messages() %} 
+              {% if messages %} 
+                {% for msg in messages %}
+                  <p>*{{ msg }}</p>
+                {% endfor %} 
+              {% endif %} 
+            {% endwith %}
           </div>
           <div class="preferences">
             <div
