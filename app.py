@@ -614,6 +614,7 @@ def flightsmulticity():
 def settings():
     if "user" in session and session["user"] != "":
         current_user = users.query.filter_by(username=session["user"]).first()
+        isToggled = current_user.two_factor_auth
         if request.method == "POST":
             new_name = request.form.get("new-full-name")
             new_username = request.form.get("new-username")
@@ -638,9 +639,9 @@ def settings():
                 db.session.commit()
                 session["user"] = current_user.username
                 flash("Profile updated successfully!", "success")
-            return redirect(url_for("settings", profile_Name = session["user"], user=current_user))
+            return redirect(url_for("settings", profile_Name = session["user"], user=current_user, isToggled=isToggled))
         
-        return render_template("settings.html", profile_Name = session["user"], user=current_user)
+        return render_template("settings.html", profile_Name = session["user"], user=current_user, isToggled=isToggled)
     else:
         return redirect(url_for("login"))
     
@@ -667,11 +668,11 @@ def toggleAuth():
     if "user" in session and session["user"] != "":
         if request.method == "POST":
             isToggledOn = request.form.get('toggle-2fa')
-            if isToggledOn == "2fa-on":
-                curUser = users.query.filter_by(username=session["user"]).first()
+            curUser = users.query.filter_by(username=session["user"]).first()
+            if isToggledOn == "2fa-on" and curUser.two_factor_auth == 0:
                 curUser.two_factor_auth = 1
                 db.session.commit()
-        return redirect(url_for("home"))
+        return redirect(url_for("settings"))
     else:
         return redirect(url_for("login"))
 
@@ -969,7 +970,7 @@ def send2FAEmail(user, attempted_email, code, app_root):
         smtp.sendmail(from_addr=smtp_user, to_addrs=to, msg=msg.as_string())
 
     flash(f"An email has been sent to {attempted_email}!")
-    
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
