@@ -124,103 +124,53 @@
             <a>Sign Out</a>
           </div>
           <div class="profile-content-content">
-            <div class="recent-flight-list" id="cont-1">
-              <div
-                id="recent-flight-list-container"
-                class="departure-container"
-                style="justify-content: space-between;"
-              >
-                <div id="recent-flight-list-left">
-                  <h3 id="airline">Malaysia Airlines</h3>
-                  <h3 id="flight-number">MH1430</h3>
-                  <div id="recent-flight-date-time" style="text-align: center;">
-                    <div id="flight-date">
-                      <p>Flight Date</p>
-                      <p>28/02/2025</p>
-                    </div>
-                    <div id="recent-flight-times">
-                      <div id="departure-time">
-                        <p>Departure Time</p>
-                        <p>2:50 p.m</p>
+            {% if recent_flights %}
+              {% for flight in recent_flights %}
+              {% include 'includes/flight_details.html' %}
+              <div class="recent-flight-list" id="cont-{{ loop.index }}">
+                <div
+                  id="recent-flight-list-container"
+                  class="departure-container"
+                  style="justify-content: space-between;"
+                >
+                  <div id="recent-flight-list-left">
+                    <h3 id="airline">{{ flight.airline }}</h3>
+                    <h3 id="flight-number">{{ flight.flightNum }}</h3>
+                    <div id="recent-flight-date-time" style="text-align: center;">
+                      <div id="flight-date">
+                        <p>Flight Date</p>
+                        <p>{{ flight.date }}</p>
                       </div>
-                      <div id="arrival-time">
-                        <p>Arrival Time</p>
-                        <p>4:10 p.m</p>
+                      <div id="recent-flight-times">
+                        <div id="departure-time">
+                          <p>Departure Time</p>
+                          <p>{{ flight.departureTime }}</p>
+                        </div>
+                        <div id="arrival-time">
+                          <p>Arrival Time</p>
+                          <p>{{ flight.arrivalTime }}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div id="recent-flight-list-right">
-                  <p id="flight-price-text">RM 350</p>
-                  <div id="recent-button-actions">
-                    <button id="ticket-view">View ticket</button>
-                    <button id="flight-info" onclick="showDetails()">
-                      View details
-                    </button>
+                  <div id="recent-flight-list-right">
+                    <div id="recent-button-actions">
+                      <button id="ticket-view">View ticket</button>
+                      <button id="flight-info" data-toggle="flight-details" data-target="#flight-details-{{flight.bookingNum}}">
+                        View details
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+              {% endfor %}
+            {% else %}
+              <p style="display: flex; justify-content: center; align-items: center; position: relative; top: 2em;">No record found</p>
+            {% endif %}
           </div>
         </div>
       </div>
     </main>
-
-    <div id="flight-details" class="flight-details hidden">
-      <button
-        onclick="showDetails()"
-        class="transparent-button"
-        style="position: absolute; top: 1rem; left: 1rem"
-      >
-        X Close
-      </button>
-      <div class="flight-info" style="width: 85%; position: absolute; top: 3em;">
-        <h1>Flight Details</h1>
-        <h3 id="airline">Malaysia Airlines</h3>
-        <h3 id="flight-number">MH1430</h3>
-        <div id="recent-flight-date-time">
-          <div id="flight-date" style="align-items: flex-start;">
-            <p>Flight Date</p>
-            <p>28/02/2025</p>
-          </div>
-          <div class="recent-flight-departure-arrival-loc" style="display: flex; flex-direction: row; text-align: center; margin-bottom: 1em;">
-            <div class="departure-location">
-              <p>Departure Location</p>
-              <p>Kuala Lumpur International Airport (KUL)</p>
-            </div>
-            <div class="arrival-location">
-              <p>Arrival Location</p>
-              <p>Bayan Lepas International Airport (PEN)</p>
-            </div>
-          </div>
-          <div id="recent-flight-times" style="display: flex; flex-direction: row; justify-content: center; text-align: center;">
-            <div id="departure-time" style="margin-right: 3em;">
-              <p>Departure Time</p>
-              <p>2:50 p.m</p>
-            </div>
-            <div id="arrival-time" style="margin-left: 3em;">
-              <p>Arrival Time</p>
-              <p>4:10 p.m</p>
-            </div>
-          </div>
-
-          <div id="selected-seat">
-            <p>Your Seat Number</p>
-            <p>Seat 1A</p>
-          </div>
-        </div>
-        <div class="passengers-details" style="display: flex; flex-direction: row; justify-content: space-between;">
-        <div class="first-name">
-          <h2>First Name</h2>
-          <p>John</p>
-        </div>
-        <div class="last-name">
-          <h2>Last Name</h2>
-          <p>Doe</p>
-        </div>
-        <button id="cancel-flight-button" class="cancel-flight-button">Cancel Flight</button>
-      </div>
-    </div>
 
     <script>
       const theme = localStorage.getItem("theme");
@@ -230,9 +180,15 @@
         document.body.classList.add("light-mode");
       }
 
-      function showDetails() {
-        const flightDetails = document.getElementById("flight-details");
+      function showDetails(event) {
+        const targetId = event.target.getAttribute("data-target");
+        const flightDetails = document.querySelector(targetId);
         flightDetails.classList.toggle("hidden");
+      }
+
+      function hideDetails(event) {
+        const flightDetails = event.target.closest(".flight-details");
+        flightDetails.classList.add("hidden");
       }
 
       function hideCancelButtonIfPastDate() {
@@ -246,7 +202,39 @@
         }
       }
 
-      document.addEventListener("DOMContentLoaded", hideCancelButtonIfPastDate);
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll("[data-toggle='flight-details']").forEach(button => {
+          button.addEventListener("click", showDetails);
+        });
+        document.querySelectorAll("[data-dismiss='flight-details']").forEach(button => {
+          button.addEventListener("click", hideDetails);
+        });
+        hideCancelButtonIfPastDate();
+      });
     </script>
+    <footer>
+      <div class="footer-content">
+        <div class="left-content-footer">
+          <div id="items-footer-left">
+            <h3>Explore</h3>
+            <a href="#">About Us</a>
+            <a href="#">Our Partners</a>
+            <a href="#">Special Offers</a>
+            <a href="#">Credits</a>
+          </div>
+        </div>
+        <div class="right-content-footer">
+          <div id="items-footer-right">
+            <h3>Need Help?</h3>
+            <a href="/support">Customer Service</a>
+            <a href="#">Contact Us</a>
+            <a href="#">FAQs</a>
+          </div>
+        </div>
+      </div>
+      <div id="copyright-footer">
+        <p>© 2024 Skylink. All Rights Reserved.</p>
+      </div>
+    </footer>
   </body>
 </html>

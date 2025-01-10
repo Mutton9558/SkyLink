@@ -865,7 +865,8 @@ def forgotpassword():
 def profile():
     if "user" in session and session["user"] != "":
         current_user = users.query.filter_by(username=session["user"]).first()
-        return render_template("profile.html", profile_Name = session["user"], user=current_user)
+        recent_flights = bookings.query.filter_by(icNum=current_user.icNumber).all()
+        return render_template("profile.html", profile_Name=session["user"], user=current_user, recent_flights=recent_flights)
     else:
         return redirect(url_for("login"))
     
