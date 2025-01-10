@@ -13,11 +13,12 @@
   background-color: white;
   width: 80%;
   position: relative;
+  top: 5em;
   border-radius: 1em;
 }
 
 #profile-background{
-  width: 63em;
+  width: 73.5em;
   margin: 1em;
   border-radius: 1em;
 }
