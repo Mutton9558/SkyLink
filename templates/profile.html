@@ -121,7 +121,7 @@
         <div class="profile-content">
           <div class="profile-content-header">
             <a>Flight Booking History</a>
-            <a>Sign Out</a>
+            <a>Log Out</a>
           </div>
           <div class="profile-content-content">
             {% if recent_flights %}
@@ -165,7 +165,7 @@
               </div>
               {% endfor %}
             {% else %}
-              <p style="display: flex; justify-content: center; align-items: center; position: relative; top: 2em;">No record found</p>
+              <p style="display: flex; justify-content: center; align-items: center; padding: 1em;">No record found</p>
             {% endif %}
           </div>
         </div>
@@ -192,14 +192,15 @@
       }
 
       function hideCancelButtonIfPastDate() {
-        const flightDateElement = document.querySelector("#flight-date p:nth-child(2)");
-        const cancelButton = document.getElementById("cancel-flight-button");
-        const flightDate = new Date(flightDateElement.textContent.split('/').reverse().join('-'));
+        const cancelButtons = document.querySelectorAll("#cancel-flight-button");
         const currentDate = new Date();
 
-        if (flightDate < currentDate) {
-          cancelButton.style.display = "none";
-        }
+        cancelButtons.forEach(button => {
+          const flightDate = new Date(button.getAttribute("data-flight-date").split('/').reverse().join('-'));
+          if (flightDate < currentDate) {
+            button.style.display = "none";
+          }
+        });
       }
 
       document.addEventListener("DOMContentLoaded", () => {
