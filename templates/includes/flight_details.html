@@ -1,0 +1,57 @@
+<div id="wrapper-{{flight.bookingNum}}">
+    <div id="flight-details-{{flight.bookingNum}}" class="flight-details hidden">
+        <button
+        data-dismiss="flight-details"
+        class="transparent-button"
+        style="position: absolute; top: 1rem; left: 1rem"
+        >
+        X Close
+        </button>
+        <div class="flight-info" style="width: 85%; position: absolute; top: 3em;">
+        <h1>Flight Details</h1>
+        <h3 id="airline">{{ flight.airline }}</h3>
+        <h3 id="flight-number">{{ flight.flightNum }}</h3>
+        <div id="recent-flight-date-time">
+            <div id="flight-date" style="align-items: flex-start;">
+            <p>Flight Date</p>
+            <p>{{ flight.date }}</p>
+            </div>
+            <div class="recent-flight-departure-arrival-loc" style="display: flex; flex-direction: row; text-align: center; margin-bottom: 1em;">
+            <div class="departure-location">
+                <p><strong>Departure Location</strong></p>
+                <p>{{ flight.origin }}</p>
+            </div>
+            <div class="arrival-location">
+                <p><strong>Arrival Location</strong></p>
+                <p>{{ flight.destination }}</p>
+            </div>
+            </div>
+            <div id="recent-flight-times" style="display: flex; flex-direction: row; justify-content: center; text-align: center;">
+            <div id="departure-time" style="margin-right: 3em;">
+                <p>Departure Time</p>
+                <p>{{ flight.departureTime }}</p>
+            </div>
+            <div id="arrival-time" style="margin-left: 3em;">
+                <p>Arrival Time</p>
+                <p>{{ flight.arrivalTime }}</p>
+            </div>
+            </div>
+
+            <div id="selected-seat">
+            <p>Your Seat Number</p>
+            <p>{{ flight.seatNum }}</p>
+            </div>
+        </div>
+        <div class="passengers-details" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div class="first-name">
+            <h2>First Name</h2>
+            <p>{{ flight.firstName }}</p>
+        </div>
+        <div class="last-name">
+            <h2>Last Name</h2>
+            <p>{{ flight.surname }}</p>
+        </div>
+        <button id="cancel-flight-button" class="cancel-flight-button" data-flight-date="{{ flight.date }}">Cancel Flight</button>
+        </div>
+    </div>
+</div>
