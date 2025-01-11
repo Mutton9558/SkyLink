@@ -198,178 +198,212 @@
     {% if tripType == "one-way" %}
         <div class="container">
             <h1>Flight Booking</h1>
-            {% for i in range(1, passengerNum+1) %}
-                <h1>Passenger {{ i }}</h1>
-                <form method="POST" id="booking-form" action="{{ url_for('booking') }}">
-                    <label for="first_name">First Name</label>
-                    <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
+            
+            <form method="POST" id="form-booking">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                {% for i in range(1, passengerNum+1) %}
+                    <h1>Passenger {{ i }}</h1>
+                    <div id="booking-form">
 
-                    <label for="surname">Surname</label>
-                    <input type="text" id="surname" name="surname" placeholder="Enter your surname" required>
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first-name-{{ i }}" placeholder="Enter your first name" required>
 
-                    <label for="ic_number">IC Number</label>
-                    <input type="text" id="ic_number" name="ic_number" placeholder="Enter your IC number" required>
+                        <label for="surname">Surname</label>
+                        <input type="text" id="surname" name="surname-{{ i }}" placeholder="Enter your surname" required>
 
-                    <label for="phone_number">Phone Number</label>
-                    <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
+                        <label for="ic_number">IC Number</label>
+                        <input type="text" id="ic_number" name="ic-number-{{ i }}" placeholder="Enter your IC number" required>
 
-                    <div class="preset-values">
-                        <p><strong>Start Location:</strong> {{ dataList[0]["originLocation"] }}</p>
-                        <p><strong>Destination:</strong> {{ dataList[0]["destinationLocation"] }}</p>
-                        <p><strong>Departure Time:</strong> {{ dataList[0]["departureTime"]}}</p>
-                        <p><strong>Estimated Arrival:</strong> {{ dataList[0]["arrivalTime"]}}</p>
-                        <p><strong>Flight Date:</strong> {{ dataList[0]["date"] }}</p>
-                        <p><strong>Airline:</strong> {{ dataList[0]["airline"] }}</p>
-                        <p><strong>Flight Number:</strong> {{ dataList[0]["flightNumber"] }}</p>
-                    </div>
+                        <label for="phone_number">Phone Number</label>
+                        <input type="text" id="phone_number" name="phone-number-{{ i }}" placeholder="Enter your phone number" required>
 
-                    <label for="seat_selection">Choose a Seat</label>
-                    <div id="wrapper-seat">
-                        <button type="button" id="choose_seat" onclick="showForm(event)">
-                            Choose Seat
-                        </button>
-                        <div id="seating-form">
-                            <div id="seats">
-                                <h3 id="seat-form-header">Choose your seat:</h3>
-                                <button type="button" id="closeBtn" onclick="closeForm(event)"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAmdJREFUSEu1lr9uE0EQxn+TuKJLn2dA4g2QFQTCsqCgsEBKSQsFD0QRUkQIWYiOBoGUxijwKoCFiSiG+7N33r3dub2NxBXWeXdv/nzzfTMrDB8BtPmJtvqFaDtx3i355vxT9XviCQ3t/2UCSmcRrnoBgWXPjzob3uBADrQoGwtqK4jovCBoslC+rxbq0egycNhMGNkRpLRqUaA5SA2aeuSyLSTQ3JP+RpG3IBfRZiiJQHQFVTEcu7K3ho4E1iq8QPk+qhjhHspL4DHwdyynXMYHwDfgNvADZA56ZZBxWZ17B8yAD8ByjLWB45DuvSROgdeO+z+BE2DTG20/WgBrhBnKtcBS4WNSMJ0sp9RM4FT3zrcI88rZxkHZOm0zvQYeAJ86mM2yRxuJhaYhCCuUc5f51sF+DFyAzATdKTz0ndaopJtJvV72PAXeuE+2wC3gAOQP6P0Kic9js8V3NaFzRRRZAWcghy6bHcgJ6GVJDpMayCDSlTaOOXTrO0e4y47t6bqGqyarjXn8rMm2teFD/Ru0JtWXpIQSkcRQ2zSvIT4XEKV22mj6GOEClRloxOiQXCHRcg2kmwmhnGAOsnGoLEDWoGVyGjKt7b0BNkYDCU6ZWvabkl++nJzqlvkVuAP8Arkr6FV8JWvM+y3zfdVqH42x3JvHBgNUjgR9W9X1levbwQQJwBEWKM+BJ/GQCMmTy3jkepJgodUfXerhLChR/cjozms3peNuYvTXlCmhW6XxSRcZ7nO/2Z0rLYVwUk6IvejqM1oZP8Hm3TWNaN28c1nmLejKiTKB1QVG7XY7MPKf7tWZ8jZB/AM5t/Em43PHggAAAABJRU5ErkJggg=="/></button>
-                                <div id="column-left-seats">
-                                    {% for i in range(0, 10) %}
-                                        <div id="row-left-seats">
-                                            {% for j in range(0, 3) %}
-                                                {% set seat_id = i ~ '-' ~ rowDict[j] %}
-                                                <!-- onclick="sendId('{{ seat_id }}')" -->
-                                                {% if seat_id in taken_seats %}
-                                                    <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn taken">{{ seat_id }}</button>
-                                                {% else %}
-                                                    <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn">{{ seat_id }}</button>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                                <div id="column-right-seats">
-                                    {% for i in range(0, 10) %}
-                                        <div id="row-right-seats">
-                                            {% for j in range(3, 6) %}
-                                                {% set seat_id = i ~ '-' ~ rowDict[j] %}
-                                                <!-- onclick="sendId('{{ seat_id }}')" -->
-                                                {% if seat_id in taken_seats %}
-                                                    <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn taken">{{ seat_id }}</button>
-                                                {% else %}
-                                                    <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn">{{ seat_id }}</button>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    {% endfor %}
+                        <div class="preset-values">
+                            <p><strong>Start Location:</strong> {{ dataList[0]["originLocation"] }}</p>
+                            <p><strong>Destination:</strong> {{ dataList[0]["destinationLocation"] }}</p>
+                            <p><strong>Departure Time:</strong> {{ dataList[0]["departureTime"]}}</p>
+                            <p><strong>Estimated Arrival:</strong> {{ dataList[0]["arrivalTime"]}}</p>
+                            <p><strong>Flight Date:</strong> {{ dataList[0]["date"] }}</p>
+                            <p><strong>Airline:</strong> {{ dataList[0]["airline"] }}</p>
+                            <p><strong>Flight Number:</strong> {{ dataList[0]["flightNumber"] }}</p>
+                        </div>
+
+                        <label for="seat_selection">Choose a Seat</label>
+                        <div id="wrapper-seat">
+                            <button type="button" data-seat-2='{{ quadrant_taken_json | safe }}' id="choose_seat" onclick="showForm(event, this)">
+                                Choose Seat
+                            </button>
+                            <div id="seating-form">
+                                <div id="seats">
+                                    <h3 id="seat-form-header">Choose your seat:</h3>
+                                    <button type="button" id="closeBtn" onclick="closeForm(event)"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAmdJREFUSEu1lr9uE0EQxn+TuKJLn2dA4g2QFQTCsqCgsEBKSQsFD0QRUkQIWYiOBoGUxijwKoCFiSiG+7N33r3dub2NxBXWeXdv/nzzfTMrDB8BtPmJtvqFaDtx3i355vxT9XviCQ3t/2UCSmcRrnoBgWXPjzob3uBADrQoGwtqK4jovCBoslC+rxbq0egycNhMGNkRpLRqUaA5SA2aeuSyLSTQ3JP+RpG3IBfRZiiJQHQFVTEcu7K3ho4E1iq8QPk+qhjhHspL4DHwdyynXMYHwDfgNvADZA56ZZBxWZ17B8yAD8ByjLWB45DuvSROgdeO+z+BE2DTG20/WgBrhBnKtcBS4WNSMJ0sp9RM4FT3zrcI88rZxkHZOm0zvQYeAJ86mM2yRxuJhaYhCCuUc5f51sF+DFyAzATdKTz0ndaopJtJvV72PAXeuE+2wC3gAOQP6P0Kic9js8V3NaFzRRRZAWcghy6bHcgJ6GVJDpMayCDSlTaOOXTrO0e4y47t6bqGqyarjXn8rMm2teFD/Ru0JtWXpIQSkcRQ2zSvIT4XEKV22mj6GOEClRloxOiQXCHRcg2kmwmhnGAOsnGoLEDWoGVyGjKt7b0BNkYDCU6ZWvabkl++nJzqlvkVuAP8Arkr6FV8JWvM+y3zfdVqH42x3JvHBgNUjgR9W9X1levbwQQJwBEWKM+BJ/GQCMmTy3jkepJgodUfXerhLChR/cjozms3peNuYvTXlCmhW6XxSRcZ7nO/2Z0rLYVwUk6IvejqM1oZP8Hm3TWNaN28c1nmLejKiTKB1QVG7XY7MPKf7tWZ8jZB/AM5t/Em43PHggAAAABJRU5ErkJggg=="/></button>
+                                    <div id="column-left-seats">
+                                        {% for i in range(0, 10) %}
+                                            <div id="row-left-seats">
+                                                {% for j in range(0, 3) %}
+                                                    {% set seat_id = i ~ '-' ~ rowDict[j] %}
+                                                    <!-- onclick="sendId('{{ seat_id }}')" -->
+                                                    {% if seat_id in taken_seats %}
+                                                        <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats_json | safe }}' data-seat-2='{{ quadrant_taken_json | safe }}' onclick="processInformation(event, this)" class="seat-btn taken">{{ seat_id }}</button>
+                                                    {% else %}
+                                                        <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats_json | safe }}' data-seat-2='{{ quadrant_taken_json | safe }}' onclick="processInformation(event, this)" class="seat-btn">{{ seat_id }}</button>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div id="column-right-seats">
+                                        {% for i in range(0, 10) %}
+                                            <div id="row-right-seats">
+                                                {% for j in range(3, 6) %}
+                                                    {% set seat_id = i ~ '-' ~ rowDict[j] %}
+                                                    <!-- onclick="sendId('{{ seat_id }}')" -->
+                                                    {% if seat_id in taken_seats %}
+                                                        <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats_json | safe }}' data-seat-2='{{ quadrant_taken_json | safe }}' onclick="processInformation(event, this)" class="seat-btn taken">{{ seat_id }}</button>
+                                                    {% else %}
+                                                        <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats_json | safe }}' data-seat-2='{{ quadrant_taken_json | safe }}' onclick="processInformation(event, this)" class="seat-btn">{{ seat_id }}</button>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
+                            <input type="hidden" id="seat-input" class="seat-input" name="chosen-seat">
+                            <p id="chosen-seat-text"></p>
                         </div>
-                        <input type="hidden" id="seat-input" name="chosen-seat">
-                        <p id="chosen-seat-text"></p>
                     </div>
-                </form>
-            {% endfor %}
-            <button type="submit">Submit Booking</button>
+                {% endfor %}
+                <button type="submit">Submit Booking</button>
+            </form>
         </div>
     {% elif tripType == "round-trip" %}
     <div class="container">
         <h1>Flight Booking</h1>
-        {% for i in range(1, passengerNum+1) %}
-            <h1>Passenger {{ i }}</h1>
-            <form method="POST" id="booking-form" action="{{ url_for('booking') }}">
-                <label for="first_name">First Name</label>
-                <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
+        
+        <form method="POST" id="form-booking">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            {% for i in range(1, passengerNum+1) %}
+                <h1>Passenger {{ i }}</h1>
+                <div id="booking-form">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first-name-{{ i }}" placeholder="Enter your first name" required>
 
-                <label for="surname">Surname</label>
-                <input type="text" id="surname" name="surname" placeholder="Enter your surname" required>
+                    <label for="surname">Surname</label>
+                    <input type="text" id="surname" name="surname-{{ i }}" placeholder="Enter your surname" required>
 
-                <label for="ic_number">IC Number</label>
-                <input type="text" id="ic_number" name="ic_number" placeholder="Enter your IC number" required>
+                    <label for="ic_number">IC Number</label>
+                    <input type="text" id="ic_number" name="ic-number-{{ i }}" placeholder="Enter your IC number" required>
 
-                <label for="phone_number">Phone Number</label>
-                <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" id="phone_number" name="phone-number-{{ i }}" placeholder="Enter your phone number" required>
 
-                {% for data in dataList %}
-                    <div class="preset-values">
-                        {% if data == dataList[0] %}
-                            <p>Departure Flight</p>
-                        {% else %}
-                            <p>Return Flight</p>
-                        {% endif %}
-                        <p><strong>Start Location:</strong> {{ data["originLocation"] }}</p>
-                        <p><strong>Destination:</strong> {{ data["destinationLocation"] }}</p>
-                        <p><strong>Departure Time:</strong> {{ data["departureTime"]}}</p>
-                        <p><strong>Estimated Arrival:</strong> {{ data["arrivalTime"]}}</p>
-                        <p><strong>Flight Date:</strong> {{ data["date"] }}</p>
-                        <p><strong>Airline:</strong> {{ data["airline"] }}</p>
-                        <p><strong>Flight Number:</strong> {{ data["flightNumber"] }}</p>
+                    {% for data in dataList %}
+                        <div class="preset-values">
+                            {% if data == dataList[0] %}
+                                <p>Departure Flight</p>
+                            {% else %}
+                                <p>Return Flight</p>
+                            {% endif %}
+                            <p><strong>Start Location:</strong> {{ data["originLocation"] }}</p>
+                            <p><strong>Destination:</strong> {{ data["destinationLocation"] }}</p>
+                            <p><strong>Departure Time:</strong> {{ data["departureTime"]}}</p>
+                            <p><strong>Estimated Arrival:</strong> {{ data["arrivalTime"]}}</p>
+                            <p><strong>Flight Date:</strong> {{ data["date"] }}</p>
+                            <p><strong>Airline:</strong> {{ data["airline"] }}</p>
+                            <p><strong>Flight Number:</strong> {{ data["flightNumber"] }}</p>
 
-                        <label for="seat_selection">Choose a Seat</label>
-                        <div id="wrapper-seat">
-                            <button type="button" id="choose_seat" onclick="showForm(event)">
-                                Choose Seat
-                            </button>
-                            <div id="seating-form">
-                                <div id="seats">
-                                    <h3 id="seat-form-header">Choose your seat:</h3>
-                                    <button type="button" id="closeBtn" onclick="closeForm(event)"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAmdJREFUSEu1lr9uE0EQxn+TuKJLn2dA4g2QFQTCsqCgsEBKSQsFD0QRUkQIWYiOBoGUxijwKoCFiSiG+7N33r3dub2NxBXWeXdv/nzzfTMrDB8BtPmJtvqFaDtx3i355vxT9XviCQ3t/2UCSmcRrnoBgWXPjzob3uBADrQoGwtqK4jovCBoslC+rxbq0egycNhMGNkRpLRqUaA5SA2aeuSyLSTQ3JP+RpG3IBfRZiiJQHQFVTEcu7K3ho4E1iq8QPk+qhjhHspL4DHwdyynXMYHwDfgNvADZA56ZZBxWZ17B8yAD8ByjLWB45DuvSROgdeO+z+BE2DTG20/WgBrhBnKtcBS4WNSMJ0sp9RM4FT3zrcI88rZxkHZOm0zvQYeAJ86mM2yRxuJhaYhCCuUc5f51sF+DFyAzATdKTz0ndaopJtJvV72PAXeuE+2wC3gAOQP6P0Kic9js8V3NaFzRRRZAWcghy6bHcgJ6GVJDpMayCDSlTaOOXTrO0e4y47t6bqGqyarjXn8rMm2teFD/Ru0JtWXpIQSkcRQ2zSvIT4XEKV22mj6GOEClRloxOiQXCHRcg2kmwmhnGAOsnGoLEDWoGVyGjKt7b0BNkYDCU6ZWvabkl++nJzqlvkVuAP8Arkr6FV8JWvM+y3zfdVqH42x3JvHBgNUjgR9W9X1levbwQQJwBEWKM+BJ/GQCMmTy3jkepJgodUfXerhLChR/cjozms3peNuYvTXlCmhW6XxSRcZ7nO/2Z0rLYVwUk6IvejqM1oZP8Hm3TWNaN28c1nmLejKiTKB1QVG7XY7MPKf7tWZ8jZB/AM5t/Em43PHggAAAABJRU5ErkJggg=="/></button>
-                                    <div id="column-left-seats">
-                                        {% for i in range(0, 10) %}
-                                            <div id="row-left-seats">
-                                                {% for j in range(0, 3) %}
-                                                    {% set seat_id = i ~ '-' ~ rowDict[j] %}
-                                                    <!-- onclick="sendId('{{ seat_id }}')" -->
-                                                    {% if seat_id in taken_seats %}
-                                                        <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn taken">{{ seat_id }}</button>
-                                                    {% else %}
-                                                        <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn">{{ seat_id }}</button>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    <div id="column-right-seats">
-                                        {% for i in range(0, 10) %}
-                                            <div id="row-right-seats">
-                                                {% for j in range(3, 6) %}
-                                                    {% set seat_id = i ~ '-' ~ rowDict[j] %}
-                                                    <!-- onclick="sendId('{{ seat_id }}')" -->
-                                                    {% if seat_id in taken_seats %}
-                                                        <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn taken">{{ seat_id }}</button>
-                                                    {% else %}
-                                                        <button type="button" id="{{ seat_id }}" onclick="processInformation(event)" class="seat-btn">{{ seat_id }}</button>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </div>
-                                        {% endfor %}
+                            <label for="seat_selection">Choose a Seat</label>
+                            <div id="wrapper-seat">
+                                {% if data == dataList[0] %}
+                                    <button type="button" id="choose_seat" data-seat-2='{{ quadrant_taken_json[0] | tojson | safe }}' onclick="showForm(event, this)">
+                                        Choose Seat
+                                    </button>
+                                {% else %}
+                                    <button type="button" id="choose_seat" data-seat-2='{{ quadrant_taken_json[1] | tojson | safe }}' onclick="showForm(event, this)">
+                                        Choose Seat
+                                    </button>
+                                {% endif %}
+                                <div id="seating-form">
+                                    <div id="seats">
+                                        <h3 id="seat-form-header">Choose your seat:</h3>
+                                        <button type="button" id="closeBtn" onclick="closeForm(event)"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAmdJREFUSEu1lr9uE0EQxn+TuKJLn2dA4g2QFQTCsqCgsEBKSQsFD0QRUkQIWYiOBoGUxijwKoCFiSiG+7N33r3dub2NxBXWeXdv/nzzfTMrDB8BtPmJtvqFaDtx3i355vxT9XviCQ3t/2UCSmcRrnoBgWXPjzob3uBADrQoGwtqK4jovCBoslC+rxbq0egycNhMGNkRpLRqUaA5SA2aeuSyLSTQ3JP+RpG3IBfRZiiJQHQFVTEcu7K3ho4E1iq8QPk+qhjhHspL4DHwdyynXMYHwDfgNvADZA56ZZBxWZ17B8yAD8ByjLWB45DuvSROgdeO+z+BE2DTG20/WgBrhBnKtcBS4WNSMJ0sp9RM4FT3zrcI88rZxkHZOm0zvQYeAJ86mM2yRxuJhaYhCCuUc5f51sF+DFyAzATdKTz0ndaopJtJvV72PAXeuE+2wC3gAOQP6P0Kic9js8V3NaFzRRRZAWcghy6bHcgJ6GVJDpMayCDSlTaOOXTrO0e4y47t6bqGqyarjXn8rMm2teFD/Ru0JtWXpIQSkcRQ2zSvIT4XEKV22mj6GOEClRloxOiQXCHRcg2kmwmhnGAOsnGoLEDWoGVyGjKt7b0BNkYDCU6ZWvabkl++nJzqlvkVuAP8Arkr6FV8JWvM+y3zfdVqH42x3JvHBgNUjgR9W9X1levbwQQJwBEWKM+BJ/GQCMmTy3jkepJgodUfXerhLChR/cjozms3peNuYvTXlCmhW6XxSRcZ7nO/2Z0rLYVwUk6IvejqM1oZP8Hm3TWNaN28c1nmLejKiTKB1QVG7XY7MPKf7tWZ8jZB/AM5t/Em43PHggAAAABJRU5ErkJggg=="/></button>
+                                        <div id="column-left-seats">
+                                            {% for i in range(0, 10) %}
+                                                <div id="row-left-seats">
+                                                    {% for j in range(0, 3) %}
+                                                        {% set seat_id = i ~ '-' ~ rowDict[j] %}
+                                                        <!-- onclick="sendId('{{ seat_id }}')" -->
+                                                        {% if seat_id in (taken_seats[0] if data == dataList[0] else taken_seats[1]) %}
+                                                            {% if data == dataList[0] %}
+                                                                <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats[0] | tojson | safe }}' data-seat-2='{{ quadrant_taken_json[0] | tojson | safe }}' onclick='processInformation(event, this)' class="seat-btn taken">{{ seat_id }}</button>
+                                                            {% else %}
+                                                                <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats[1] | tojson | safe }}' data-seat-2='{{ quadrant_taken_json[1] | tojson | safe }}' onclick='processInformation(event, this)' class="seat-btn taken">{{ seat_id }}</button>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            {% if data == dataList[0] %}
+                                                                <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats[0] | tojson | safe }}' data-seat-2='{{ quadrant_taken_json[0] | tojson | safe }}' onclick='processInformation(event, this)' class="seat-btn">{{ seat_id }}</button>
+                                                            {% else %}
+                                                                <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats[1] | tojson | safe }}' data-seat-2='{{ quadrant_taken_json[1] | tojson | safe }}' onclick='processInformation(event, this)' class="seat-btn">{{ seat_id }}</button>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div id="column-right-seats">
+                                            {% for i in range(0, 10) %}
+                                                <div id="row-right-seats">
+                                                    {% for j in range(3, 6) %}
+                                                        {% set seat_id = i ~ '-' ~ rowDict[j] %}
+                                                        <!-- onclick="sendId('{{ seat_id }}')" -->
+                                                        {% if seat_id in (taken_seats[0] if data == dataList[0] else taken_seats[1]) %}
+                                                            {% if data == dataList[0] %}
+                                                                <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats[0] | tojson | safe }}' data-seat-2='{{ quadrant_taken_json[0] | tojson | safe }}' onclick='processInformation(event, this)' class="seat-btn taken">{{ seat_id }}</button>
+                                                            {% else %}
+                                                                <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats[1] | tojson | safe }}' data-seat-2='{{ quadrant_taken_json[1] | tojson | safe }}' onclick='processInformation(event, this)' class="seat-btn taken">{{ seat_id }}</button>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            {% if data == dataList[0] %}
+                                                                <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats[0] | tojson | safe }}' data-seat-2='{{ quadrant_taken_json[0] | tojson | safe }}' onclick='processInformation(event, this)' class="seat-btn">{{ seat_id }}</button>
+                                                            {% else %}
+                                                                <button type="button" id="{{ seat_id }}" data-seat-1='{{ taken_seats[1] | tojson | safe }}' data-seat-2='{{ quadrant_taken_json[1] | tojson | safe }}' onclick='processInformation(event, this)' class="seat-btn">{{ seat_id }}</button>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
                                     </div>
                                 </div>
+                                <input type="hidden" id="seat-input" class="seat-input" name="chosen-seat">
+                                <p id="chosen-seat-text"></p>
                             </div>
-                            <input type="hidden" id="seat-input" name="chosen-seat">
-                            <p id="chosen-seat-text"></p>
                         </div>
                     {% endfor %}
-            </form>
-        {% endfor %}
-        <button type="submit">Submit Booking</button>
+                </div>
+            {% endfor %}
+            <button type="submit">Submit Booking</button>
+        </form>
     </div>
 {% elif tripType == "multi-city" %}
     <div class="container">
         <h1>Flight Booking</h1>
-        {% for i in range(1, passengerNum+1) %}
+        <form method="POST" id="form-booking">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            {% for i in range(1, passengerNum+1) %}
             <h1>Passenger {{ i }}</h1>
-            <form method="POST" id="booking-form" action="{{ url_for('booking') }}">
+            <div id="booking-form">
                 <label for="first_name">First Name</label>
-                <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
+                <input type="text" id="first_name" name="first-name-{{ i }}" placeholder="Enter your first name" required>
 
                 <label for="surname">Surname</label>
                 <input type="text" id="surname" name="surname" placeholder="Enter your surname" required>
 
                 <label for="ic_number">IC Number</label>
-                <input type="text" id="ic_number" name="ic_number" placeholder="Enter your IC number" required>
+                <input type="text" id="ic_number" name="ic-number-{{ i }}" placeholder="Enter your IC number" required>
 
                 <label for="phone_number">Phone Number</label>
-                <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
+                <input type="text" id="phone_number" name="phone-number-{{ i }}" placeholder="Enter your phone number" required>
 
                 {% for data in dataList %}
                     <div class="preset-values">
@@ -422,21 +456,42 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" id="seat-input" name="chosen-seat">
+                            <input type="hidden" id="seat-input" class="seat-input" name="chosen-seat">
                             <p id="chosen-seat-text"></p>
                         </div>
-                    {% endfor %}
-            </form>
-        {% endfor %}
-        <button type="submit">Submit Booking</button>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <button type="submit">Submit Booking</button>
+        </form>
     </div>
 {% endif %}
     <script>
         // Quadrants and seat disabling logic
-        const quadrantTaken = JSON.parse('{{ quadrant_taken_json | safe }}');
-        const takenSeats = JSON.parse('{{ taken_seats_json | safe }}');
+        // const quadrantTaken = JSON.parse('{{ quadrant_taken_json | safe }}');
+        // const takenSeats = JSON.parse('{{ taken_seats_json | safe }}');
+        document.getElementById("form-booking").addEventListener("submit", function(event){
+            let seatInput = document.querySelectorAll(".seat-input");
+            let hasAlerted = false
+            seatInput.forEach((input, index)=>{
+                if(!input.value.trim() && !hasAlerted){
+                    alert("Please choose a seat!");
+                    event.preventDefault();
+                    hasAlerted = true
+                } else {
+                    input.name = `chosen-seat-${index}`
+                }
+            });
+        });
         
-        function seatAvailability(){
+        function debug(button){
+            console.log((button.getAttribute('data-seat-1')));
+            console.log((button.getAttribute('data-seat-2')))
+        };
+
+        function seatAvailability(quadrantTaken){
+            console.log(quadrantTaken)
             const seats = document.querySelectorAll('.seat-btn');
     
             seats.forEach(seat => {
@@ -535,11 +590,8 @@
             SEATTAKEN.forEach(seat => {
                 seat.disabled = true;
             });
-        document.addEventListener('DOMContentLoaded', () => {
-            seatAvailability()
-        });
 
-        function removeOldSeats(form){
+        function removeOldSeats(form, takenSeats, quadrantTaken){
             const seats = document.querySelectorAll('.seat-btn');
             const selectedSeatText = form.querySelector('#chosen-seat-text');
             const selectedSeatInput = form.querySelector('#seat-input');
@@ -571,11 +623,16 @@
             });
         }
 
-        function processInformation(event) {
+        function processInformation(event, button) {
+            console.log(button.getAttribute('data-seat-1'));
+            console.log(JSON.parse(button.getAttribute('data-seat-1')));
+            const takenSeats = JSON.parse(button.getAttribute('data-seat-1'));
+            const quadrantTaken = JSON.parse(button.getAttribute('data-seat-2'));
+            seatAvailability(quadrantTaken)
             clickedBtn = event.target;
             buttonId = event.target.id;
             const selectedForm = clickedBtn.closest('#wrapper-seat');
-            removeOldSeats(selectedForm)
+            removeOldSeats(selectedForm, takenSeats, quadrantTaken)
             const [rowChosenSeat, colChosenSeat] = buttonId.split('-');
             const rowNum = parseInt(rowChosenSeat, 10);
             const colNum = colChosenSeat.charCodeAt(0) - 'A'.charCodeAt(0);
@@ -598,7 +655,7 @@
                 posY = 'top';
                 quadrantTaken.top += 1;
             };
-            seatAvailability();
+            seatAvailability(quadrantTaken);
             newChosen = document.querySelectorAll(`[id="${buttonId}"]`);
             newChosen.forEach((b)=>{
                 b.classList.add('taken');
@@ -610,7 +667,8 @@
             seatText.innerHTML = `You chose seat: ${buttonId}!`;
         }
 
-        function showForm(event){
+        function showForm(event, button){
+            seatAvailability(JSON.parse(button.getAttribute('data-seat-2')))
             btn = event.target;
             const form = btn.closest('#wrapper-seat');
             const closestSeatForm = form.querySelector("#seating-form");
