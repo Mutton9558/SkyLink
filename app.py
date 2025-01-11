@@ -35,6 +35,8 @@ class users(db.Model):
     password = db.Column("password", db.String(18), nullable=False)
     two_factor_auth = db.Column("two_factor_auth", db.Integer, nullable=False, default=0)
 
+    bookings = db.relationship('bookings', backref='user', lazy=True)
+
     def __init__(self, icNumber, name, phoneNumber, email, username, password, two_factor_auth):
         self.icNumber = icNumber
         self.name = name
@@ -55,10 +57,13 @@ class bookings(db.Model):
     departureTime = db.Column("departureTime", db.String(5), nullable=False)
     arrivalTime = db.Column("arrivalTime", db.String(5), nullable=False)
     date = db.Column("date", db.String(12), nullable=False)
+    airline = db.Column("airline", db.String(20), nullable=False)
     flightNum = db.Column("flightNum", db.String(7), nullable=False)
     seatNum = db.Column("seatNum", db.String(4), nullable=False)
 
-    def _init_(self, bookingNum, firstName, surname, icNum, phoneNum, origin, destination, departureTime, arrivalTime, date, flightNum, seatNum):
+    bookingUserID = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def _init_(self, bookingNum, firstName, surname, icNum, phoneNum, origin, destination, departureTime, arrivalTime, date, airline, flightNum, seatNum, bookingUserID):
         self.bookingNum = bookingNum
         self.firstName = firstName
         self.surname = surname
@@ -69,8 +74,10 @@ class bookings(db.Model):
         self.departureTime = departureTime
         self.arrivalTime = arrivalTime
         self.date = date
+        self.airline = airline
         self.flightNum = flightNum
         self.seatNum = seatNum
+        self.bookingUserID = bookingUserID
 
 token_cache = {
     "access_token": None,
@@ -117,8 +124,9 @@ def get_flights(origin, destination, passengers, date, access_token):
     if response.status_code == 200:
         return response.json()
     else:
+        print(f"Failed to fetch flights: {response.status_code}, {response.text}")
         raise Exception(f"Failed to fetch flights: {response.status_code}, {response.text}")
-
+    
 def extract_flight_details(flights_data, max_results=5):
     flight_details = []
     for offer in flights_data.get("data", [])[:max_results]:  # Limit to max_results
@@ -682,7 +690,7 @@ def booking():
         dataList = []
         tripType = request.args.get('trip')
         rowTag = {0:"A", 1:"B", 2:"C", 3:"D", 4:"E", 5:"F"}
-        taken_seats = {seat.seatNum for seat in bookings.query.all()}
+        
 
         quadrants = {
             "top": {f"{i}-{rowTag[j]}" for i in range(0, 5) for j in range(0, 6)},
@@ -690,9 +698,6 @@ def booking():
             "bottom": {f"{i}-{rowTag[j]}" for i in range(5, 10) for j in range(0, 6)},
             "right": {f"{i}-{rowTag[j]}" for i in range(0, 10) for j in range(3, 6)},
         }
-
-        quadrant_taken = {key: len(taken_seats & seats) for key, seats in quadrants.items()}
-        quadrant_taken_json = json.dumps(quadrant_taken)
 
         if tripType == "one-way":
             data = {}
@@ -706,14 +711,40 @@ def booking():
             data["destinationLocation"] = request.args.get('destination_location')
             dataList.append(data)
 
-            passengerNum = int(str(request.args.get('passengerNum'))[0])
+            taken_seats = {seat.seatNum for seat in bookings.query.filter_by(flightNum=dataList[0]["flightNumber"]).all()}
+            quadrant_taken = {key: len(taken_seats & seats) for key, seats in quadrants.items()}
+            quadrant_taken_json = json.dumps(quadrant_taken)
 
+            passengerNum = int(str(request.args.get('passengerNum'))[0])
             if request.method == "POST":
-                first_name = request.form.get("first_name")
-                surname = request.form.get("surname")
-                ic_number = request.form.get("ic_number")
-                phone_number = request.form.get("phone_number")
-                seat_selection = request.form.get("seat_selection")
+                for i in range(1, passengerNum+1):
+                    bookingNum = "".join(str(chr(random.randint(65, 90))) if random.randint(0, 1) else str(random.randint(0, 9)) for _ in range(5))
+                    while (bookings.query.filter_by(bookingNum = bookingNum).first()):
+                        bookingNum = "".join(str(chr(random.randint(65, 90))) if random.randint(0, 1) else str(random.randint(0, 9)) for _ in range(5))
+                    first_name = request.form.get(f"first-name-{i}")
+                    surname = request.form.get(f"surname-{i}")
+                    ic_number = request.form.get(f"ic-number-{i}")
+                    phone_number = request.form.get(f"phone-number-{i}")
+                    seat_selection = request.form.get(f"chosen-seat-{i-1}")
+
+                    new_booking = bookings(
+                        bookingNum = bookingNum,
+                        firstName = first_name,
+                        surname = surname,
+                        icNum = ic_number,
+                        phoneNum = phone_number,
+                        origin = dataList[0]["originLocation"],
+                        destination = dataList[0]["destinationLocation"],
+                        departureTime = dataList[0]["departureTime"],
+                        arrivalTime = dataList[0]["arrivalTime"],
+                        date = dataList[0]["date"],
+                        airline = dataList[0]["airline"],
+                        flightNum = dataList[0]["flightNumber"],
+                        seatNum = seat_selection,
+                        bookingUserID = users.query.filter_by(username=session["user"]).first().id
+                        )
+                    db.session.add(new_booking)
+                    db.session.commit()
                 flash("Booking details captured successfully!", "success")
                 return redirect(url_for("booking"))
             
@@ -728,15 +759,7 @@ def booking():
                 tripType=tripType, 
                 profile_Name = session["user"]
             )
-            # Assuming static/preset data for now
-            # start_location = "Kuala Lumpur International Airport (KUL)"
-            # destination = "Singapore Changi Airport (SIN)"
-            # departure_time = "10:00 AM"
-            # estimated_arrival = "12:30 PM"
-            # flight_date = "2024-12-20"
-            # flight_number = "MH123"
 
-            # Process data or save to the database (if needed)
         elif tripType == "round-trip":
             dataDeparture = {}
             dataReturn = {}
@@ -748,6 +771,9 @@ def booking():
             dataDeparture["price"] = request.args.get('priceDeparture')
             dataDeparture["originLocation"] = request.args.get('origin_location')
             dataDeparture["destinationLocation"] = request.args.get('destination_location')
+
+            taken_seats_departure = {seat.seatNum for seat in bookings.query.filter_by(flightNum=dataDeparture["flightNumber"]).all()}
+            quadrant_taken_departure = {key: len(taken_seats_departure & seats) for key, seats in quadrants.items()}
             
             dataReturn["airline"] = request.args.get('airlineReturn')
             dataReturn["flightNumber"] = request.args.get('flightNumReturn')
@@ -757,6 +783,13 @@ def booking():
             dataReturn["price"] = request.args.get('priceReturn')
             dataReturn["originLocation"] = request.args.get('destination_location')
             dataReturn["destinationLocation"] = request.args.get('origin_location')
+
+            taken_seats_return = {seat.seatNum for seat in bookings.query.filter_by(flightNum=dataReturn["flightNumber"]).all()}
+            quadrant_taken_return = {key: len(taken_seats_return & seats) for key, seats in quadrants.items()}
+            quadrant_taken = [quadrant_taken_departure, quadrant_taken_return]
+            taken_seats = [list(taken_seats_departure), list(taken_seats_return)]
+            quadrant_taken_json = quadrant_taken
+
             dataList = [dataDeparture, dataReturn]
 
             passengerNum = int(str(request.args.get('passengerNum'))[0])
@@ -764,7 +797,7 @@ def booking():
                 "booking.html", 
                 rowDict=rowTag, 
                 taken_seats=taken_seats,
-                taken_seats_json = json.dumps(list(taken_seats)),
+                taken_seats_json = None,
                 quadrant_taken_json=quadrant_taken_json,
                 dataList=dataList, 
                 passengerNum=passengerNum, 
@@ -865,7 +898,7 @@ def forgotpassword():
 def profile():
     if "user" in session and session["user"] != "":
         current_user = users.query.filter_by(username=session["user"]).first()
-        recent_flights = bookings.query.filter_by(icNum=current_user.icNumber).all()
+        recent_flights = bookings.query.filter_by(bookingUserID=current_user.id).all()
         return render_template("profile.html", profile_Name=session["user"], user=current_user, recent_flights=recent_flights)
     else:
         return redirect(url_for("login"))
