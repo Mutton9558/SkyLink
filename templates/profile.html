@@ -121,42 +121,90 @@
         <div class="profile-content">
           <div class="profile-content-header">
             <a>Flight Booking History</a>
-            <a>Log Out</a>
+            <div
+              class="view-content-option"
+              style="display: flex; align-items: center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                style="fill: currentColor; margin-right: 0.25em"
+                viewBox="0 0 24 24"
+                class="viewGrid"
+              >
+                <path
+                  d="M4 11h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1zm10 0h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1zM4 21h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1zm10 0h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1z"
+                ></path>
+              </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                style="fill: currentColor; margin-left: 0.25em"
+                class="viewList"
+              >
+                <path
+                  d="M4 6h2v2H4zm0 5h2v2H4zm0 5h2v2H4zm16-8V6H8.023v2H18.8zM8 11h12v2H8zm0 5h12v2H8z"
+                ></path>
+              </svg>
+            </div>
           </div>
           <div class="profile-content-content">
             {% if recent_flights %}
-              {% for flight in recent_flights %}
-              {% include 'includes/flight_details.html' %}
+            <div class="recent-flight-list-container">
+              {% for flight in recent_flights %} {% include
+              'includes/flight_details.html' %}
               <div class="recent-flight-list" id="cont-{{ loop.index }}">
                 <div
                   id="recent-flight-list-container"
                   class="departure-container"
-                  style="justify-content: space-between;"
+                  style="justify-content: space-between"
                 >
                   <div id="recent-flight-list-left">
                     <h3 id="airline">{{ flight.airline }}</h3>
                     <h3 id="flight-number">{{ flight.flightNum }}</h3>
-                    <div id="recent-flight-date-time" style="text-align: center;">
+                    <div
+                      id="recent-flight-date-time"
+                      style="text-align: center"
+                    >
                       <div id="flight-date">
                         <p>Flight Date</p>
                         <p>{{ flight.date }}</p>
                       </div>
                       <div id="recent-flight-times">
-                        <div id="departure-time">
-                          <p>Departure Time</p>
+                        <div id="departure-time" style="margin-right: 0.5em">
+                          <p><strong>Departure Time</strong></p>
                           <p>{{ flight.departureTime }}</p>
                         </div>
-                        <div id="arrival-time">
-                          <p>Arrival Time</p>
+                        <div id="arrival-time" style="margin-left: 0.5em">
+                          <p><strong>Arrival Time</strong></p>
                           <p>{{ flight.arrivalTime }}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div id="recent-flight-list-right">
+                    <div
+                      id="recent-flight-name"
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        flex-wrap: wrap;
+                        text-align: center;
+                      "
+                    >
+                      <p><strong>First name / Surname</strong></p>
+                      <p>{{ flight.firstName }} / {{ flight.surname }}</p>
+                    </div>
                     <div id="recent-button-actions">
                       <button id="ticket-view">View ticket</button>
-                      <button id="flight-info" data-toggle="flight-details" data-target="#flight-details-{{flight.bookingNum}}">
+                      <button
+                        id="flight-info"
+                        data-toggle="flight-details"
+                        data-target="#flight-details-{{flight.bookingNum}}"
+                      >
                         View details
                       </button>
                     </div>
@@ -164,8 +212,18 @@
                 </div>
               </div>
               {% endfor %}
+            </div>
             {% else %}
-              <p style="display: flex; justify-content: center; align-items: center; padding: 1em;">No record found</p>
+            <p
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 1em;
+              "
+            >
+              No record found
+            </p>
             {% endif %}
           </div>
         </div>
@@ -183,7 +241,7 @@
       function showDetails(event) {
         const targetId = event.target.getAttribute("data-target");
         const flightDetails = document.querySelector(targetId);
-        flightDetails.classList.toggle("hidden");
+        flightDetails.classList.remove("hidden");
       }
 
       function hideDetails(event) {
@@ -192,25 +250,56 @@
       }
 
       function hideCancelButtonIfPastDate() {
-        const cancelButtons = document.querySelectorAll("#cancel-flight-button");
+        const cancelButtons = document.querySelectorAll(
+          "#cancel-flight-button"
+        );
         const currentDate = new Date();
 
-        cancelButtons.forEach(button => {
-          const flightDate = new Date(button.getAttribute("data-flight-date").split('/').reverse().join('-'));
+        cancelButtons.forEach((button) => {
+          const flightDate = new Date(
+            button
+              .getAttribute("data-flight-date")
+              .split("/")
+              .reverse()
+              .join("-")
+          );
           if (flightDate < currentDate) {
             button.style.display = "none";
           }
         });
       }
 
+      function setViewOption(view) {
+        const flightListContainer = document.querySelector(
+          ".recent-flight-list-container"
+        );
+        if (view === "grid") {
+          flightListContainer.classList.add("grid-view");
+          flightListContainer.classList.remove("list-view");
+        } else if (view === "list") {
+          flightListContainer.classList.add("list-view");
+          flightListContainer.classList.remove("grid-view");
+        }
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll("[data-toggle='flight-details']").forEach(button => {
-          button.addEventListener("click", showDetails);
-        });
-        document.querySelectorAll("[data-dismiss='flight-details']").forEach(button => {
-          button.addEventListener("click", hideDetails);
-        });
+        document
+          .querySelectorAll("[data-toggle='flight-details']")
+          .forEach((button) => {
+            button.addEventListener("click", showDetails);
+          });
+        document
+          .querySelectorAll("[data-dismiss='flight-details']")
+          .forEach((button) => {
+            button.addEventListener("click", hideDetails);
+          });
         hideCancelButtonIfPastDate();
+        document
+          .querySelector(".viewGrid")
+          .addEventListener("click", () => setViewOption("grid"));
+        document
+          .querySelector(".viewList")
+          .addEventListener("click", () => setViewOption("list"));
       });
     </script>
     <footer>
