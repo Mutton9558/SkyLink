@@ -139,6 +139,25 @@
   justify-items: center;
 }
 
+.grid-view {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1em;
+  justify-items: center;
+}
+
+.list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  align-items: center;
+}
+
+.view-content-option {
+  display: flex;
+  align-items: center;
+}
+
 #recent-flight-list-container h3,
 #recent-flight-list-container p{
   font-size: medium;
@@ -306,6 +325,10 @@ body.dark-mode .transparent-button{
     gap: 1em;
     justify-items: center;
   }
+
+  .view-content-option {
+    display: none;
+  }
 }
 
 @media only screen and (min-width: 501px) and (max-width: 650px) {
@@ -356,5 +379,19 @@ body.dark-mode .transparent-button{
     grid-template-columns: repeat(2, 1fr);
     gap: 1em;
     justify-items: center;
-  }  
+  } 
+
+  .grid-view {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1em;
+    justify-items: center;
+  }
+  
+  .list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+  }
 }
