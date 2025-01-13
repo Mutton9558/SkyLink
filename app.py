@@ -60,10 +60,11 @@ class bookings(db.Model):
     airline = db.Column("airline", db.String(20), nullable=False)
     flightNum = db.Column("flightNum", db.String(7), nullable=False)
     seatNum = db.Column("seatNum", db.String(4), nullable=False)
+    isCheckedIn = db.Column("isCheckedIn", db.Boolean, nullable=False)
 
     bookingUserID = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    def _init_(self, bookingNum, firstName, surname, icNum, phoneNum, origin, destination, departureTime, arrivalTime, date, airline, flightNum, seatNum, bookingUserID):
+    def _init_(self, bookingNum, firstName, surname, icNum, phoneNum, origin, destination, departureTime, arrivalTime, date, airline, flightNum, seatNum, isCheckedIn, bookingUserID):
         self.bookingNum = bookingNum
         self.firstName = firstName
         self.surname = surname
@@ -77,6 +78,7 @@ class bookings(db.Model):
         self.airline = airline
         self.flightNum = flightNum
         self.seatNum = seatNum
+        self.isCheckedIn = isCheckedIn
         self.bookingUserID = bookingUserID
 
 token_cache = {
@@ -592,7 +594,7 @@ def flightsmulticity():
                     print(chosenFlightList)
                     chosenFlightListSerialized = json.dumps(chosenFlightList)
                     stopsSerialized = json.dumps(stops)
-
+                print(passengerNum)
                 return redirect(url_for("booking",
                                         chosenFlightList=chosenFlightListSerialized,
                                         trip=trip,
@@ -741,6 +743,7 @@ def booking():
                         airline = dataList[0]["airline"],
                         flightNum = dataList[0]["flightNumber"],
                         seatNum = seat_selection,
+                        isCheckedIn = False,
                         bookingUserID = users.query.filter_by(username=session["user"]).first().id
                         )
                     db.session.add(new_booking)
@@ -808,9 +811,14 @@ def booking():
             try:
                 flightList = json.loads(request.args.get('chosenFlightList'))
                 stops = json.loads(request.args.get('stops'))
-                print(flightList)
+                taken_seats = []
+                quadrant_taken_json = []
+                passengerNum = int(str(request.args.get('passengerNum'))[0])
+                print(passengerNum)
                 for i in range(0, len(stops)):
                     data = {}
+                    quadrantTakenFlight = {}
+                    takenSeatFlight = {}
                     data["airline"] = flightList[i]['airline']
                     data["flightNumber"] = flightList[i]['flightNumber']
                     data["departureTime"] = str(flightList[i]['departureTime']).strip().split("T")[1]
@@ -820,15 +828,20 @@ def booking():
                     data["originLocation"] = stops[i]["origin"]
                     data["destinationLocation"] = stops[i]["destination"]
                     dataList.append(data)
+                    takenSeatFlight = {seat.seatNum for seat in bookings.query.filter_by(flightNum=flightList[i]['flightNumber']).all()}
+                    quadrantTakenFlight = {key: len(takenSeatFlight & seats) for key, seats in quadrants.items()}
+                    taken_seats.append(list(takenSeatFlight))
+                    quadrant_taken_json.append(quadrantTakenFlight)
+
                 
-                passengerNum = int(str(request.args.get('passengerNum'))[0])
-                print(dataList)
+                print(taken_seats)
+                print(quadrant_taken_json)
 
                 return render_template(
                 "booking.html",
                 rowDict=rowTag, 
                 taken_seats=taken_seats,
-                taken_seats_json = json.dumps(list(taken_seats)),
+                taken_seats_json = None,
                 quadrant_taken_json=quadrant_taken_json,  
                 dataList=dataList, 
                 passengerNum=passengerNum, 
