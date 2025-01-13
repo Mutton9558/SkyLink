@@ -1172,9 +1172,6 @@ footer{
 }
 
 #departure-form input, #return-form input{
-    cursor: not-allowed;
-    position: absolute;
-    right: 0;
     margin-right: 0.4rem;
     background-color: #e9ecef;
     color: #6c757d;
@@ -1183,14 +1180,15 @@ footer{
 }
 
 #departure-form label, #return-form label{
-    position: absolute;
-    left: 0;
     margin-left: 0.4rem;
 }
 
 #return-form div, #departure-form div{
-    margin-top: 2rem;
+    margin-top: 1rem;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     position: relative;
 }
 
