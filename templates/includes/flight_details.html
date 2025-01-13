@@ -88,13 +88,14 @@
           <h2>Last Name</h2>
           <p>{{ flight.surname }}</p>
         </div>
-        <button
+        <a
           id="cancel-flight-button"
           class="cancel-flight-button"
           data-flight-date="{{ flight.date }}"
+          href='{{ url_for("cancel_flight", bookingNum = flight.bookingNum) }}'
         >
           Cancel Flight
-        </button>
+        </a>
       </div>
     </div>
   </div>

@@ -719,10 +719,13 @@ def booking():
 
             passengerNum = int(str(request.args.get('passengerNum'))[0])
             if request.method == "POST":
+                bookingUserID = users.query.filter_by(username=session["user"]).first().id
                 for i in range(1, passengerNum+1):
-                    bookingNum = "".join(str(chr(random.randint(65, 90))) if random.randint(0, 1) else str(random.randint(0, 9)) for _ in range(5))
-                    while (bookings.query.filter_by(bookingNum = bookingNum).first()):
-                        bookingNum = "".join(str(chr(random.randint(65, 90))) if random.randint(0, 1) else str(random.randint(0, 9)) for _ in range(5))
+                    uniqueBookingNum = False
+                    while (uniqueBookingNum == False):
+                            bookingNum = "".join(str(chr(random.randint(65, 90))) if random.randint(0, 1) else str(random.randint(0, 9)) for _ in range(5))
+                            if not bookings.query.filter_by(bookingNum=bookingNum).first():
+                                uniqueBookingNum = True
                     first_name = request.form.get(f"first-name-{i}")
                     surname = request.form.get(f"surname-{i}")
                     ic_number = request.form.get(f"ic-number-{i}")
@@ -744,12 +747,12 @@ def booking():
                         flightNum = dataList[0]["flightNumber"],
                         seatNum = seat_selection,
                         isCheckedIn = False,
-                        bookingUserID = users.query.filter_by(username=session["user"]).first().id
+                        bookingUserID = bookingUserID
                         )
                     db.session.add(new_booking)
                     db.session.commit()
                 flash("Booking details captured successfully!", "success")
-                return redirect(url_for("booking"))
+                return redirect(url_for("home"))
             
             return render_template(
                 "booking.html",
@@ -793,9 +796,57 @@ def booking():
             taken_seats = [list(taken_seats_departure), list(taken_seats_return)]
             quadrant_taken_json = quadrant_taken
 
+            passengerNum = int(str(request.args.get('passengerNum'))[0])
             dataList = [dataDeparture, dataReturn]
 
-            passengerNum = int(str(request.args.get('passengerNum'))[0])
+            if request.method == "POST":
+                bookingUserID = users.query.filter_by(username=session["user"]).first().id
+                count = 0
+                for i in range(1, passengerNum+1):
+                    for j in range(0, len(dataList)):
+                        uniqueBookingNum = False
+                        while (uniqueBookingNum == False):
+                            bookingNum = "".join(str(chr(random.randint(65, 90))) if random.randint(0, 1) else str(random.randint(0, 9)) for _ in range(5))
+                            if not bookings.query.filter_by(bookingNum=bookingNum).first():
+                                uniqueBookingNum = True
+                        first_name = request.form.get(f"first-name-{i}")
+                        surname = request.form.get(f"surname-{i}")
+                        ic_number = request.form.get(f"ic-number-{i}")
+                        phone_number = request.form.get(f"phone-number-{i}")
+                        seat_selection = request.form.get(f"chosen-seat-{count}")#[j]
+                        origin = dataList[j]["originLocation"]
+                        destination = dataList[j]["destinationLocation"]
+                        departureTime = dataList[j]["departureTime"]
+                        arrivalTime = dataList[j]["arrivalTime"]
+                        date = dataList[j]["date"]
+                        airline = dataList[j]["airline"]
+                        flightNum = dataList[j]["flightNumber"]
+
+                        count += 1
+
+                        new_booking = bookings(
+                        bookingNum = bookingNum,
+                        firstName = first_name,
+                        surname = surname,
+                        icNum = ic_number,
+                        phoneNum = phone_number,
+                        origin = origin,
+                        destination = destination,
+                        departureTime = departureTime,
+                        arrivalTime = arrivalTime,
+                        date = date,
+                        airline = airline,
+                        flightNum = flightNum,
+                        seatNum = seat_selection,
+                        isCheckedIn = False,
+                        bookingUserID = bookingUserID
+                        )
+                        db.session.add(new_booking)
+                        db.session.commit()
+
+                flash("Booking details captured successfully!", "success")
+                return redirect(url_for("home"))
+
             return render_template(
                 "booking.html", 
                 rowDict=rowTag, 
@@ -814,7 +865,7 @@ def booking():
                 taken_seats = []
                 quadrant_taken_json = []
                 passengerNum = int(str(request.args.get('passengerNum'))[0])
-                print(passengerNum)
+
                 for i in range(0, len(stops)):
                     data = {}
                     quadrantTakenFlight = {}
@@ -833,9 +884,54 @@ def booking():
                     taken_seats.append(list(takenSeatFlight))
                     quadrant_taken_json.append(quadrantTakenFlight)
 
-                
-                print(taken_seats)
-                print(quadrant_taken_json)
+                if request.method == "POST":
+                    count = 0
+                    bookingUserID = users.query.filter_by(username=session["user"]).first().id
+                    for i in range(1, passengerNum+1):
+                        for j in range(0, len(dataList)):
+                            uniqueBookingNum = False
+                            while (uniqueBookingNum == False):
+                                bookingNum = "".join(str(chr(random.randint(65, 90))) if random.randint(0, 1) else str(random.randint(0, 9)) for _ in range(5))
+                                if not bookings.query.filter_by(bookingNum=bookingNum).first():
+                                    uniqueBookingNum = True
+                            first_name = request.form.get(f"first-name-{i}")
+                            surname = request.form.get(f"surname-{i}")
+                            ic_number = request.form.get(f"ic-number-{i}")
+                            phone_number = request.form.get(f"phone-number-{i}")
+                            seat_selection = request.form.get(f"chosen-seat-{count}")
+                            origin = dataList[j]["originLocation"]
+                            destination = dataList[j]["destinationLocation"]
+                            departureTime = dataList[j]["departureTime"]
+                            arrivalTime = dataList[j]["arrivalTime"]
+                            date = dataList[j]["date"]
+                            airline = dataList[j]["airline"]
+                            flightNum = dataList[j]["flightNumber"]
+                            
+                            count += 1
+
+                            new_booking = bookings(
+                            bookingNum = bookingNum,
+                            firstName = first_name,
+                            surname = surname,
+                            icNum = ic_number,
+                            phoneNum = phone_number,
+                            origin = origin,
+                            destination = destination,
+                            departureTime = departureTime,
+                            arrivalTime = arrivalTime,
+                            date = date,
+                            airline = airline,
+                            flightNum = flightNum,
+                            seatNum = seat_selection,
+                            isCheckedIn = False,
+                            bookingUserID = bookingUserID
+                            )
+                            db.session.add(new_booking)
+                            db.session.commit()
+
+                    flash("Booking details captured successfully!", "success")
+                    return redirect(url_for("home"))
+
 
                 return render_template(
                 "booking.html",
@@ -915,7 +1011,16 @@ def profile():
         return render_template("profile.html", profile_Name=session["user"], user=current_user, recent_flights=recent_flights)
     else:
         return redirect(url_for("login"))
-    
+
+@app.route('/cancel_flight')
+def cancel_flight():
+    booking_num = request.args.get('bookingNum')
+    if booking_num and bookings.query.filter_by(bookingNum = booking_num):
+        db.session.query(bookings).filter_by(bookingNum = booking_num).delete()
+        db.session.commit()
+    flash(f"Flight with booking number: {booking_num} cancelled!")
+    return redirect(url_for("home"))
+
 @app.route('/ticket/<booking_id>')
 def ticket(booking_id):
     # Fetch flight details from your database or backend logic
