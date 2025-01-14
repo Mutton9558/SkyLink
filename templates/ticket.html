@@ -11,47 +11,50 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-
+    
         .ticket-container {
             max-width: 600px;
-            margin: 50px auto;
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
-
+    
         .ticket-header {
             background: #2c3e50;
             color: white;
             padding: 20px;
             text-align: center;
         }
-
+    
         .ticket-header h1 {
             margin: 0;
             font-size: 24px;
         }
-
+    
         .ticket-body {
             padding: 20px;
         }
-
+    
         .ticket-info {
             margin-bottom: 20px;
         }
-
+    
         .ticket-info h2 {
             margin: 0 0 10px;
             font-size: 20px;
         }
-
+    
         .ticket-info p {
             margin: 5px 0;
             color: #555;
         }
-
+    
         .ticket-footer {
             background: #ecf0f1;
             text-align: center;
@@ -59,17 +62,7 @@
             font-size: 14px;
             color: #333;
         }
-
-        .qr-code {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        .qr-code canvas {
-            max-width: 150px;
-        }
-
+    
         .button {
             display: inline-block;
             background: #3498db;
@@ -82,27 +75,39 @@
             cursor: pointer;
             text-align: center;
         }
-
+    
         .button:hover {
             background: #2980b9;
         }
-
+    
         @media (max-width: 600px) {
             .ticket-container {
                 margin: 20px;
                 padding: 10px;
             }
-
+    
             .ticket-header h1 {
                 font-size: 18px;
             }
-
+    
             .button {
                 font-size: 14px;
                 padding: 8px 16px;
+                align-items: center;
             }
         }
-    </style>
+
+        .Download {
+            text-align: center;
+        }
+
+        .ticket-info {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20%;
+        }
+
+    </style>    
 </head>
 <body>
 <div class="ticket-container">
@@ -112,19 +117,15 @@
 
     <div class="ticket-body">
         <div class="ticket-info">
-            <h2>Flight: {{ flight_details['flight_number'] or 'N/A' }}</h2>
-            <p><strong>Date:</strong> {{ flight_details['date'] or 'N/A' }}</p>
-            <p><strong>Time:</strong> {{ flight_details['time'] or 'N/A' }}</p>
-            <p><strong>Seat:</strong> {{ flight_details['seat'] or 'N/A' }}</p>
-            <p><strong>Boarding Ref:</strong> {{ flight_details['boarding_ref'] or 'N/A' }}</p>
-            <p><strong>Passenger:</strong> {{ flight_details['passenger'] or 'N/A' }}</p>
+            <h2>Flight: {{ booking.flightNum }}</h2>
+            <p><strong>Date:</strong> {{ booking.date }}</p>
+            <p><strong>Time:</strong> {{ booking.departureTime }}</p>
+            <p><strong>Seat:</strong> {{ booking.seatNum }}</p>
+            <p><strong>Boarding Ref:</strong> {{ booking.bookingNum }}</p>
+            <p><strong>Passenger:</strong> {{ booking.firstName }}</p>
         </div>
 
-        <div class="qr-code">
-            <canvas id="qrCodeCanvas"></canvas>
-        </div>
-
-        <button class="button" aria-label="Download your boarding pass as a PDF">Download Boarding Pass</button>
+    <div class = "Download"> <button onclick="window.print()" class="button" aria-label="Download your boarding pass as a PDF">Download Boarding Pass</button> </div>
     </div>
 
     <div class="ticket-footer">
@@ -132,28 +133,5 @@
     </div>
 </div>
 
-<script>
-    // Generate QR Code
-    const bookingId = '{{ flight_details["booking_id"] or "12345" }}'; // Use a unique identifier for the booking
-    const pdfUrl = `/download_pdf/${bookingId}`; // Backend endpoint for the PDF
-
-    // Use QRCode library to generate the QR code
-    QRCode.toCanvas(
-        document.getElementById('qrCodeCanvas'), 
-        pdfUrl, 
-        { width: 150 },
-        function (error) {
-            if (error) {
-                console.error('Error generating QR code:', error);
-            }
-        }
-    );
-
-    // Download Button
-    document.querySelector('.button').addEventListener('click', (event) => {
-        event.preventDefault();
-        window.location.href = pdfUrl; // Redirect to the PDF download
-    });
-</script>
 </body>
 </html>
