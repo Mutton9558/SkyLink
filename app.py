@@ -343,21 +343,22 @@ def support():
 @app.route('/check-in', methods=["GET", "POST"])
 def check_in():
     if session["user"] and session["user"] != "":
-        # if request.method == "POST":
-            # ic_number = request.form.get("ic_number") 
-            # email = request.form.get("email")
+        if request.method=="POST":
+            bookingnum = request.form.get('booking_number')
+            surnamelast = request.form.get('surname')
 
-
-            # user = users.query.filter_by(icNumber=ic_number, email=email).first()
-
-            # if user:
-
-            #     flash(f"Check-in successful! Welcome, {user.name}.", "success")
-            #     return redirect(url_for("check_in"))
-            # else:
-
-            #     flash("Invalid IC Number or Email. Please try again.", "error")
-            #     return redirect(url_for("check_in"))
+            if bookings.query.filter_by(bookingNum = bookingnum).first() :
+                if bookings.query.filter_by(bookingNum = bookingnum).first().surname == surnamelast:
+                    booking = bookings.query.filter_by(bookingNum = bookingnum).first()
+                    booking.isCheckedIn = True
+                    db.session.commit()
+                    flash("Check-in successful!", "success")
+                    return redirect(url_for("home"))
+                else:
+                    flash("Check-in failed!", "danger")
+            else:
+                flash("Check-in failed!", "danger")
+                
         return render_template("check_in.html", profile_Name = session["user"])
     else:
         return redirect(url_for("register"))
@@ -1023,26 +1024,11 @@ def cancel_flight():
 
 @app.route('/ticket/<booking_id>')
 def ticket(booking_id):
-    # Fetch flight details from your database or backend logic
-    flight_details = {
-        "flight_number": "AA1234",
-        "date": "2025-01-10",
-        "time": "12:30 PM",
-        "seat": "22A",
-        "boarding_ref": "XYZ98765",
-        "passenger": "John Doe",
-        "booking_id": booking_id,
-        "qr_code_url": f"/download_pdf/{booking_id}"  # QR code leads to the PDF
-    }
+
+    booking = bookings.query.filter_by(bookingNum = booking_id).first()
 
     # Render the HTML with flight details
-    return render_template('ticket.html', flight_details=flight_details)
-
-@app.route('/download_pdf/<booking_id>')
-def download_pdf(booking_id):
-    # Serve the PDF file for the given booking ID
-    pdf_path = f"./generated_pdfs/{booking_id}.pdf"
-    return send_file(pdf_path, as_attachment=True)
+    return render_template('ticket.html', booking=booking)
 
 @app.route('/email_2fa', methods=["GET", "POST"])
 def email_2fa():
