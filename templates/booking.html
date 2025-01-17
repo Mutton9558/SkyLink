@@ -346,7 +346,7 @@
 
                         <label for="seat_selection">Choose a Seat</label>
                         <div id="wrapper-seat">
-                            <button type="button" data-seat-2='{{ quadrant_taken_json | safe }}' id="choose_seat" onclick="showForm(event, this)">
+                            <button type="button" data-seat-2='{{ quadrant_taken_json | safe }}' data-seat-3='{{ dataList[0]["flightNumber"] }}' id="choose_seat" onclick="showForm(event, this)">
                                 Choose Seat
                             </button>
                             <div id="seating-form">
@@ -432,11 +432,11 @@
                             <label for="seat_selection">Choose a Seat</label>
                             <div id="wrapper-seat">
                                 {% if data == dataList[0] %}
-                                    <button type="button" id="choose_seat" data-seat-2='{{ quadrant_taken_json[0] | tojson | safe }}' onclick="showForm(event, this)">
+                                    <button type="button" id="choose_seat" data-seat-2='{{ quadrant_taken_json[0] | tojson | safe }}' data-seat-3='{{ data["flightNumber"] }}' onclick="showForm(event, this)">
                                         Choose Seat
                                     </button>
                                 {% else %}
-                                    <button type="button" id="choose_seat" data-seat-2='{{ quadrant_taken_json[1] | tojson | safe }}' onclick="showForm(event, this)">
+                                    <button type="button" id="choose_seat" data-seat-2='{{ quadrant_taken_json[1] | tojson | safe }}' data-seat-3='{{ data["flightNumber"] }}' onclick="showForm(event, this)">
                                         Choose Seat
                                     </button>
                                 {% endif %}
@@ -534,7 +534,7 @@
 
                         <label for="seat_selection">Choose a Seat</label>
                         <div id="wrapper-seat">
-                            <button type="button" id="choose_seat" data-seat-2='{{ quadrant_taken_json[data] | tojson | safe }}' onclick="showForm(event, this)">
+                            <button type="button" id="choose_seat" data-seat-2='{{ quadrant_taken_json[data] | tojson | safe }}' data-seat-3='{{ dataList[data]["flightNumber"] }}' onclick="showForm(event, this)">
                                 Choose Seat
                             </button>
                             <div id="seating-form">
@@ -585,6 +585,7 @@
     </div>
 {% endif %}
     <script>
+        let flightNumsDict = {};
         // Quadrants and seat disabling logic
         // const quadrantTaken = JSON.parse('{{ quadrant_taken_json | safe }}');
         // const takenSeats = JSON.parse('{{ taken_seats_json | safe }}');
@@ -602,11 +603,6 @@
             });
         });
         
-        function debug(button){
-            console.log((button.getAttribute('data-seat-1')));
-            console.log((button.getAttribute('data-seat-2')))
-        };
-
         function seatAvailability(quadrantTaken){
             console.log(quadrantTaken)
             const seats = document.querySelectorAll('.seat-btn');
@@ -636,7 +632,6 @@
 
                 differenceHorizontal = Math.abs(quadrantTaken['left'] - quadrantTaken['right']);
                 differenceVertical = Math.abs(quadrantTaken['top'] - quadrantTaken['bottom']);
-                console.log(differenceHorizontal);
                 // Disable seats if a quadrant has 4 or more taken seats
                 // if (quadrant && quadrantTaken[quadrant] >= 4) {
                 //     seat.disabled = true;
@@ -709,13 +704,20 @@
             });
 
         function removeOldSeats(form, takenSeats, quadrantTaken, flightNum){
-            const seats = document.querySelectorAll('.seat-btn');
-            const selectedSeatText = form.querySelector('#chosen-seat-text');
+            const seats = form.querySelectorAll('.seat-btn');
             const selectedSeatInput = form.querySelector('#seat-input');
+            const seatForm = document.querySelectorAll(`[class*="${flightNum}"]`);
             seats.forEach((seat)=>{
                 flightNumSeat = seat.getAttribute('data-seat-3');
                 if(!takenSeats.hasOwnProperty(seat.id) && seat.classList.contains('taken') && selectedSeatInput.value === seat.id && flightNumSeat == flightNum){
-                    seat.classList.remove('taken')
+                    seatForm.forEach((f)=>{
+                    oldChosen = f.querySelector(`[id="${seat.id}"]`);
+                        if (oldChosen) {
+                            oldChosen.classList.remove('taken');
+                        } else {
+                            console.log("Does not exist")
+                        }
+                    });
                     const [row, col] = seat.id.split('-');
                     const r = parseInt(row, 10);
                     const c = col.charCodeAt(0) - 'A'.charCodeAt(0);
@@ -723,35 +725,41 @@
                     let y = null;
                     if (c < 3){
                         x = 'left';
+                        console.log(x);
                         quadrantTaken.left -= 1;
                     } ;
                     if (c >= 3){
                         x = 'right';
+                        console.log(x);
                         quadrantTaken.right -= 1;
                     };
                     if (r >= 5) {
                         y = 'bottom';
+                        console.log(y);
                         quadrantTaken.bottom -= 1;
                     };
                     if (r < 5 && c < 6) {
                         y = 'top';
+                        console.log(y);
                         quadrantTaken.top -= 1;
                     };
+                    return;
                 }
             });
         }
 
         function processInformation(event, button) {
-            console.log(button.getAttribute('data-seat-1'));
-            console.log(JSON.parse(button.getAttribute('data-seat-1')));
             const takenSeats = JSON.parse(button.getAttribute('data-seat-1'));
             const quadrantTaken = JSON.parse(button.getAttribute('data-seat-2'));
             const flightNum = button.getAttribute('data-seat-3');
-            seatAvailability(quadrantTaken)
+            if (!(flightNum in flightNumsDict)){
+                flightNumsDict[flightNum] = quadrantTaken;
+            }
+            seatAvailability(flightNumsDict[flightNum])
             clickedBtn = event.target;
             buttonId = event.target.id;
             const selectedForm = clickedBtn.closest('#wrapper-seat');
-            removeOldSeats(selectedForm, takenSeats, quadrantTaken, flightNum)
+            removeOldSeats(selectedForm, takenSeats, flightNumsDict[flightNum], flightNum)
             const [rowChosenSeat, colChosenSeat] = buttonId.split('-');
             const rowNum = parseInt(rowChosenSeat, 10);
             const colNum = colChosenSeat.charCodeAt(0) - 'A'.charCodeAt(0);
@@ -760,24 +768,22 @@
 
             if (colNum < 3){
                 posX = 'left';
-                quadrantTaken.left += 1;
+                flightNumsDict[flightNum].left += 1;
             } ;
             if (colNum >= 3){
                 posX = 'right';
-                quadrantTaken.right += 1;
+                flightNumsDict[flightNum].right += 1;
             };
             if (rowNum >= 5) {
                 posY = 'bottom';
-                quadrantTaken.bottom += 1;
+                flightNumsDict[flightNum].bottom += 1;
             };
             if (rowNum < 5 && colNum < 6) {
                 posY = 'top';
-                quadrantTaken.top += 1;
+                flightNumsDict[flightNum].top += 1;
             };
-            seatAvailability(quadrantTaken);
             seatForm = document.querySelectorAll(`[class*="${flightNum}"]`);
             seatForm.forEach((form)=>{
-                console.log(form.id)
                 newChosen = form.querySelector(`[id="${buttonId}"]`);
                 if (newChosen) {
                     newChosen.classList.add('taken');
@@ -791,10 +797,16 @@
             const seatInput = selectedForm.querySelector("#seat-input");
             seatInput.value = buttonId;
             seatText.innerHTML = `You chose seat: ${buttonId}!`;
+            seatAvailability(flightNumsDict[flightNum]);
         }
 
         function showForm(event, button){
-            seatAvailability(JSON.parse(button.getAttribute('data-seat-2')))
+            const flightNum = button.getAttribute('data-seat-3');
+            if (flightNum in flightNumsDict){   
+                seatAvailability(flightNumsDict[flightNum]);
+            } else {
+                seatAvailability(JSON.parse(button.getAttribute('data-seat-2')))
+            };
             btn = event.target;
             const form = btn.closest('#wrapper-seat');
             const closestSeatForm = form.querySelector("#seating-form");
