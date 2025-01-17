@@ -25,7 +25,7 @@
                 {% endwith %}
                 <form name="register-form" method="POST" class="reg-form">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <input type="text" name="reg-ic" placeholder="Identification Card Number (I.C. Number)" required>
+                    <input type="text" name="reg-ic" placeholder="Identification Card Number (I.C. Number)" maxlength="12" required>
                     <input type="text" name="reg-full-name" placeholder="Full Name (according to I.C.)" required>
                     <input type="text" name="reg-hp-no" placeholder="Phone Number (Include Country Calling Code)" required>
                     <input type="text" name="reg-email" placeholder="Email Address" required>

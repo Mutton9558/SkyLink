@@ -81,15 +81,27 @@ class bookings(db.Model):
         self.isCheckedIn = isCheckedIn
         self.bookingUserID = bookingUserID
 
-token_cache = {
-    "access_token": None,
-    "expires_at": 0
-}
+CACHE_FILE = "token_cache.json"
+def load_cache():
+    if os.path.exists(CACHE_FILE):
+        with open(CACHE_FILE, "r") as file:
+            return json.load(file)
+    else:
+        with open(CACHE_FILE, "x") as file:
+            json.dump({}, file)
+        return {}
+
+def save_cache(cache):
+    with open(CACHE_FILE, "w") as file:
+        json.dump(cache, file)
+
+token_cache = load_cache()
 
 def get_access_token(client_id, client_secret):
-    if token_cache["access_token"] and time.time() < token_cache["expires_at"]:
+    if "access_token" in token_cache and time.time() < token_cache.get("expires_at", 0):
         return token_cache["access_token"]
     
+    print("Hi")
     url = "https://test.api.amadeus.com/v1/security/oauth2/token"
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     data = {
@@ -104,6 +116,7 @@ def get_access_token(client_id, client_secret):
         token_cache["access_token"] = token_data.get("access_token")
         expires_in = token_data.get("expires_in", 0)  # Time in seconds
         token_cache["expires_at"] = time.time() + expires_in - 60  # Refresh before expiry
+        save_cache(token_cache)
         return token_cache["access_token"]
     else:
         raise Exception(f"Failed to authenticate: {response.status_code}, {response.text}")
@@ -179,8 +192,6 @@ def automatedEmail(issue, username):
 
     return msg
 
-access_token = get_access_token(apiKey, apiSecret)
-
 @app.route('/', methods = ["POST", 'GET'])
 def home():
     if "user" in session and session["user"] != "":
@@ -198,7 +209,6 @@ def home():
                     return_date = "None"
                 passengers = request.form.get('number-of-passengers')
                 promo_code = request.form.get('promo-code')
-                print(promo_code)
                 stops = []
                 for key in request.form:
                     if key.startswith('origin-location') or key.startswith('destination-location'):
@@ -210,10 +220,7 @@ def home():
                 originLocations = ",".join(value for stop in stops for key, value in stop.items() if key.startswith('origin-location'))
                 destinationLocations = ",".join(value2 for stop2 in stops for key2, value2 in stop2.items() if key2.startswith('destination-location'))
                 departures = ",".join(value3 for date in departureDates for key3, value3 in date.items() if key3.startswith('departure-date'))
-                print(destinationLocations.split(','))
                 if (('Sultan Haji Ahmad Shah Airport (KUA)' in destinationLocations.split(',') and promo_code=="KUANTAN20")  or ("Sultan Mahmud Airport (TGG)" in destinationLocations.split(',') and promo_code=="GANU10")) or (promo_code == ""):
-                    
-                    print("Hi")
                     if selected_trip != "multi-city":
                         return redirect(url_for(
                             "flights",
@@ -365,180 +372,186 @@ def check_in():
 
 @app.route('/flights', methods=["GET", "POST"])
 def flights():
-    trip = request.args.get('trip')
-    return_date = request.args.get('return_date')
-    passengers = request.args.get('passengers')
-    promo_code = request.args.get('promo_code')
-    origin_locations = request.args.get('origin_locations')
-    destination_locations = request.args.get('destination_locations')
-    departure_dates = request.args.get('departure_dates')
+    if "user" in session and session["user"] != "":
+        access_token = get_access_token(apiKey, apiSecret)
+        trip = request.args.get('trip')
+        return_date = request.args.get('return_date')
+        passengers = request.args.get('passengers')
+        promo_code = request.args.get('promo_code')
+        origin_locations = request.args.get('origin_locations')
+        destination_locations = request.args.get('destination_locations')
+        departure_dates = request.args.get('departure_dates')
 
-    airline_list = {
-        "FY" : "Firefly",
-        "MH" : "Malaysia Airlines",
-        "OD" : "Batik Air",
-        "AK" : "AirAsia"
-    }
+        airline_list = {
+            "FY" : "Firefly",
+            "MH" : "Malaysia Airlines",
+            "OD" : "Batik Air",
+            "AK" : "AirAsia"
+        }
 
-    if trip == "one-way":
-        try:
-            origin_location = (origin_locations.split(",")[0])
-            originCode = origin_location[-4:-1]
-            destination_location = (destination_locations.split(",")[0])
-            destinationCode = destination_location[-4:-1]
-            departure_date = departure_dates.split(",")[0]
-            date_object = datetime.strptime(departure_date, "%Y-%m-%d")
-            departure_day = date_object.strftime("%A")
-            passengerNum = int(passengers[0])
-            flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
-            flight_details = extract_flight_details(flights)
-            if flight_details == []:
-                flash(f"Sorry, there are no flights for this trip. ({origin_location} to {destination_location})")
-                return redirect(url_for("home"))
-            priceList = []
-            for flight in flight_details:
-                if promo_code == "KUANTAN20" and destinationCode == "KUA":
-                    flight['price'] = round(float(flight['price'])*0.8, 2)
-                if promo_code == "GANU10" and destinationCode == "TGG":
-                    flight['price'] = round(float(flight['price'])*0.9, 2)
-                priceList.append(flight['price'])
-            priceList.sort()
+        if trip == "one-way":
+            try:
+                origin_location = (origin_locations.split(",")[0])
+                originCode = origin_location[-4:-1]
+                destination_location = (destination_locations.split(",")[0])
+                destinationCode = destination_location[-4:-1]
+                departure_date = departure_dates.split(",")[0]
+                date_object = datetime.strptime(departure_date, "%Y-%m-%d")
+                departure_day = date_object.strftime("%A")
+                passengerNum = int(passengers[0])
+                flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
+                flight_details = extract_flight_details(flights)
+                if flight_details == []:
+                    flash(f"Sorry, there are no flights for this trip. ({origin_location} to {destination_location})")
+                    return redirect(url_for("home"))
+                priceList = []
+                for flight in flight_details:
+                    if promo_code == "KUANTAN20" and destinationCode == "KUA":
+                        flight['price'] = round(float(flight['price'])*0.8, 2)
+                    if promo_code == "GANU10" and destinationCode == "TGG":
+                        flight['price'] = round(float(flight['price'])*0.9, 2)
+                    priceList.append(float(flight['price']))
+                priceList.sort()
+                print(priceList)
 
-            if request.method == "POST":
-                airlineOneWay = request.form['departure-airline-name-0']
-                flightNoOneWay = request.form['departure-flight-number-0']
-                departuretimeOneWay = request.form['selected-departure-time-0']
-                arrivaltimeOneWay = request.form['selected-arrival-time-0']
-                priceOneWay = request.form['selected-departure-price-0']
+                if request.method == "POST":
+                    airlineOneWay = request.form['departure-airline-name-0']
+                    flightNoOneWay = request.form['departure-flight-number-0']
+                    departuretimeOneWay = request.form['selected-departure-time-0']
+                    arrivaltimeOneWay = request.form['selected-arrival-time-0']
+                    priceOneWay = request.form['selected-departure-price-0']
 
-                return redirect(url_for("booking",
-                                        profile_Name = session["user"],
-                                        airlineOneWay=airlineOneWay,
-                                        flightNoOneWay=flightNoOneWay,
-                                        departuretimeOneWay=departuretimeOneWay,
-                                        arrivaltimeOneWay=arrivaltimeOneWay,
-                                        priceOneWay=priceOneWay,
-                                        trip=trip,
-                                        passengerNum=passengerNum,
-                                        origin_location=origin_location,
-                                        destination_location=destination_location))
+                    return redirect(url_for("booking",
+                                            profile_Name = session["user"],
+                                            airlineOneWay=airlineOneWay,
+                                            flightNoOneWay=flightNoOneWay,
+                                            departuretimeOneWay=departuretimeOneWay,
+                                            arrivaltimeOneWay=arrivaltimeOneWay,
+                                            priceOneWay=priceOneWay,
+                                            trip=trip,
+                                            passengerNum=passengerNum,
+                                            origin_location=origin_location,
+                                            destination_location=destination_location))
 
-            return render_template(
-                "flights.html",
-                profile_Name = session["user"], 
-                trip=trip,
-                origin_location=origin_location, 
-                destination_location=destination_location, 
-                departure_day=departure_day, 
-                departure_date=departure_date, 
-                passengerNum=passengerNum,
-                flight_details=flight_details,
-                priceList=priceList,
-                airline_list=airline_list
-            )
-        except Exception as e:
-            print(f"Error: {e}")
-            flash("No flights available for this trip")
-            return redirect(url_for("home"))
-    elif trip == "round-trip":
-        try:
-            origin_location = (origin_locations.split(",")[0])
-            originCode = origin_location[-4:-1]
-            destination_location = (destination_locations.split(",")[0])
-            destinationCode = destination_location[-4:-1]
-            departure_date = departure_dates.split(",")[0]
-            departure_date_object = datetime.strptime(departure_date, "%Y-%m-%d")
-            departure_day = departure_date_object.strftime("%A")
-            return_date_object = datetime.strptime(return_date, "%Y-%m-%d")
-            return_day = return_date_object.strftime("%A")
-            passengerNum = int(passengers[0])
-
-            departure_flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
-            flight_details = extract_flight_details(departure_flights)
-
-            if flight_details == [] or flight_details == "":
-                flash(f"Sorry, there are no flights for this trip. ({origin_location} to {destination_location})")
-                return redirect(url_for("home"))
-
-            priceList = []
-            for flight in flight_details:
-                if promo_code == "KUANTAN20" and destinationCode == "KUA":
-                    flight['price'] = round(float(flight['price'])*0.8, 2)
-                if promo_code == "GANU10" and destinationCode == "TGG":
-                    flight['price'] = round(float(flight['price'])*0.9, 2)
-                priceList.append(flight['price'])
-            priceList.sort()
-            
-            return_flights = get_flights(destinationCode, originCode, passengerNum, return_date, access_token)
-            return_flight_details = extract_flight_details(return_flights)
-            if return_flight_details == [] or return_flight_details == "":
-                flash(f"Sorry, there are no flights for this trip. ({destination_location} to {origin_location})")
-                return redirect(url_for("home"))
-            
-            returnPriceList = []
-            for flight in return_flight_details:
-                if promo_code == "KUANTAN20" and originCode == "KUA":
-                    flight['price'] = round(float(flight['price'])*0.8, 2)
-                if promo_code == "GANU10" and originCode == "TGG":
-                    flight['price'] = round(float(flight['price'])*0.9, 2)
-                returnPriceList.append(flight['price'])
-            returnPriceList.sort()
-
-            if request.method == "POST":
-                airlineDeparture = request.form['departure-airline-name-0']
-                flightNumDeparture = request.form['departure-flight-number-0']
-                departureTimeInitial = request.form['selected-departure-time-0']
-                arrivalTimeInitial = request.form['selected-arrival-time-0']
-                priceDeparture = request.form['selected-departure-price-0']
-                airlineReturn = request.form['return-airline-name-0']
-                flightNumReturn = request.form['return-flight-number-0']
-                departureTimeRound = request.form['return-departure-time-0']
-                arrivalTimeRound = request.form['return-arrival-time-0']
-                priceReturn = request.form['selected-return-price-0']
-
-                return redirect(url_for("booking",
-                                        profile_Name = session["user"],
-                                        airlineDeparture=airlineDeparture,
-                                        airlineReturn=airlineReturn,
-                                        flightNumDeparture=flightNumDeparture,
-                                        flightNumReturn=flightNumReturn,
-                                        departureTimeInitial=departureTimeInitial,
-                                        departureTimeRound=departureTimeRound,
-                                        arrivalTimeInitial=arrivalTimeInitial,
-                                        arrivalTimeRound=arrivalTimeRound,
-                                        priceDeparture=priceDeparture,
-                                        priceReturn=priceReturn,
-                                        trip=trip,
-                                        passengerNum=passengerNum,
-                                        origin_location=origin_location,
-                                        destination_location=destination_location))
-
-            return render_template(
-                "flights.html",
-                profile_Name = session["user"],
-                trip=trip, 
-                origin_location=origin_location, 
-                destination_location=destination_location, 
-                departure_day=departure_day, 
-                departure_date=departure_date,
-                return_day = return_day,
-                return_date = return_date, 
-                passengerNum=passengerNum,
-                flight_details=flight_details,
-                return_flight_details=return_flight_details,
-                priceList=priceList,
-                returnPriceList=returnPriceList,
-                airline_list=airline_list
+                return render_template(
+                    "flights.html",
+                    profile_Name = session["user"], 
+                    trip=trip,
+                    origin_location=origin_location, 
+                    destination_location=destination_location, 
+                    departure_day=departure_day, 
+                    departure_date=departure_date, 
+                    passengerNum=passengerNum,
+                    flight_details=flight_details,
+                    priceList=priceList,
+                    airline_list=airline_list
                 )
-        except Exception as e:
-            print(f"Error: {e}")
-            flash("No flights available for this trip.")
-            return redirect(url_for("home"))
-    return render_template("flights.html", profile_Name = session["user"])
+            except Exception as e:
+                print(f"Error: {e}")
+                flash("No flights available for this trip")
+                return redirect(url_for("home"))
+        elif trip == "round-trip":
+            try:
+                origin_location = (origin_locations.split(",")[0])
+                originCode = origin_location[-4:-1]
+                destination_location = (destination_locations.split(",")[0])
+                destinationCode = destination_location[-4:-1]
+                departure_date = departure_dates.split(",")[0]
+                departure_date_object = datetime.strptime(departure_date, "%Y-%m-%d")
+                departure_day = departure_date_object.strftime("%A")
+                return_date_object = datetime.strptime(return_date, "%Y-%m-%d")
+                return_day = return_date_object.strftime("%A")
+                passengerNum = int(passengers[0])
+
+                departure_flights = get_flights(originCode, destinationCode, passengerNum, departure_date, access_token)
+                flight_details = extract_flight_details(departure_flights)
+
+                if flight_details == [] or flight_details == "":
+                    flash(f"Sorry, there are no flights for this trip. ({origin_location} to {destination_location})")
+                    return redirect(url_for("home"))
+
+                priceList = []
+                for flight in flight_details:
+                    if promo_code == "KUANTAN20" and destinationCode == "KUA":
+                        flight['price'] = round(float(flight['price'])*0.8, 2)
+                    if promo_code == "GANU10" and destinationCode == "TGG":
+                        flight['price'] = round(float(flight['price'])*0.9, 2)
+                    priceList.append(flight['price'])
+                priceList.sort()
+                
+                return_flights = get_flights(destinationCode, originCode, passengerNum, return_date, access_token)
+                return_flight_details = extract_flight_details(return_flights)
+                if return_flight_details == [] or return_flight_details == "":
+                    flash(f"Sorry, there are no flights for this trip. ({destination_location} to {origin_location})")
+                    return redirect(url_for("home"))
+                
+                returnPriceList = []
+                for flight in return_flight_details:
+                    if promo_code == "KUANTAN20" and originCode == "KUA":
+                        flight['price'] = round(float(flight['price'])*0.8, 2)
+                    if promo_code == "GANU10" and originCode == "TGG":
+                        flight['price'] = round(float(flight['price'])*0.9, 2)
+                    returnPriceList.append(flight['price'])
+                returnPriceList.sort()
+
+                if request.method == "POST":
+                    airlineDeparture = request.form['departure-airline-name-0']
+                    flightNumDeparture = request.form['departure-flight-number-0']
+                    departureTimeInitial = request.form['selected-departure-time-0']
+                    arrivalTimeInitial = request.form['selected-arrival-time-0']
+                    priceDeparture = request.form['selected-departure-price-0']
+                    airlineReturn = request.form['return-airline-name-0']
+                    flightNumReturn = request.form['return-flight-number-0']
+                    departureTimeRound = request.form['return-departure-time-0']
+                    arrivalTimeRound = request.form['return-arrival-time-0']
+                    priceReturn = request.form['selected-return-price-0']
+
+                    return redirect(url_for("booking",
+                                            profile_Name = session["user"],
+                                            airlineDeparture=airlineDeparture,
+                                            airlineReturn=airlineReturn,
+                                            flightNumDeparture=flightNumDeparture,
+                                            flightNumReturn=flightNumReturn,
+                                            departureTimeInitial=departureTimeInitial,
+                                            departureTimeRound=departureTimeRound,
+                                            arrivalTimeInitial=arrivalTimeInitial,
+                                            arrivalTimeRound=arrivalTimeRound,
+                                            priceDeparture=priceDeparture,
+                                            priceReturn=priceReturn,
+                                            trip=trip,
+                                            passengerNum=passengerNum,
+                                            origin_location=origin_location,
+                                            destination_location=destination_location))
+
+                return render_template(
+                    "flights.html",
+                    profile_Name = session["user"],
+                    trip=trip, 
+                    origin_location=origin_location, 
+                    destination_location=destination_location, 
+                    departure_day=departure_day, 
+                    departure_date=departure_date,
+                    return_day = return_day,
+                    return_date = return_date, 
+                    passengerNum=passengerNum,
+                    flight_details=flight_details,
+                    return_flight_details=return_flight_details,
+                    priceList=priceList,
+                    returnPriceList=returnPriceList,
+                    airline_list=airline_list
+                    )
+            except Exception as e:
+                print(f"Error: {e}")
+                flash("No flights available for this trip.")
+                return redirect(url_for("home"))
+        return render_template("flights.html", profile_Name = session["user"])
+    else:
+        return redirect(url_for("login"))
 
 @app.route('/flightsmulticity', methods=["GET", "POST"])
 def flightsmulticity():
     if "user" in session and session["user"] != "":
+        access_token = get_access_token(apiKey, apiSecret)
         trip = request.args.get('trip')
         passengers = request.args.get('passengers')
         promo_code = request.args.get('promo_code')
@@ -714,7 +727,11 @@ def booking():
             data["destinationLocation"] = request.args.get('destination_location')
             dataList.append(data)
 
-            taken_seats = {seat.seatNum for seat in bookings.query.filter_by(flightNum=dataList[0]["flightNumber"]).all()}
+            taken_seats = {
+                booking.seatNum
+                for booking in bookings.query.filter_by(flightNum=dataList[0]["flightNumber"]).all()
+                if booking and datetime.strptime(booking.date, "%Y-%m-%d").date() >= datetime.utcnow().date()
+            }
             quadrant_taken = {key: len(taken_seats & seats) for key, seats in quadrants.items()}
             quadrant_taken_json = json.dumps(quadrant_taken)
 
@@ -779,7 +796,11 @@ def booking():
             dataDeparture["originLocation"] = request.args.get('origin_location')
             dataDeparture["destinationLocation"] = request.args.get('destination_location')
 
-            taken_seats_departure = {seat.seatNum for seat in bookings.query.filter_by(flightNum=dataDeparture["flightNumber"]).all()}
+            taken_seats_departure = {
+                booking.seatNum
+                for booking in bookings.query.filter_by(flightNum=dataDeparture["flightNumber"]).all()
+                if booking and datetime.strptime(booking.date, "%Y-%m-%d").date() >= datetime.utcnow().date()
+            }
             quadrant_taken_departure = {key: len(taken_seats_departure & seats) for key, seats in quadrants.items()}
             
             dataReturn["airline"] = request.args.get('airlineReturn')
@@ -791,7 +812,11 @@ def booking():
             dataReturn["originLocation"] = request.args.get('destination_location')
             dataReturn["destinationLocation"] = request.args.get('origin_location')
 
-            taken_seats_return = {seat.seatNum for seat in bookings.query.filter_by(flightNum=dataReturn["flightNumber"]).all()}
+            taken_seats_return = {
+                booking.seatNum
+                for booking in bookings.query.filter_by(flightNum=dataReturn["flightNumber"]).all()
+                if booking and datetime.strptime(booking.date, "%Y-%m-%d").date() >= datetime.utcnow().date()
+            }
             quadrant_taken_return = {key: len(taken_seats_return & seats) for key, seats in quadrants.items()}
             quadrant_taken = [quadrant_taken_departure, quadrant_taken_return]
             taken_seats = [list(taken_seats_departure), list(taken_seats_return)]
@@ -869,8 +894,6 @@ def booking():
 
                 for i in range(0, len(stops)):
                     data = {}
-                    quadrantTakenFlight = {}
-                    takenSeatFlight = {}
                     data["airline"] = flightList[i]['airline']
                     data["flightNumber"] = flightList[i]['flightNumber']
                     data["departureTime"] = str(flightList[i]['departureTime']).strip().split("T")[1]
@@ -880,7 +903,12 @@ def booking():
                     data["originLocation"] = stops[i]["origin"]
                     data["destinationLocation"] = stops[i]["destination"]
                     dataList.append(data)
-                    takenSeatFlight = {seat.seatNum for seat in bookings.query.filter_by(flightNum=flightList[i]['flightNumber']).all()}
+
+                    takenSeatFlight = {
+                        booking.seatNum
+                        for booking in bookings.query.filter_by(flightNum=flightList[i]["flightNumber"]).all()
+                        if booking and datetime.strptime(booking.date, "%Y-%m-%d").date() >= datetime.utcnow().date()
+                    }
                     quadrantTakenFlight = {key: len(takenSeatFlight & seats) for key, seats in quadrants.items()}
                     taken_seats.append(list(takenSeatFlight))
                     quadrant_taken_json.append(quadrantTakenFlight)
@@ -1026,6 +1054,9 @@ def cancel_flight():
 def ticket(booking_id):
 
     booking = bookings.query.filter_by(bookingNum = booking_id).first()
+    if booking.isCheckedIn == False:
+        flash("Flight not checked in!")
+        return redirect(url_for("home"))
 
     # Render the HTML with flight details
     return render_template('ticket.html', booking=booking)
@@ -1049,6 +1080,8 @@ def email_2fa():
                 target=send2FAEmail, 
                 args=(user, attempted_email, session["auth_code"], current_app.root_path)
             ).start()
+        
+        flash(f"An email has been sent to {attempted_email}!")
 
         if request.method == "POST":
             attemptedCode = request.form.get('auth-code')
@@ -1106,8 +1139,6 @@ def send2FAEmail(user, attempted_email, code, app_root):
         smtp.starttls()
         smtp.login(smtp_user, smtp_password)
         smtp.sendmail(from_addr=smtp_user, to_addrs=to, msg=msg.as_string())
-
-    flash(f"An email has been sent to {attempted_email}!")
 
 if __name__ == "__main__":
     with app.app_context():
