@@ -7,6 +7,15 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
+
+    <style>
+      @media only screen and (min-width: 651px) and (max-width: 1399px) {
+        footer {
+          margin-top: 11em;
+        }
+      }
+    </style>
+
     <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}" />
     <title>Settings | SkyLink</title>
   </head>
@@ -25,7 +34,7 @@
         </div>
         <div class="useful-links">
           <div class="link">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{{ url_for('profile') }}#recent-flight-list-container">
               <p>Purchases</p>
             </a>
           </div>
@@ -219,5 +228,17 @@
       </div>
     </main>
     <script src="{{ url_for('static', filename='settings.js') }}"></script>
+    <footer>
+      <div class="footer-content">
+        <img
+          src="{{ url_for('static', filename='img/logo.png') }}"
+          alt="SkyLink"
+          style="width: 14em;"
+        >
+      </div>
+      <div id="copyright-footer">
+        <p>© 2024 Skylink. All Rights Reserved.</p>
+      </div>
+    </footer>
   </body>
 </html>

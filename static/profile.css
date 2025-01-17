@@ -1,15 +1,15 @@
-.profile{
+.profile {
   height: 55%;
 }
 
-#user-profile-main{
+#user-profile-main {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
 }
 
-.user-profile{
+.user-profile {
   background-color: white;
   width: 80%;
   position: relative;
@@ -17,23 +17,23 @@
   border-radius: 1em;
 }
 
-#profile-background{
+#profile-background {
   width: 73.5em;
   margin: 1em;
   border-radius: 1em;
 }
 
-#profile-picture{
+#profile-picture {
   position: relative;
   top: -5em;
   right: 0;
   width: 15%;
   height: auto;
   margin-left: 1em;
-  
+
 }
 
-.user-profile-content{
+.user-profile-content {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -42,38 +42,39 @@
   top: -5em;
 }
 
-.name-username h1, p{
+.name-username h1,
+p {
   margin: 0;
 }
 
-.name-username p{
+.name-username p {
   color: gray;
 }
 
-.personal-info{
+.personal-info {
   display: flex;
   flex-direction: row;
   position: relative;
   top: -5em;
 }
 
-.personal-info-details{
+.personal-info-details {
   display: flex;
   flex-direction: column;
 }
 
-.personal-info-details p{
+.personal-info-details p {
   color: gray;
   margin: 0.5em 1em 1em;
 }
 
-.personal-info-details h3{
+.personal-info-details h3 {
   margin: 0 1em 0 1em;
   font-weight: lighter;
   font-size: medium;
 }
 
-.edit-user-profile button{
+.edit-user-profile button {
   background-color: var(--background-dark);
   color: var(--text-dark-mode);
   border-radius: 1em;
@@ -83,17 +84,23 @@
 }
 
 .edit-user-profile button:hover,
-#recent-button-actions button:hover{
+#recent-button-actions button:hover {
   background-color: var(--primary);
   color: black;
 }
 
-.profile-content{
+#recent-button-actions a:hover {
+  cursor: pointer;
+  background-color: var(--primary);
+  color: black;
+}
+
+.profile-content {
   position: relative;
   top: -5em;
 }
 
-.profile-content-header{
+.profile-content-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -102,11 +109,11 @@
   margin: 0.5em;
 }
 
-.profile-content-header a{
+.profile-content-header a {
   padding: 0.75em;
 }
 
-.view-content-option :hover{
+.view-content-option :hover {
   background-color: grey;
   cursor: pointer;
   border-radius: 2em;
@@ -115,13 +122,13 @@
   color: var(--text-light-mode);
 }
 
-#recent-flight-list{
+#recent-flight-list {
   display: flex;
   flex-direction: column;
   margin: 1em;
 }
 
-#recent-flight-list-container{
+#recent-flight-list-container {
   width: fit-content;
   height: fit-content;
   background-color: white;
@@ -159,35 +166,35 @@
 }
 
 #recent-flight-list-container h3,
-#recent-flight-list-container p{
+#recent-flight-list-container p {
   font-size: medium;
 }
 
-#recent-flight-list-left{
-  margin:  0 0 1em 1em;
+#recent-flight-list-left {
+  margin: 0 0 1em 1em;
 }
 
-#flight-date{
+#flight-date {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 1em;
 }
 
-#recent-flight-times{
+#recent-flight-times {
   margin: 0;
   display: flex;
   margin-bottom: 1rem;
 }
 
 #arrival-time,
-#departure-time{
+#departure-time {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-#recent-flight-list-right{
+#recent-flight-list-right {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -196,12 +203,12 @@
   margin-right: 1em;
 }
 
-#recent-button-actions{
+#recent-button-actions {
   display: flex;
   flex-direction: column;
 }
 
-#recent-button-actions button{
+#recent-button-actions button {
   background-color: var(--background-dark);
   color: var(--text-dark-mode);
   border-radius: 1em;
@@ -210,6 +217,23 @@
   margin-top: 0.5em;
   cursor: pointer;
   transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+#recent-button-actions a {
+  background-color: var(--background-dark);
+  color: #edf8ff;
+  text-decoration: none;
+  width: 10em;
+  height: 1.75em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  border-style: outset;
+  border-radius: 2em;
+  font-size: 80%;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  letter-spacing: 0;
 }
 
 .flight-details {
@@ -232,7 +256,7 @@
   display: none;
 }
 
-.transparent-button{
+.transparent-button {
   background-color: transparent;
   cursor: pointer;
   color: var(--text-light-mode);
@@ -241,81 +265,86 @@
 }
 
 .first-name,
-.last-name{
+.last-name {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.first-name h2, .last-name h2{
+.first-name h2,
+.last-name h2 {
   font-size: medium;
   margin-bottom: 0;
 }
 
-.first-name p, .last-name p{
+.first-name p,
+.last-name p {
   color: var(--text-light-mode);
 }
 
-#selected-seat{
+#selected-seat {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.cancel-flight-button{
-  display:flex;
+.cancel-flight-button {
+  display: flex;
   position: fixed;
   justify-content: center;
   align-items: center;
   bottom: 1rem;
+  right: 1em;
   width: 35%;
   height: 7.5%;
-  background-color: rgb(230, 65, 65);
+  background-color: var(--background-dark);
   color: white;
+  text-decoration: none;
   border: 5px solid white;
+  border-style: outset;
   border-radius: 1em;
   cursor: pointer;
   transition: background-color 0.5s ease;
 }
 
-.cancel-flight-button:hover{
+.cancel-flight-button:hover {
   background-color: rgb(255, 73, 73);
   font-weight: bold;
 }
 
-body.dark-mode .user-profile{
+body.dark-mode .user-profile {
   background-color: #333333;
 }
 
-body.dark-mode #recent-flight-list-container{
+body.dark-mode #recent-flight-list-container {
   background-color: #1e1e1e;
   box-shadow: 0 0 5px var(--background-light);
 }
 
-body.dark-mode .flight-details{
+body.dark-mode .flight-details {
   background-color: #1e1e1e;
 }
 
-body.dark-mode .transparent-button{
+body.dark-mode .transparent-button {
   color: var(--text-dark-mode);
-  
+
 }
 
 @media only screen and (max-width: 500px) {
-  .user-profile{
+  .user-profile {
     width: 100%;
     top: 5em;
   }
 
-  #profile-background{
+  #profile-background {
     width: 450px;
   }
 
-  #profile-picture{
+  #profile-picture {
     width: 20%;
   }
 
-  .flight-details{
+  .flight-details {
     width: 101%;
     height: 102%;
     right: 0;
@@ -334,26 +363,26 @@ body.dark-mode .transparent-button{
 }
 
 @media only screen and (min-width: 501px) and (max-width: 650px) {
-  .user-profile{
+  .user-profile {
     width: 100%;
     top: 5em;
   }
 
-  #profile-background{
+  #profile-background {
     width: 95%;
     height: auto;
     object-fit: cover;
   }
 
-  #profile-picture{
+  #profile-picture {
     width: 20%;
   }
 
-  .flight-details{
+  .flight-details {
     width: 100%;
   }
 
-  #recent-flight-list-container{
+  #recent-flight-list-container {
     width: 95%;
   }
 
@@ -366,13 +395,13 @@ body.dark-mode .transparent-button{
 }
 
 @media only screen and (min-width: 651px) and (max-width: 1399px) {
-  #profile-background{
+  #profile-background {
     width: 96%;
     height: auto;
     object-fit: cover;
   }
 
-  .user-profile{
+  .user-profile {
     top: 5em;
   }
 
@@ -381,7 +410,7 @@ body.dark-mode .transparent-button{
     grid-template-columns: repeat(2, 1fr);
     gap: 1em;
     justify-items: center;
-  } 
+  }
 
   .grid-view {
     display: grid;
@@ -389,7 +418,7 @@ body.dark-mode .transparent-button{
     gap: 1em;
     justify-items: center;
   }
-  
+
   .list-view {
     display: flex;
     flex-direction: column;
