@@ -1305,6 +1305,11 @@ body.dark-mode #flight-list-container {
     background-color: #333333;
 }
 
+body.dark-mode .cheapest-price {
+    color: lawngreen;
+    text-shadow: 0 0 1px black;
+} 
+
 @media only screen and (max-width: 500px) {
     #cont-login {
         width: 20rem;

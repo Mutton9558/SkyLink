@@ -123,10 +123,22 @@
             <a>Flight Booking History</a>
             <div class="view-content-option">
               <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              style="fill: currentColor; margin-right: 0.25em"
+              viewBox="0 0 24 24"
+              class="filterBy"
+              onclick="toggleFilterPopup()"
+              >
+                <path d="M13 20v-4.586L20.414 8c.375-.375.586-.884.586-1.415V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v2.585c0 .531.211 1.04.586 1.415L11 15.414V22l2-2z"
+                ></path>
+              </svg>
+              <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
-                style="fill: currentColor; margin-right: 0.25em"
+                style="fill: currentColor; margin-right: 0.25em; margin-left: 0.25em;"
                 viewBox="0 0 24 24"
                 class="viewGrid"
               >
@@ -159,11 +171,13 @@
                   class="departure-container"
                   style="justify-content: space-between"
                 >
-                  <div id="recent-flight-list-left">
-                    <h3 id="airline" style="margin-bottom: 0.25em;">{{ flight.airline }}</h3>
-                    <h3 id="flight-number" style="margin-top: 0.25em;">{{ flight.flightNum }}</h3>
+                  <div class="recent-flight-list-left">
+                    <div class="airline-flight-num">
+                      <h3 id="airline" style="margin-bottom: 0.25em;">{{ flight.airline }}</h3>
+                      <h3 id="flight-number" style="margin-top: 0.25em;">{{ flight.flightNum }}</h3>
+                    </div>
                     <div
-                      id="recent-flight-date-time"
+                      class="recent-flight-date-time"
                       style="text-align: center"
                     >
                       <div id="flight-date">
@@ -227,12 +241,71 @@
       </div>
     </main>
 
+    <div id="filter-popup" class="filter-popup hidden">
+      <div class="filter-popup-content">
+        <div class="filter-popup-header">
+          <button onclick="toggleFilterPopup()" class="transparent-button" style="position: relative;">X</button>
+          <h3 style="display: flex; flex-direction: column; align-items: center; position: relative; top: -1rem;">Filter</h3>
+        </div>
+        <div class="filter-popup-body">
+          <div class="filter-popup-options" style="position: relative; top: -1rem;">
+            <div class="filter-popup-option">
+              <input type="checkbox" id="upcoming-date" name="upcoming-date" value="date" />
+              <label for="date">Upcoming Date</label>
+            </div>
+            <div class="filter-popup-option">
+              <input type="checkbox" id="past-flight" name="past-flight" value="date" />
+              <label for="past-flight">Past Flights</label>
+            </div>
+          </div>
+          <div class="filter-popup-action" style="display: flex; justify-content: center;">
+            <button onclick="applyFilters()">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       const theme = localStorage.getItem("theme");
       if (theme === "dark") {
         document.body.classList.add("dark-mode");
       } else if (theme === "light") {
         document.body.classList.add("light-mode");
+      }
+
+      function toggleFilterPopup() {
+        const filterPopup = document.getElementById("filter-popup");
+        filterPopup.classList.toggle("hidden");
+      }
+
+      function applyFilters() {
+        const upcomingDateFilter = document.getElementById('upcoming-date').checked;
+        const pastFlightFilter = document.getElementById('past-flight').checked;
+
+        const flights = document.querySelectorAll('.recent-flight-list');
+
+        flights.forEach(flight => {
+          const flightDate = new Date(flight.querySelector('#flight-date').textContent);
+          const currentDate = new Date();
+
+          let showFlight = true;
+
+          if (upcomingDateFilter && flightDate <= currentDate) {
+            showFlight = false;
+          }
+
+          if (pastFlightFilter && flightDate > currentDate) {
+            showFlight = false;
+          }
+
+          if (showFlight) {
+            flight.style.display = '';
+          } else {
+            flight.style.display = 'none';
+          }
+        });
+
+        toggleFilterPopup();
       }
 
       function showDetails(event) {
@@ -270,12 +343,22 @@
         const flightListContainer = document.querySelector(
           ".recent-flight-list-container"
         );
+        const recentFlightList = document.querySelectorAll(".recent-flight-list-left");
+        const recentFlightDateTime = document.querySelectorAll(".recent-flight-date-time");
         if (view === "grid") {
           flightListContainer.classList.add("grid-view");
+          recentFlightDateTime.forEach(item => item.classList.add("column-view"));
+          recentFlightList.forEach(item => item.classList.add("left-column-view"));
           flightListContainer.classList.remove("list-view");
+          recentFlightList.forEach(item => item.classList.remove("row-view"));
+          recentFlightDateTime.forEach(item => item.classList.remove("row-view"));
         } else if (view === "list") {
           flightListContainer.classList.add("list-view");
-          flightListContainer.classList.remove("grid-view");
+          recentFlightDateTime.forEach(item => item.classList.add("row-view"));
+          recentFlightList.forEach(item => item.classList.add("row-view"));
+          flightListContainer.classList.remove("grid-view")
+          recentFlightDateTime.forEach(item => item.classList.remove("column-view"));
+          recentFlightList.forEach(item => item.classList.remove("left-column-view"));
         }
       }
 
