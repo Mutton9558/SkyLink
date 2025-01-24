@@ -61,7 +61,7 @@
                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
                 <path
                   fill-rule="evenodd"
-                  d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+                  d="M0 8a8 8 0 1 1-16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
                 />
               </svg>
               <p class="profile-text">{{ profile_Name }}</p>
@@ -165,11 +165,12 @@
             <div class="recent-flight-list-container">
               {% for flight in recent_flights %} {% include
               'includes/flight_details.html' %}
-              <div class="recent-flight-list" id="cont-{{ loop.index }}">
+              <div class="recent-flight-list" id="cont-{{ loop.index }}" data-checked-in="{{ flight.isCheckedIn }}">
                 <div
                   id="recent-flight-list-container"
                   class="departure-container"
                   style="justify-content: space-between"
+                  
                 >
                   <div class="recent-flight-list-left">
                     <div class="airline-flight-num">
@@ -237,6 +238,9 @@
             </p>
             {% endif %}
           </div>
+          <div id="no-records-message" style="display: none; justify-content: center; align-items: center; padding: 1em;">
+            No flights found that satisfies your filter criteria.
+          </div>
         </div>
       </div>
     </main>
@@ -256,6 +260,14 @@
             <div class="filter-popup-option">
               <input type="checkbox" id="past-flight" name="past-flight" value="date" />
               <label for="past-flight">Past Flights</label>
+            </div>
+            <div class="filter-popup-option">
+              <input type="checkbox" id="checkedIn" name="checkedIn" value="isCheckedIn" />
+              <label for="checkedIn">Checked In</label>
+            </div>
+            <div class="filter-popup-option">
+              <input type="checkbox" id="notCheckedIn" name="notCheckedIn" value="isCheckedIn" />
+              <label for="notCheckedIn">Not Checked In</label>
             </div>
           </div>
           <div class="filter-popup-action" style="display: flex; justify-content: center;">
@@ -281,10 +293,14 @@
       function applyFilters() {
         const upcomingDateFilter = document.getElementById('upcoming-date').checked;
         const pastFlightFilter = document.getElementById('past-flight').checked;
+        const checkedInFilter = document.getElementById('checkedIn').checked;
+        const notCheckedInFilter = document.getElementById('notCheckedIn').checked;
 
         const flights = document.querySelectorAll('.recent-flight-list');
+        let anyFlightVisible = false;
 
         flights.forEach(flight => {
+          const isCheckedIn = flight.getAttribute('data-checked-in') === "True";
           const flightDate = new Date(flight.querySelector('#flight-date').textContent);
           const currentDate = new Date();
 
@@ -298,12 +314,28 @@
             showFlight = false;
           }
 
+          if (checkedInFilter && !isCheckedIn) {
+            showFlight = false;
+          }
+
+          if (notCheckedInFilter && isCheckedIn) {
+            showFlight = false;
+          }
+
           if (showFlight) {
             flight.style.display = '';
+            anyFlightVisible = true;
           } else {
             flight.style.display = 'none';
           }
         });
+
+        const noRecordsMessage = document.getElementById('no-records-message');
+        if (anyFlightVisible) {
+          noRecordsMessage.style.display = 'none';
+        } else {
+          noRecordsMessage.style.display = 'flex';
+        }
 
         toggleFilterPopup();
       }

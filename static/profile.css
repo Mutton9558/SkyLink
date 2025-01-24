@@ -84,7 +84,8 @@ p {
 }
 
 .edit-user-profile button:hover,
-#recent-button-actions button:hover {
+#recent-button-actions button:hover,
+.filter-popup-action button:hover {
   background-color: var(--primary);
   color: black;
 }
@@ -231,7 +232,8 @@ p {
   flex-direction: column;
 }
 
-#recent-button-actions button {
+#recent-button-actions button,
+.filter-popup-action button {
   background-color: var(--background-dark);
   color: var(--text-dark-mode);
   border-radius: 1em;
@@ -285,6 +287,10 @@ p {
   color: var(--text-light-mode);
   border: none;
   font-size: large;
+}
+
+#checked-in {
+  color: rgb(38, 196, 38);
 }
 
 .first-name,
@@ -363,7 +369,10 @@ body.dark-mode .filter-popup {
 
 body.dark-mode .transparent-button {
   color: var(--text-dark-mode);
+}
 
+body.dark-mode #checked-in {
+  color: lawngreen;
 }
 
 @media only screen and (max-width: 500px) {
