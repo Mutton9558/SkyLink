@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+    <title>Admin</title>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+          <div class="logo">
+            <a class="navbar-brand" href="/home">
+              <img
+                src="{{url_for('static', filename='img/logo.png')}}"
+                height="80"
+                alt="SkyLink"
+                href="/"
+              />
+            </a>
+          </div>
+          <div class="useful-links">
+            <div class="link">
+                <a class="nav-link" href="/admin">
+                  <p>Admin</p>
+                </a>
+              </div>
+            <div class="link">
+              <a class="nav-link" href="{{ url_for('profile') }}#recent-flight-list-container">
+                <p>Purchases</p>
+              </a>
+            </div>
+            <div class="link">
+              <a class="nav-link" href="/check-in">
+                <p>Check-in</p>
+              </a>
+            </div>
+            <div class="link">
+              <a class="nav-link" href="#">
+                <p>Flight Status</p>
+              </a>
+            </div>
+            <div class="link">
+              <a class="nav-link" href="/support">
+                <p>Support</p>
+              </a>
+            </div>
+            <div class="profile">
+              <a class="nav-link" href="#">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  display="flex"
+                  width="25"
+                  fill="currentColor"
+                  class="bi bi-person-circle"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                  <path
+                    fill-rule="evenodd"
+                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+                  />
+                </svg>
+                <p class="profile-text">{{ profile_Name }}</p>
+              </a>
+              <div class="dropdown">
+                <div class="dropdown-content">
+                  <a href="/profile">Profile</a>
+                  <a href="/settings">Settings</a>
+                  <a href="/logout">Logout</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </header>
+    <div id="main-content-admin">
+      <div id="cont-admin-1">
+        <div id="admin-btns">
+          <div class="section-btn">
+              <button id="all-booking-history" onclick="toggleBookingSection()">All Bookings</button>
+          </div>
+          <div class="section-btn">
+              <button id="all-user-complains" onclick="toggleComplainSection()">User Complains</button>
+          </div>
+        </div>
+        <div id="content-sec-admin">
+            <div class="content-admin" id="admin-booking-history">
+                <table id="admin-bookings">
+                    <tr>
+                        <th style="width: 10%;">Booking Number</th>
+                        <th style="width: 35%;">Origin</th>
+                        <th style="width: 35%;">Destination</th>
+                        <th style="width: 10%;">Flight Date</th>
+                        <th style="width: 10%;">Booked by</th>
+                    </tr>
+                    {% for booking in booking_list %}
+                        <tr>
+                            <td>{{ booking.bookingNum }}</td>
+                            <td>{{ booking.origin }}</td>
+                            <td>{{ booking.destination }}</td>
+                            <td>{{ booking.date }}</td>
+                            <td>{{ booking.user.username }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="content-admin hide-sec" id="admin-user-complains">
+                <table id="user-support-logs">
+                  <tr>
+                    <th style="width: 10%;">Support No.</th>
+                    <th style="width: 50%;">Support Request</th>
+                    <th style="width: 10%;">Request Date</th>
+                    <th style="width: 10%;">Request by</th>
+                    <th style="width: 20%;">Status</th>
+                  </tr>
+                  {% for request in request_list %}
+                    <tr>
+                      <td>{{ request.supportID }}</td>
+                      <td>{{ request.supportRequest }}</td>
+                      <td>{{ request.supportDate }}</td>
+                      <td>{{ request.support_user.username }}</td>
+                      <td class="resolved-status">Not Resolved</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+            </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      bookingList = document.getElementById('admin-booking-history');
+      userComplainList = document.getElementById('admin-user-complains');
+      function toggleBookingSection(){
+        if (bookingList.classList.contains('hide-sec')){
+          bookingList.classList.remove('hide-sec');
+          userComplainList.classList.add('hide-sec')
+        };
+      };
+
+      function toggleComplainSection(){
+        if (userComplainList.classList.contains('hide-sec')){
+          bookingList.classList.add('hide-sec');
+          userComplainList.classList.remove('hide-sec')
+        };
+      };
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}" />
+    <title>Booking Receipt</title>
+</head>
+<body>
+    <div id="receipt-cont-1">
+        <div id="receipt-top">
+            <h3>Booking Number: <span id="booking-num-text"><p>01234</p></span></h3>
+            <h3>Booking Date: <span id="booking-date-text"><p>22 January 2024</p></span></h3>
+        </div>
+        <div id="receipt-middle">
+            <h1>Payment Details:</h1>
+            <h3>Buyer Name: <span id="buyer-name"><p>Suam</p></span></h3>
+            <h3>Email: <span id="buyer-email"><p>suam@gmail.com</p></span></h3>
+            <div id="receipt-cont-2">
+                <div class="receipt-items">
+                    <h2>Flight</h2>
+                    <h3>Flight tickets x3:<span id="receipt-price"><p>RM1</p></span></h3>
+                </div>
+                <div class="checkout-items">
+                    <h3>Total Amount:<span id="receipt-total-1"><p>RM1</p>></span></h3>
+                    <h3>Total Paid:<span id="total-paid"><p>RM1</p></span></h3>
+                    <h3>Balance:<span id="receipt-balance"><p>RM0</p></span></h3>
+                </div>
+                <div class="payment-details">
+                    <h3>Payment Date:<span id="payment-date"><p>Wed, 22 January 2024</p></span></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
