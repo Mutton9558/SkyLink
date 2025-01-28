@@ -1389,3 +1389,81 @@ body.dark-mode .cheapest-price {
         font-size: 18px;
     }
 }
+
+#main-content-admin{
+    margin-top: 8rem;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#cont-admin-1{
+    width: 80%;
+    max-height: 100vh;
+}
+
+#admin-btns{
+    display: flex;
+    flex-direction: row;
+    margin-left: 0.4rem;
+}
+
+.section-btn{
+    margin-right: 1rem;
+}
+
+.section-btn button{
+    background-color: var(--primary);
+    border: 2px var(--text-light-mode) solid;
+    border-bottom: 0;
+    border-radius: 10px;
+    width: 8rem;
+    height: 2.5rem;
+}
+
+#content-sec-admin{
+    border: 2px var(--text-light-mode) solid;
+    border-radius: 10px;
+    padding: 0.8rem;
+    background-color: #fafaf9;
+    position: relative;
+    overflow-y: auto;
+    height: 50vh;
+}
+
+.content-admin{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: auto;
+    margin: 2rem;
+}
+
+#admin-booking-history, #admin-user-complains{
+    width: 95%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#admin-bookings, #user-support-logs{
+    width: 100%;
+}
+
+#admin-bookings, #admin-bookings th, #admin-bookings td, #user-support-logs, #user-support-logs th, #user-support-logs td{
+    border: 2px black solid;
+    border-collapse: collapse;
+    padding: 2px;
+    margin: 0;
+    text-align: center;
+}
+
+.hide-sec{
+    display: none;
+    top: -9999px;
+    left: -9999px;
+    z-index: -10;
+}
+
