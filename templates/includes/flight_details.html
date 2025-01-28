@@ -9,11 +9,23 @@
     </button>
     <div class="flight-info" style="width: 85%; position: relative; top: -3em">
       <h1>Flight Details</h1>
-      <h3 id="airline">{{ flight.airline }}</h3>
-      <h3 id="flight-number">{{ flight.flightNum }}</h3>
+      <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+        <div id="airline-flight-number">
+          <h3 id="airline" style="margin-bottom: 0;">{{ flight.airline }}</h3>
+          <h3 id="flight-number" style="margin-top: 0;">{{ flight.flightNum }}</h3>
+        </div>
+        <div id="checkin-status" style="text-align: center">
+          <p><strong>Check-in Status</strong></p>
+          {% if flight.isCheckedIn == 1 %}
+            <p id="checked-in">Checked In</p>
+          {% else %}
+            <p style="color: red;">Not Checked In</p>
+          {% endif %}
+        </div>
+      </div>
       <div id="recent-flight-date-time">
         <div id="flight-date" style="align-items: flex-start">
-          <p>Flight Date</p>
+          <p><strong>Flight Date</strong></p>
           <p>{{ flight.date }}</p>
         </div>
         <div
@@ -46,11 +58,11 @@
           "
         >
           <div id="departure-time">
-            <p>Departure Time</p>
+            <p><strong>Departure Time</strong></p>
             <p>{{ flight.departureTime }}</p>
           </div>
           <div id="arrival-time">
-            <p>Arrival Time</p>
+            <p><strong>Arrival Time</strong></p>
             <p>{{ flight.arrivalTime }}</p>
           </div>
         </div>
@@ -63,11 +75,11 @@
           "
         >
           <div id="selected-seat">
-            <p>Your Seat Number</p>
+            <p><strong> Your Seat Number</strong></p>
             <p>{{ flight.seatNum }}</p>
           </div>
           <div id="bookingNum" style="text-align: center">
-            <p>Booking Number</p>
+            <p><strong>Booking Number</strong></p>
             <p>{{ flight.bookingNum }}</p>
           </div>
         </div>

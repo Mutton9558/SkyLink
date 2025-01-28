@@ -256,25 +256,12 @@
       }
     </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <footer>
+    <footer style="margin-top: 6em">
       <div class="footer-content">
-        <div class="left-content-footer">
-          <div id="items-footer-left">
-            <h3>Explore</h3>
-            <a href="#">About Us</a>
-            <a href="#">Our Partners</a>
-            <a href="#">Special Offers</a>
-            <a href="#">Credits</a>
-          </div>
-        </div>
-        <div class="right-content-footer">
-          <div id="items-footer-right">
-            <h3>Need Help?</h3>
-            <a href="/support">Customer Service</a>
-            <a href="#">Contact Us</a>
-            <a href="#">FAQs</a>
-          </div>
-        </div>
+        <img
+          src="{{ url_for('static', filename='img/logo.png') }}"
+          alt="SkyLink"
+          style="width: 14em;"
       </div>
       <div id="copyright-footer">
         <p>© 2024 Skylink. All Rights Reserved.</p>
