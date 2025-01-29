@@ -2,7 +2,7 @@ from flask import *
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 from email.mime.text import MIMEText 
 from email.mime.image import MIMEImage 
 from email.mime.multipart import MIMEMultipart 
@@ -34,10 +34,12 @@ class users(db.Model):
     username = db.Column("username", db.String(20), nullable=False, unique=True)
     password = db.Column("password", db.String(18), nullable=False)
     two_factor_auth = db.Column("two_factor_auth", db.Integer, nullable=False, default=0)
+    isAdmin = db.Column("isAdmin", db.Boolean, nullable=False)
 
     bookings = db.relationship('bookings', backref='user', lazy=True)
+    supportlogs = db.relationship('supportlogs', backref='support_user', lazy=True)
 
-    def __init__(self, icNumber, name, phoneNumber, email, username, password, two_factor_auth):
+    def __init__(self, icNumber, name, phoneNumber, email, username, password, two_factor_auth, isAdmin):
         self.icNumber = icNumber
         self.name = name
         self.phoneNumber = phoneNumber
@@ -45,6 +47,7 @@ class users(db.Model):
         self.username = username
         self.password = password
         self.two_factor_auth = two_factor_auth
+        self.isAdmin = isAdmin
 
 class bookings(db.Model):
     bookingNum = db.Column("bookingNum", db.String(5), primary_key=True, nullable=False, unique=True)
@@ -80,6 +83,17 @@ class bookings(db.Model):
         self.seatNum = seatNum
         self.isCheckedIn = isCheckedIn
         self.bookingUserID = bookingUserID
+
+class supportlogs(db.Model):
+    supportID = db.Column("supportID", db.Integer, primary_key=True, nullable=False, unique=True)
+    supportRequest = db.Column("supportRequest", db.Text, nullable=False)
+    supportDate = db.Column("supportDate", db.String(10), nullable=False)
+    supportUser = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def __init__(self, supportRequest, supportDate, supportUser):
+        self.supportRequest = supportRequest
+        self.supportDate = supportDate
+        self.supportUser = supportUser
 
 CACHE_FILE = "token_cache.json"
 def load_cache():
@@ -195,6 +209,7 @@ def automatedEmail(issue, username):
 @app.route('/', methods = ["POST", 'GET'])
 def home():
     if "user" in session and session["user"] != "":
+        email = users.query.filter_by(username = session["user"]).first().email
         # Read options from the .txt file
         try:
             with open('static/airport_lists.txt', 'r') as file:
@@ -249,7 +264,7 @@ def home():
                     else:
                         flash("Invalid Promo Code")
                         return redirect(url_for("home"))
-        return render_template("index.html", profile_Name = session["user"], options=options)
+        return render_template("index.html", profile_Name = session["user"], options=options, email=email)
     else:
         return redirect(url_for("register"))
 
@@ -285,7 +300,10 @@ def register():
                     flash("Invalid email!")
                 isCode = new_hpNo[0]
                 if isCode == "+":
-                    new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password, two_factor_auth=0)
+                    if new_email == "skylinkcustomerservice@gmail.com":
+                        new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password, two_factor_auth=0, isAdmin=True)
+                    else:
+                        new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password, two_factor_auth=0, isAdmin=False)
                     db.session.add(new_user)
                     db.session.commit()   
                     return redirect(url_for("login"))
@@ -308,6 +326,8 @@ def login():
                 return redirect(url_for("email_2fa", attempted_email=attempted_email))
             session.permanent = True
             session["user"] = usernameInput
+            if users.query.filter_by(username=usernameInput).first().isAdmin == True:
+                return redirect(url_for("admin"))
             return redirect(url_for("home"))
         else:
             flash("Invalid Username or Password!")
@@ -323,9 +343,14 @@ def logout():
 def support():
     if "user" in session and session["user"] != "":
         if request.method == "POST":
-            name = users.query.filter_by(username=session["user"]).first().username
-            email = users.query.filter_by(username=session["user"]).first().email
+            user = users.query.filter_by(username=session["user"]).first()
+            name = user.username
+            email = user.email
             message = request.form.get("message")
+            today = date.today()
+            today_str = today.strftime('%Y-%m-%d')
+            todayPlaceholder = today_str.split('-')
+            dateToday = '/'.join(todayPlaceholder[::-1])
 
             try:
                 msg = automatedEmail(message, name)
@@ -341,9 +366,11 @@ def support():
                     smtp.sendmail(from_addr=smtp_user, to_addrs=to, msg=msg.as_string())
 
                 flash(f"Your inquiry has been submitted successfully. Check your email ({email}) for our response!", "success")
+                new_support_request = supportlogs(supportRequest=message, supportDate=dateToday, supportUser=user.id)
+                db.session.add(new_support_request)
+                db.session.commit()
             except Exception as e:
                 flash(f"An error occurred while sending the email: {str(e)}", "danger")
-
             return redirect(url_for("support"))
 
         return render_template("support.html", profile_Name = session["user"])
@@ -1068,7 +1095,8 @@ def email_2fa():
         if attempted_email is None:
             return redirect(url_for("login"))
 
-        user = users.query.filter_by(email=attempted_email).first().username
+        u = users.query.filter_by(email=attempted_email).first()
+        user = u.username
 
         # Generate a new code only if one doesn't already exist in the session
         if "auth_code" not in session:
@@ -1092,7 +1120,10 @@ def email_2fa():
                 session.permanent = True
                 session["user"] = user
                 session.pop("auth_code", None)  # Remove the code after successful login
-                return redirect(url_for("home"))
+                if u.isAdmin == True:
+                    return redirect(url_for("admin"))
+                else:
+                    return redirect(url_for("home"))
 
         return render_template('email_2fa.html', email=attempted_email, user=user)
 
@@ -1150,6 +1181,21 @@ def flightstatus():
         except FileNotFoundError:
             options = []
         return render_template("flightstatus.html", profile_Name=session["user"], options=options)
+@app.route('/booking_receipt', methods=["GET"])
+def booking_receipt():
+    # booking_id = request.args.get("bookingNum")
+    return render_template('receipt.html')
+
+@app.route('/admin')
+def admin():
+    if "user" in session and session["user"] != "":
+        if users.query.filter_by(username=session["user"]).first().isAdmin != True:
+            return redirect(url_for("home"))
+        booking_list = bookings.query.join(users, users.id == bookings.bookingUserID).all()
+        request_list = supportlogs.query.join(users, users.id == supportlogs.supportUser).all()
+        return render_template("admin.html", profile_Name=session["user"], booking_list=booking_list, request_list = request_list)
+    else:
+        return redirect(url_for("login"))
 
 if __name__ == "__main__":
     with app.app_context():
