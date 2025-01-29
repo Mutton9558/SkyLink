@@ -1140,6 +1140,17 @@ def send2FAEmail(user, attempted_email, code, app_root):
         smtp.login(smtp_user, smtp_password)
         smtp.sendmail(from_addr=smtp_user, to_addrs=to, msg=msg.as_string())
 
+@app.route('/flightstatus')
+def flightstatus():
+    if "user" in session and session["user"] != "":
+        # Read options from the .txt file
+        try:
+            with open('static/airport_lists.txt', 'r') as file:
+                options = [line.strip() for line in file if line.strip()]  # Remove empty lines
+        except FileNotFoundError:
+            options = []
+        return render_template("flightstatus.html", profile_Name=session["user"], options=options)
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
