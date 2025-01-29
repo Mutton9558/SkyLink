@@ -114,7 +114,13 @@ p {
   padding: 0.75em;
 }
 
-.view-content-option :hover {
+.view-content-option {
+  display: flex;
+  align-items: center;
+  position: relative; /* Add this line to ensure the filter popup is positioned relative to this container */
+}
+
+.view-content-option svg:hover {
   background-color: grey;
   cursor: pointer;
   border-radius: 2em;
@@ -343,14 +349,21 @@ p {
 
 .filter-popup {
   position: absolute;
-  top: 750px;
-  right: 60px;
+  top: 100%;
+  right: 0.01em;
   background-color: var(--background-light);
   border: 1px solid black;
   border-radius: 1em;
+  width: 600%;
   padding: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+}
+
+.filter-popup-option.row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
 }
 
 body.dark-mode .user-profile {
@@ -409,6 +422,11 @@ body.dark-mode #checked-in {
   .viewGrid, .viewList {
     display: none;
   }
+
+  .filter-popup{
+    top: 100%;
+    right: 6px;
+  }
 }
 
 @media only screen and (min-width: 501px) and (max-width: 650px) {
@@ -465,6 +483,11 @@ body.dark-mode #checked-in {
     flex-direction: row;
     gap: 1em;
     align-items: flex-start;
+  }
+
+  .filter-popup{
+    top: 100%;
+    right: 6px;
   }
 }
 
