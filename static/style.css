@@ -1283,7 +1283,7 @@ body.dark-mode textarea {
 }
 
 body.dark-mode .settings-content,
-body.dark-mode .flight-status-container {
+body.dark-mode #content-sec-admin {
     background-color: #1e1e1e;
 }
 
