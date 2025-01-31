@@ -277,13 +277,6 @@
 
 
     <script>
-      const theme = localStorage.getItem("theme");
-      if (theme === "dark") {
-        document.body.classList.add("dark-mode");
-      } else if (theme === "light") {
-        document.body.classList.add("light-mode");
-      }
-
       function toggleFilterPopup() {
         const filterPopup = document.getElementById("filter-popup");
         filterPopup.classList.toggle("hidden");
@@ -413,12 +406,14 @@
           .addEventListener("click", () => setViewOption("list"));
       });
     </script>
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
     <footer style="margin-top: 6em">
       <div class="footer-content">
         <img
           src="{{ url_for('static', filename='img/logo.png') }}"
           alt="SkyLink"
           style="width: 14em;"
+        >
       </div>
       <div id="copyright-footer">
         <p>© 2024 Skylink. All Rights Reserved.</p>

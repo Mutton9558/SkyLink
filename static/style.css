@@ -210,7 +210,6 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     height: auto;
     min-width: 80%;
-    z-index: 10;
     position: relative;
     margin: 20em auto 2rem auto;
 }
@@ -1020,6 +1019,7 @@ footer {
 #passenger-departure-total {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 30%;
 }
 
@@ -1379,6 +1379,8 @@ body.dark-mode .cheapest-price {
     #journey-departure {
         display: flex;
         flex-direction: column;
+        align-items: center;
+        text-align: center;
         font-size: 18px;
     }
 

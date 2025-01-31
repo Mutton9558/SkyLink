@@ -163,6 +163,9 @@
         document.body.classList.add("dark-mode");
       } else if (theme === "light") {
         document.body.classList.add("light-mode");
+      } else {
+        autoModeToggle.checked = true;
+        applyAutoTheme();
       }
     </script>
 </body>
