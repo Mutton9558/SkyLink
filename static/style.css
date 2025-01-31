@@ -1282,7 +1282,8 @@ body.dark-mode textarea {
     border: 1px solid #444444;
 }
 
-body.dark-mode .settings-content {
+body.dark-mode .settings-content,
+body.dark-mode .flight-status-container {
     background-color: #1e1e1e;
 }
 
