@@ -12,6 +12,7 @@ import time
 from flask_wtf.csrf import CSRFProtect
 import random
 import threading
+from pytz import timezone
 
 load_dotenv('.env')
 app = Flask(__name__)
@@ -88,11 +89,13 @@ class supportlogs(db.Model):
     supportID = db.Column("supportID", db.Integer, primary_key=True, nullable=False, unique=True)
     supportRequest = db.Column("supportRequest", db.Text, nullable=False)
     supportDate = db.Column("supportDate", db.String(10), nullable=False)
+    resolveStatus = db.Column("resolveStatus", db.String(15), nullable=False)
     supportUser = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    def __init__(self, supportRequest, supportDate, supportUser):
+    def __init__(self, supportRequest, supportDate, resolveStatus, supportUser):
         self.supportRequest = supportRequest
         self.supportDate = supportDate
+        self.resolveStatus = resolveStatus
         self.supportUser = supportUser
 
 CACHE_FILE = "token_cache.json"
@@ -162,14 +165,30 @@ def extract_flight_details(flights_data, max_results=5):
         price_details = offer.get("price", {})
         total_price = price_details.get("total")
         for segment in offer["itineraries"][0]["segments"]:
-            flight_details.append({
-                "flight_number": segment["carrierCode"] + segment["number"],
-                "airline": segment["operating"]["carrierCode"],
-                "departure_time": segment["departure"]["at"],
-                "arrival_time": segment["arrival"]["at"],
-                "price": f"{round((float(total_price)*4.67), 2)}" if total_price else "N/A"
-            })
-            
+            # 2025-02-01T18:50:00
+            time = segment["departure"]["at"].split('T')
+            if datetime.strptime(time[0], "%Y-%m-%d") == datetime.now().date():
+                departure_time = datetime.strptime(time[1], "%H:%M:%S")
+                utc_zone = timezone('UTC')
+                departure_time_utc = utc_zone.localize(departure_time)
+                departure_local_time = departure_time_utc.astimezone(timezone('Asia/Kuching')).time()
+                current_time = datetime.now(timezone('Asia/Kuching')).time()
+                if departure_local_time > current_time:
+                    flight_details.append({
+                        "flight_number": segment["carrierCode"] + segment["number"],
+                        "airline": segment["operating"]["carrierCode"],
+                        "departure_time": segment["departure"]["at"],
+                        "arrival_time": segment["arrival"]["at"],
+                        "price": f"{round((float(total_price)*4.67), 2)}" if total_price else "N/A"
+                    })
+            else:
+                flight_details.append({
+                    "flight_number": segment["carrierCode"] + segment["number"],
+                    "airline": segment["operating"]["carrierCode"],
+                    "departure_time": segment["departure"]["at"],
+                    "arrival_time": segment["arrival"]["at"],
+                    "price": f"{round((float(total_price)*4.67), 2)}" if total_price else "N/A"
+                })
     return flight_details
 
 def automatedEmail(issue, username):
@@ -366,7 +385,7 @@ def support():
                     smtp.sendmail(from_addr=smtp_user, to_addrs=to, msg=msg.as_string())
 
                 flash(f"Your inquiry has been submitted successfully. Check your email ({email}) for our response!", "success")
-                new_support_request = supportlogs(supportRequest=message, supportDate=dateToday, supportUser=user.id)
+                new_support_request = supportlogs(supportRequest=message, supportDate=dateToday, supportUser=user.id, resolveStatus = "Not Resolved")
                 db.session.add(new_support_request)
                 db.session.commit()
             except Exception as e:
@@ -1181,6 +1200,14 @@ def admin():
         return render_template("admin.html", profile_Name=session["user"], booking_list=booking_list, request_list = request_list)
     else:
         return redirect(url_for("login"))
+
+@app.route('/admin/<support_id>/<resolve_status>')
+def resolve_action(support_id, resolve_status):
+    if support_id and resolve_status:
+        supportRequest = supportlogs.query.filter_by(supportID = support_id).first()
+        supportRequest.resolveStatus = resolve_status
+        db.session.commit()
+    return redirect(url_for('admin'))
 
 if __name__ == "__main__":
     with app.app_context():

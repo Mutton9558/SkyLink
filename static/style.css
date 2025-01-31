@@ -1468,3 +1468,11 @@ body.dark-mode .cheapest-price {
     z-index: -10;
 }
 
+.not-resolved{
+    color: red;
+}
+
+.resolved{
+    color: var(--primary);
+}
+
