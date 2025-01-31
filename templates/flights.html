@@ -27,11 +27,6 @@
                     </a>
                 </div>
                 <div class="link">
-                    <a class="nav-link" href="/flightstatus">
-                        <p>Flight Status</p>
-                    </a>
-                </div>
-                <div class="link">
                     <a class="nav-link" href="/support">
                         <p>Support</p>
                     </a>
@@ -367,12 +362,7 @@
                 });
             });
         });
-    const theme = localStorage.getItem("theme");
-    if (theme === "dark") {
-    document.body.classList.add("dark-mode");
-    } else if (theme === "light") {
-    document.body.classList.add("light-mode");
-    }
     </script>
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
 </body>
 </html>
