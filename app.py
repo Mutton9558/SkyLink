@@ -34,7 +34,7 @@ class users(db.Model):
     email = db.Column("email", db.String(100), nullable=False, unique=True) # we do check to find valid email by splitting end domain
     username = db.Column("username", db.String(20), nullable=False, unique=True)
     password = db.Column("password", db.String(18), nullable=False)
-    two_factor_auth = db.Column("two_factor_auth", db.Integer, nullable=False, default=0)
+    two_factor_auth = db.Column("two_factor_auth", db.Boolean, nullable=False, default=False)
     isAdmin = db.Column("isAdmin", db.Boolean, nullable=False)
 
     bookings = db.relationship('bookings', backref='user', lazy=True)
@@ -320,9 +320,9 @@ def register():
                 isCode = new_hpNo[0]
                 if isCode == "+":
                     if new_email == "skylinkcustomerservice@gmail.com":
-                        new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password, two_factor_auth=0, isAdmin=True)
+                        new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password, two_factor_auth=False, isAdmin=True)
                     else:
-                        new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password, two_factor_auth=0, isAdmin=False)
+                        new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password, two_factor_auth=False, isAdmin=False)
                     db.session.add(new_user)
                     db.session.commit()   
                     return redirect(url_for("login"))
@@ -335,21 +335,24 @@ def register():
 
 @app.route('/login', methods = ["POST", "GET"])
 def login():
-    if request.method == "POST":
-        usernameInput = request.form["login-username"]
-        passwordInput = request.form["login-password"]
+    try:
+        if request.method == "POST":
+            usernameInput = request.form["login-username"]
+            passwordInput = request.form["login-password"]
 
-        if users.query.filter_by(username = usernameInput).first() and users.query.filter_by(username = usernameInput).first().password == passwordInput:
-            if users.query.filter_by(username=usernameInput).first().two_factor_auth == 1:
-                attempted_email = users.query.filter_by(username=usernameInput).first().email
-                return redirect(url_for("email_2fa", attempted_email=attempted_email))
-            session.permanent = True
-            session["user"] = usernameInput
-            if users.query.filter_by(username=usernameInput).first().isAdmin == True:
-                return redirect(url_for("admin"))
-            return redirect(url_for("home"))
-        else:
-            flash("Invalid Username or Password!")
+            if users.query.filter_by(username = usernameInput).first() and users.query.filter_by(username = usernameInput).first().password == passwordInput:
+                if users.query.filter_by(username=usernameInput).first().two_factor_auth == True:
+                    attempted_email = users.query.filter_by(username=usernameInput).first().email
+                    return redirect(url_for("email_2fa", attempted_email=attempted_email))
+                session.permanent = True
+                session["user"] = usernameInput
+                if users.query.filter_by(username=usernameInput).first().isAdmin == True:
+                    return redirect(url_for("admin"))
+                return redirect(url_for("home"))
+            else:
+                flash("Invalid Username or Password!")
+    except Exception as e:
+        print(f"Error occured: {e}")
     return render_template("login.html")
 
 @app.route('/logout')
@@ -739,8 +742,8 @@ def toggleAuth():
         if request.method == "POST":
             isToggledOn = request.form.get('toggle-2fa')
             curUser = users.query.filter_by(username=session["user"]).first()
-            if isToggledOn == "2fa-on" and curUser.two_factor_auth == 0:
-                curUser.two_factor_auth = 1
+            if isToggledOn == "2fa-on" and curUser.two_factor_auth == False:
+                curUser.two_factor_auth = True
                 db.session.commit()
         return redirect(url_for("settings"))
     else:

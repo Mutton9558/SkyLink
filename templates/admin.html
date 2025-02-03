@@ -120,7 +120,7 @@
                       <td>{{ request.supportRequest }}</td>
                       <td>{{ request.support_user.username }}</td>
                       <td class="resolved-status">
-                        <div id="resolve-status-value">
+                        <div id="resolve-status-value" data-resolve="{{ request.resolveStatus }}">
                           {{ request.resolveStatus }}
                         </div>
                         <a href="{{ url_for('resolve_action', support_id=request.supportID, resolve_status='Resolved') }}" id="resolve-btn">Resolve</a>
@@ -139,9 +139,9 @@
       resolveStatusBody.forEach((status) => {
         const text = status.querySelector("#resolve-status-value");
         const btn = status.querySelector('#resolve-btn');
+        const isResolved = text.getAttribute('data-resolve');
 
-        console.log(text.innerHTML)
-        if (text.innerHTML === "Not Resolved"){
+        if (isResolved === "Not Resolved"){
           text.classList.add('not-resolved');
         } else {
           text.classList.add('resolved');
