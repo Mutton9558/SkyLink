@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   darkModeToggle = document.getElementById("dark-mode-toggle");
   lightModeToggle = document.getElementById("light-mode-toggle");
+  autoModeToggle = document.getElementById("auto-mode-toggle");
 
   darkModeToggle.addEventListener("change", function () {
     if (darkModeToggle.checked) {
@@ -52,6 +53,23 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  autoModeToggle.addEventListener("change", function () {
+    if (autoModeToggle.checked) {
+      document.body.classList.remove("dark-mode");
+      document.body.classList.remove("light-mode");
+      localStorage.setItem("theme", "auto");
+      applyAutoTheme();
+    }
+  });
+
+  function applyAutoTheme() {
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.add("light-mode");
+    }
+  }
+
   const theme = localStorage.getItem("theme");
   if (theme === "dark") {
     darkModeToggle.checked = true;
@@ -59,5 +77,8 @@ document.addEventListener("DOMContentLoaded", function () {
   } else if (theme === "light") {
     lightModeToggle.checked = true;
     document.body.classList.add("light-mode");
+  } else {
+    autoModeToggle.checked = true;
+    applyAutoTheme();
   }
 });
