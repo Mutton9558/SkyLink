@@ -112,6 +112,12 @@ def save_cache(cache):
     with open(CACHE_FILE, "w") as file:
         json.dump(cache, file)
 
+def checkValidName(nameStr) -> bool:
+    for char in nameStr:
+        if char.isdigit():
+            return False
+    return True
+
 token_cache = load_cache()
 
 def get_access_token(client_id, client_secret):
@@ -304,13 +310,16 @@ def register():
         new_email = request.form["reg-email"]
         new_username = request.form["reg-username"]
         new_password = request.form["reg-password"]
+
         try:
             int(new_ic)
-            if users.query.filter_by(icNumber = str(new_ic)).first():
+            if checkValidName(new_name) == False:
+                flash(f"Full name contains digit. Please enter a valid name!")
+            elif users.query.filter_by(icNumber = str(new_ic)).first():
                 flash(f"User with IC number {new_ic} already exists!")
-            if users.query.filter_by(email = new_email).first() or users.query.filter_by(username = new_username).first():
+            elif users.query.filter_by(email = new_email).first() or users.query.filter_by(username = new_username).first():
                 flash("Email or Username already exists!")
-            if users.query.filter_by(phoneNumber = new_hpNo).first():
+            elif users.query.filter_by(phoneNumber = new_hpNo).first():
                 flash("That phone number is already registered!")
             else:
                 test_email = new_email.split("@")
@@ -327,7 +336,7 @@ def register():
                     db.session.commit()   
                     return redirect(url_for("login"))
                 else:
-                        flash("Please include country calling code!")
+                    flash("Please include country calling code!")
         except Exception as e:
             flash("Please enter a valid IC Number.")
             print(e)
@@ -697,6 +706,8 @@ def settings():
 
             if users.query.filter(users.username == new_username, users.id != current_user.id).first():
                 flash("Username already exists!", "danger")
+            elif checkValidName(new_name) == False:
+                flash("Name contains digits! Please enter a valid name.", "danger")
             elif users.query.filter(users.icNumber == new_ic, users.id != current_user.id).first():
                 flash("IC number already exists!", "danger")
             elif users.query.filter(users.phoneNumber == new_phone, users.id != current_user.id).first():
@@ -751,6 +762,7 @@ def toggleAuth():
 
 @app.route('/booking', methods=["GET", "POST"])
 def booking():
+    flashWarn = False
     if "user" in session and session["user"] != "":
         dataList = []
         tripType = request.args.get('trip')
@@ -796,30 +808,43 @@ def booking():
                     first_name = request.form.get(f"first-name-{i}")
                     surname = request.form.get(f"surname-{i}")
                     ic_number = request.form.get(f"ic-number-{i}")
+                    if passengerNum == 2 and i == 1:
+                        prevIc = str(ic_number)
+                    elif passengerNum == 2 and i == 2:
+                        if str(ic_number) == prevIc:
+                            flash("Two passengers have the same IC Number!")
+                            flashWarn = True
+                            break
                     phone_number = request.form.get(f"phone-number-{i}")
                     seat_selection = request.form.get(f"chosen-seat-{i-1}")
 
-                    new_booking = bookings(
-                        bookingNum = bookingNum,
-                        firstName = first_name,
-                        surname = surname,
-                        icNum = ic_number,
-                        phoneNum = phone_number,
-                        origin = dataList[0]["originLocation"],
-                        destination = dataList[0]["destinationLocation"],
-                        departureTime = dataList[0]["departureTime"],
-                        arrivalTime = dataList[0]["arrivalTime"],
-                        date = dataList[0]["date"],
-                        airline = dataList[0]["airline"],
-                        flightNum = dataList[0]["flightNumber"],
-                        seatNum = seat_selection,
-                        isCheckedIn = False,
-                        bookingUserID = bookingUserID
-                        )
-                    db.session.add(new_booking)
-                    db.session.commit()
-                flash("Booking details captured successfully!", "success")
-                return redirect(url_for("home"))
+                    if checkValidName(first_name) == True and checkValidName(surname) == True:
+                        new_booking = bookings(
+                            bookingNum = bookingNum,
+                            firstName = first_name,
+                            surname = surname,
+                            icNum = ic_number,
+                            phoneNum = phone_number,
+                            origin = dataList[0]["originLocation"],
+                            destination = dataList[0]["destinationLocation"],
+                            departureTime = dataList[0]["departureTime"],
+                            arrivalTime = dataList[0]["arrivalTime"],
+                            date = dataList[0]["date"],
+                            airline = dataList[0]["airline"],
+                            flightNum = dataList[0]["flightNumber"],
+                            seatNum = seat_selection,
+                            isCheckedIn = False,
+                            bookingUserID = bookingUserID
+                            )
+                        db.session.add(new_booking)
+                        db.session.commit()
+                    else:
+                        flash("First Name or Surname contains digits!")
+                        flashWarn = True
+                        break
+                if flashWarn == False:
+                    flash("Booking details captured successfully!", "success")
+                    return redirect(url_for("home"))
             
             return render_template(
                 "booking.html",
@@ -887,6 +912,13 @@ def booking():
                         first_name = request.form.get(f"first-name-{i}")
                         surname = request.form.get(f"surname-{i}")
                         ic_number = request.form.get(f"ic-number-{i}")
+                        if passengerNum == 2 and i == 1:
+                            prevIc = str(ic_number)
+                        elif passengerNum == 2 and i == 2:
+                            if str(ic_number) == prevIc:
+                                flash("Two passengers have the same IC Number!")
+                                flashWarn = True
+                                break
                         phone_number = request.form.get(f"phone-number-{i}")
                         seat_selection = request.form.get(f"chosen-seat-{count}")#[j]
                         origin = dataList[j]["originLocation"]
@@ -898,29 +930,33 @@ def booking():
                         flightNum = dataList[j]["flightNumber"]
 
                         count += 1
-
-                        new_booking = bookings(
-                        bookingNum = bookingNum,
-                        firstName = first_name,
-                        surname = surname,
-                        icNum = ic_number,
-                        phoneNum = phone_number,
-                        origin = origin,
-                        destination = destination,
-                        departureTime = departureTime,
-                        arrivalTime = arrivalTime,
-                        date = date,
-                        airline = airline,
-                        flightNum = flightNum,
-                        seatNum = seat_selection,
-                        isCheckedIn = False,
-                        bookingUserID = bookingUserID
-                        )
-                        db.session.add(new_booking)
-                        db.session.commit()
-
-                flash("Booking details captured successfully!", "success")
-                return redirect(url_for("home"))
+                        if checkValidName(first_name) == True and checkValidName(surname) == True:
+                            new_booking = bookings(
+                            bookingNum = bookingNum,
+                            firstName = first_name,
+                            surname = surname,
+                            icNum = ic_number,
+                            phoneNum = phone_number,
+                            origin = origin,
+                            destination = destination,
+                            departureTime = departureTime,
+                            arrivalTime = arrivalTime,
+                            date = date,
+                            airline = airline,
+                            flightNum = flightNum,
+                            seatNum = seat_selection,
+                            isCheckedIn = False,
+                            bookingUserID = bookingUserID
+                            )
+                            db.session.add(new_booking)
+                            db.session.commit()
+                        else:
+                            flash("First name or Surname contains digits!")
+                            flashWarn = True
+                            break
+                if flashWarn == False:
+                    flash("Booking details captured successfully!", "success")
+                    return redirect(url_for("home"))
 
             return render_template(
                 "booking.html", 
@@ -975,6 +1011,13 @@ def booking():
                             first_name = request.form.get(f"first-name-{i}")
                             surname = request.form.get(f"surname-{i}")
                             ic_number = request.form.get(f"ic-number-{i}")
+                            if passengerNum == 2 and i == 1:
+                                prevIc = str(ic_number)
+                            elif passengerNum == 2 and i == 2:
+                                if str(ic_number) == prevIc:
+                                    flash("Two passengers have the same IC Number!")
+                                    flashWarn = True
+                                    break
                             phone_number = request.form.get(f"phone-number-{i}")
                             seat_selection = request.form.get(f"chosen-seat-{count}")
                             origin = dataList[j]["originLocation"]
@@ -987,29 +1030,33 @@ def booking():
                             
                             count += 1
 
-                            new_booking = bookings(
-                            bookingNum = bookingNum,
-                            firstName = first_name,
-                            surname = surname,
-                            icNum = ic_number,
-                            phoneNum = phone_number,
-                            origin = origin,
-                            destination = destination,
-                            departureTime = departureTime,
-                            arrivalTime = arrivalTime,
-                            date = date,
-                            airline = airline,
-                            flightNum = flightNum,
-                            seatNum = seat_selection,
-                            isCheckedIn = False,
-                            bookingUserID = bookingUserID
-                            )
-                            db.session.add(new_booking)
-                            db.session.commit()
-
-                    flash("Booking details captured successfully!", "success")
-                    return redirect(url_for("home"))
-
+                            if checkValidName(first_name) == True and checkValidName(surname) == True:
+                                new_booking = bookings(
+                                bookingNum = bookingNum,
+                                firstName = first_name,
+                                surname = surname,
+                                icNum = ic_number,
+                                phoneNum = phone_number,
+                                origin = origin,
+                                destination = destination,
+                                departureTime = departureTime,
+                                arrivalTime = arrivalTime,
+                                date = date,
+                                airline = airline,
+                                flightNum = flightNum,
+                                seatNum = seat_selection,
+                                isCheckedIn = False,
+                                bookingUserID = bookingUserID
+                                )
+                                db.session.add(new_booking)
+                                db.session.commit()
+                            else:
+                                flash("First Name or Surname contains digits!")
+                                flashWarn = True
+                                break
+                    if flashWarn == False:
+                        flash("Booking details captured successfully!", "success")
+                        return redirect(url_for("home"))
 
                 return render_template(
                 "booking.html",

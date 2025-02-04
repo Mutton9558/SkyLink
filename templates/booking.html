@@ -118,6 +118,7 @@
         .taken{
             background-color: red !important;
             cursor: not-allowed;
+            pointer-events: none;
         }
 
         .disabled{
@@ -326,6 +327,13 @@
             
             <form method="POST" id="form-booking">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                {% with messages = get_flashed_messages() %} 
+                    {% if messages %} 
+                        {% for msg in messages %}
+                        <p style="color: red" id="flashed-msg">*{{ msg }}</p>
+                        {% endfor %} 
+                    {% endif %} 
+                {% endwith %}
                 {% for i in range(1, passengerNum+1) %}
                     <h1>Passenger {{ i }}</h1>
                     <div id="booking-form">
@@ -407,6 +415,13 @@
         
         <form method="POST" id="form-booking">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            {% with messages = get_flashed_messages() %} 
+                {% if messages %} 
+                    {% for msg in messages %}
+                    <p style="color: red" id="flashed-msg">*{{ msg }}</p>
+                    {% endfor %} 
+                {% endif %} 
+            {% endwith %}
             {% for i in range(1, passengerNum+1) %}
                 <h1>Passenger {{ i }}</h1>
                 <div id="booking-form">
@@ -515,6 +530,13 @@
         <h1>Flight Booking</h1>
         <form method="POST" id="form-booking">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            {% with messages = get_flashed_messages() %} 
+                {% if messages %} 
+                    {% for msg in messages %}
+                    <p style="color: red" id="flashed-msg">*{{ msg }}</p>
+                    {% endfor %} 
+                {% endif %} 
+            {% endwith %}
             {% for i in range(1, passengerNum+1) %}
             <h1>Passenger {{ i }}</h1>
             <div id="booking-form">
@@ -620,7 +642,6 @@
                 const [row, col] = seatId.split('-');
                 const rowIndex = parseInt(row, 10); // Convert row to a number
                 const colIndex = col.charCodeAt(0) - 'A'.charCodeAt(0); // Map 'A'-'F' to index
-    
                 let quadrantX = null;
                 let quadrantY = null;
     
@@ -704,12 +725,6 @@
                 };
             });
         }
-    
-            // Disable individual seats marked as taken
-            const SEATTAKEN = document.querySelectorAll(".taken");
-            SEATTAKEN.forEach(seat => {
-                seat.disabled = true;
-            });
 
         function removeOldSeats(form, takenSeats, quadrantTaken, flightNum){
             const seats = form.querySelectorAll('.seat-btn');
@@ -794,6 +809,7 @@
             seatForm.forEach((form)=>{
                 newChosen = form.querySelector(`[id="${buttonId}"]`);
                 if (newChosen) {
+                    console.log(newChosen);
                     newChosen.classList.add('taken');
                 } else {
                     console.log("Does not exist")
