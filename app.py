@@ -13,6 +13,7 @@ from flask_wtf.csrf import CSRFProtect
 import random
 import threading
 from pytz import timezone
+import re
 
 load_dotenv('.env')
 app = Flask(__name__)
@@ -113,10 +114,8 @@ def save_cache(cache):
         json.dump(cache, file)
 
 def checkValidName(nameStr) -> bool:
-    for char in nameStr:
-        if char.isdigit():
-            return False
-    return True
+    print(not bool(re.search(r'\d+', nameStr)))
+    return not bool(re.search(r'\d+', nameStr))
 
 token_cache = load_cache()
 
