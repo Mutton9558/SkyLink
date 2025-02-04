@@ -37,11 +37,6 @@
               </a>
             </div>
             <div class="link">
-              <a class="nav-link" href="#">
-                <p>Flight Status</p>
-              </a>
-            </div>
-            <div class="link">
               <a class="nav-link" href="/support">
                 <p>Support</p>
               </a>
@@ -162,6 +157,16 @@
           userComplainList.classList.remove('hide-sec')
         };
       };
+
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark") {
+        document.body.classList.add("dark-mode");
+      } else if (theme === "light") {
+        document.body.classList.add("light-mode");
+      } else {
+        autoModeToggle.checked = true;
+        applyAutoTheme();
+      }
     </script>
 </body>
 </html>
