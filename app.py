@@ -718,14 +718,28 @@ def settings():
             elif users.query.filter(users.email == new_email, users.id != current_user.id).first():
                 flash("Email already exists!", "danger")
             else:
-                current_user.name = new_name
-                current_user.username = new_username
-                current_user.icNumber = new_ic
-                current_user.phoneNumber = new_phone
-                current_user.email = new_email
-                db.session.commit()
-                session["user"] = current_user.username
-                flash("Profile updated successfully!", "success")
+                test_email = new_email.split("@")
+                valid_emails = ['gmail.com', 'yahoo.com', 'hotmail.com', 'mmu.edu.my', 'live.com', 'student.mmu.edu.my'] # Only these for now
+                if (len(test_email) == 1) or test_email[1] not in valid_emails:
+                    flash("Invalid email!")
+                else:
+                    isCode = new_phone[0]
+                    if isCode == "+":
+                        if new_email == "skylinkcustomerservice@gmail.com":
+                            current_user.isAdmin = True
+                        else:
+                            current_user.isAdmin = False
+
+                        current_user.name = new_name
+                        current_user.username = new_username
+                        current_user.icNumber = new_ic
+                        current_user.phoneNumber = new_phone
+                        current_user.email = new_email
+                        db.session.commit()
+                        session["user"] = current_user.username
+                        flash("Profile updated successfully!", "success")
+                    else:
+                        flash ("Please include country calling code!")
             return redirect(url_for("settings", profile_Name = session["user"], user=current_user, isToggled=isToggled))
         
         return render_template("settings.html", profile_Name = session["user"], user=current_user, isToggled=isToggled)
