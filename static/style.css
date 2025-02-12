@@ -589,7 +589,7 @@ body {
     margin-left: 0.4rem;
     text-decoration: none;
     color: var(--text-light-mode);
-    width: 6rem;
+    width: 8rem;
     height: 1.8rem;
     border: 2px black solid;
     text-align: center;
@@ -1225,18 +1225,19 @@ body.dark-mode .section-btn button {
     margin: 2rem;
 }
 
-#admin-booking-history, #admin-user-complains{
+#admin-booking-history, #admin-user-complains, #admin-user-list{
     width: 95%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-#admin-bookings, #user-support-logs{
+#admin-bookings, #user-support-logs, #user-list{
     width: 100%;
 }
 
-#admin-bookings, #admin-bookings th, #admin-bookings td, #user-support-logs, #user-support-logs th, #user-support-logs td{
+#admin-bookings, #admin-bookings th, #admin-bookings td, #user-support-logs, #user-support-logs th, #user-support-logs td, #user-list, #user-list th, #user-list td{
     border: 2px black solid;
     border-collapse: collapse;
     padding: 2px;

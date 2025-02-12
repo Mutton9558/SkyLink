@@ -79,9 +79,19 @@
           <div class="section-btn">
               <button id="all-user-complains" onclick="toggleComplainSection()">User Complains</button>
           </div>
+          <div class="section-btn">
+            <button id="all-users" onclick="toggleUserSection()">User List</button>
+        </div>
         </div>
         <div id="content-sec-admin">
             <div class="content-admin" id="admin-booking-history">
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for msg in messages %}
+                      <p style="color: red" id="flashed-msg">*{{ msg }}</p>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
                 <table id="admin-bookings">
                     <tr>
                         <th style="width: 10%;">Booking Number</th>
@@ -102,6 +112,13 @@
                 </table>
             </div>
             <div class="content-admin hide-sec" id="admin-user-complains">
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    {% for msg in messages %}
+                      <p style="color: red" id="flashed-msg">*{{ msg }}</p>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
                 <table id="user-support-logs">
                   <tr>
                     <th style="width: 15%;">Request Date</th>
@@ -123,13 +140,38 @@
                     </tr>
                   {% endfor %}
                 </table>
-            </div>  
+            </div>
+            <div class="content-admin hide-sec" id="admin-user-list">
+              {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                  {% for msg in messages %}
+                    <p style="color: red" id="flashed-msg">*{{ msg }}</p>
+                  {% endfor %}
+                {% endif %}
+              {% endwith %}
+              <table id="user-list">
+                  <tr>
+                    <th style="width: 20%;">User ID</th>
+                    <th style="width: 60%;">Username</th>
+                    <th style="width: 20%;">Action</th>
+                  </tr>
+                  {% for user in user_list %}
+                    <tr>
+                      <td>{{ user.id }}</td>
+                      <td>{{ user.username }}</td>
+                      <td><a href="{{ url_for('delete_user', user_id = user.id) }}">Remove User</a></td>
+                    </tr>
+                  {% endfor %}
+              </table>
+          </div>  
         </div>
       </div>
     </div>
     <script>
       bookingList = document.getElementById('admin-booking-history');
       userComplainList = document.getElementById('admin-user-complains');
+      userList = document.getElementById('admin-user-list');
+
       const resolveStatusBody = document.querySelectorAll('.resolved-status');
       resolveStatusBody.forEach((status) => {
         const text = status.querySelector("#resolve-status-value");
@@ -147,16 +189,26 @@
       function toggleBookingSection(){
         if (bookingList.classList.contains('hide-sec')){
           bookingList.classList.remove('hide-sec');
-          userComplainList.classList.add('hide-sec')
+          userComplainList.classList.add('hide-sec');
+          userList.classList.add('hide-sec');
         };
       };
 
       function toggleComplainSection(){
         if (userComplainList.classList.contains('hide-sec')){
           bookingList.classList.add('hide-sec');
-          userComplainList.classList.remove('hide-sec')
+          userComplainList.classList.remove('hide-sec');
+          userList.classList.add('hide-sec');
         };
       };
+
+      function toggleUserSection(){
+        if (userList.classList.contains('hide-sec')){
+          bookingList.classList.add('hide-sec');
+          userComplainList.classList.add('hide-sec');
+          userList.classList.remove('hide-sec');
+        }
+      }
     </script>
     <script src="{{ url_for('static', filename='theme.js') }}"></script>
 </body>

@@ -30,7 +30,7 @@
           </a>
         </div>
         <div class="useful-links">
-          {% if email == "skylinkcustomerservice@gmail.com" %}
+          {% if admin_status %}
             <div class="link">
               <a class="nav-link" href="/admin">
                 <p>Admin</p>
@@ -98,10 +98,13 @@
         <button class="next">❯</button>
       </div>
       <div class="booking-form">
-        {% with messages = get_flashed_messages() %} {% if messages %} {% for
-        msg in messages %}
-        <p style="color: red" id="flashed-msg">*{{ msg }}</p>
-        {% endfor %} {% endif %} {% endwith %}
+        {% with messages = get_flashed_messages() %} 
+          {% if messages %} 
+            {% for msg in messages %}
+              <p style="color: red" id="flashed-msg">*{{ msg }}</p>
+            {% endfor %} 
+          {% endif %} 
+        {% endwith %}
         <form method="POST" id="select-flight-form" name="select-flight-form">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <div id="container">
@@ -247,7 +250,14 @@
         </form>
       </div>
     </main>
-    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+    <script>
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark") {
+        document.body.classList.add("dark-mode");
+      } else if (theme === "light") {
+        document.body.classList.add("light-mode");
+      }
+    </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <footer style="margin-top: 6em">
       <div class="footer-content">
