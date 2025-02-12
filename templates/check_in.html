@@ -102,7 +102,13 @@
             min-height: 100vh;
             box-sizing: border-box;
         }
+
+        .dark-mode body, html{
+            background-color: #333;
+            color: #fff;
+        }
     </style>
+    <style src="{{ url_for('static', filename='style.css') }}"></style>
 </head>
 <body>
     <header class="header">
@@ -184,18 +190,6 @@
             </main>
         </div>
     </div>
-    <script>
-        const theme = localStorage.getItem('theme');
-        if (theme === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-        else if (theme === 'light') {
-            document.body.classList.add('light-mode');
-        } else {
-        autoModeToggle.checked = true;
-        applyAutoTheme();
-        }
-    </script>
         <footer style="margin-top: 6em">
             <div class="footer-content">
                 <img
@@ -207,6 +201,7 @@
             <div id="copyright-footer">
                 <p>© 2024 Skylink. All Rights Reserved.</p>
             </div>
-          </footer>
-</body>
+        </footer>
+        <script src="{{ url_for('static', filename='theme.js') }}"></script>
+    </body>
 </html>
