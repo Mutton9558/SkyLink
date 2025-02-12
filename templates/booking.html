@@ -6,8 +6,19 @@
     <link rel="icon" href="{{url_for('static', filename='img/icon.png')}}" />
     <title>Booking Page</title>
     <style>
+        :root {
+            --primary: #82C26E;
+            /*rgb primary (130, 194, 110)*/
+            --secondary: #0A85ED;
+            /*rgb secondary (10, 133, 237)*/
+            --background-dark: #050418;
+            --text-dark-mode: #e8e6fb;
+            --background-light: #f0f0f0;
+            --text-light-mode: #06041a;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', serif;
             background-color: #f0f0f0;
             margin: 0;
             padding: 0;
@@ -253,6 +264,47 @@
 
         .profile:hover .dropdown {
             display: block; /* Show dropdown on hover */
+        }
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: #ffffff;
+        }
+
+        body.dark-mode .header,
+        body.dark-mode .dropdown {
+            background-color: #333333;
+        }
+
+        body.dark-mode p,
+        body.dark-mode svg {
+            color: var(--text-dark-mode);
+        }
+
+        body.dark-mode .dropdown-content :hover {
+            background-color: #535353;
+        }
+
+        body.dark-mode .container {
+            background-color: #1e1e1e;
+        }
+
+        body.dark-mode .preset-values {
+            background-color: #1e1e1e;
+        }
+
+        body.dark-mode input {
+            background-color: #333333;
+            color: #ffffff;
+            border: 1px solid #444444;
+        }
+
+        body.dark-mode .seat-btn {
+            color: var(--text-light-mode);
+        }
+
+        body.dark-mode #seats {
+            background-color: #333333;
         }
     </style>    
 </head>
