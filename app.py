@@ -38,8 +38,8 @@ class users(db.Model):
     two_factor_auth = db.Column("two_factor_auth", db.Boolean, nullable=False, default=False)
     isAdmin = db.Column("isAdmin", db.Boolean, nullable=False)
 
-    bookings = db.relationship('bookings', backref='user', lazy=True)
-    supportlogs = db.relationship('supportlogs', backref='support_user', lazy=True)
+    bookings = db.relationship('bookings', backref='user', cascade="all, delete", lazy=True)
+    supportlogs = db.relationship('supportlogs', backref='support_user', cascade="all, delete", lazy=True)
 
     def __init__(self, icNumber, name, phoneNumber, email, username, password, two_factor_auth, isAdmin):
         self.icNumber = icNumber
@@ -67,7 +67,7 @@ class bookings(db.Model):
     seatNum = db.Column("seatNum", db.String(4), nullable=False)
     isCheckedIn = db.Column("isCheckedIn", db.Boolean, nullable=False)
 
-    bookingUserID = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    bookingUserID = db.Column(db.Integer, db.ForeignKey('users.id', ondelete = "CASCADE"), nullable=False)
 
     def _init_(self, bookingNum, firstName, surname, icNum, phoneNum, origin, destination, departureTime, arrivalTime, date, airline, flightNum, seatNum, isCheckedIn, bookingUserID):
         self.bookingNum = bookingNum
@@ -91,7 +91,7 @@ class supportlogs(db.Model):
     supportRequest = db.Column("supportRequest", db.Text, nullable=False)
     supportDate = db.Column("supportDate", db.String(10), nullable=False)
     resolveStatus = db.Column("resolveStatus", db.String(15), nullable=False)
-    supportUser = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    supportUser = db.Column(db.Integer, db.ForeignKey('users.id', ondelete = "CASCADE"), nullable=False)
 
     def __init__(self, supportRequest, supportDate, resolveStatus, supportUser):
         self.supportRequest = supportRequest
@@ -233,7 +233,9 @@ def automatedEmail(issue, username):
 @app.route('/', methods = ["POST", 'GET'])
 def home():
     if "user" in session and session["user"] != "":
-        email = users.query.filter_by(username = session["user"]).first().email
+        user = users.query.filter_by(username = session["user"]).first()
+        admin_status = user.isAdmin
+        email = user.email
         # Read options from the .txt file
         try:
             with open('static/airport_lists.txt', 'r') as file:
@@ -288,7 +290,7 @@ def home():
                     else:
                         flash("Invalid Promo Code")
                         return redirect(url_for("home"))
-        return render_template("index.html", profile_Name = session["user"], options=options, email=email)
+        return render_template("index.html", profile_Name = session["user"], options=options, email=email, admin_status=admin_status)
     else:
         return redirect(url_for("register"))
 
@@ -376,6 +378,7 @@ def support():
             user = users.query.filter_by(username=session["user"]).first()
             name = user.username
             email = user.email
+            admin_status = user.isAdmin
             message = request.form.get("message")
             today = date.today()
             today_str = today.strftime('%Y-%m-%d')
@@ -403,10 +406,11 @@ def support():
                 flash(f"An error occurred while sending the email: {str(e)}", "danger")
             return redirect(url_for("support"))
 
-        return render_template("support.html", profile_Name = session["user"])
+        return render_template("support.html", profile_Name = session["user"], admin_status=admin_status)
 @app.route('/check-in', methods=["GET", "POST"])
 def check_in():
     if session["user"] and session["user"] != "":
+        admin_status = users.query.filter_by(username = session["user"]).first().isAdmin
         if request.method=="POST":
             bookingnum = request.form.get('booking_number')
             surnamelast = request.form.get('surname')
@@ -423,7 +427,7 @@ def check_in():
             else:
                 flash("Check-in failed!", "danger")
                 
-        return render_template("check_in.html", profile_Name = session["user"])
+        return render_template("check_in.html", profile_Name = session["user"], admin_status=admin_status)
     else:
         return redirect(url_for("register"))
 
@@ -1145,8 +1149,9 @@ def forgotpassword():
 def profile():
     if "user" in session and session["user"] != "":
         current_user = users.query.filter_by(username=session["user"]).first()
+        admin_status = current_user.isAdmin
         recent_flights = bookings.query.filter_by(bookingUserID=current_user.id).all()
-        return render_template("profile.html", profile_Name=session["user"], user=current_user, recent_flights=recent_flights)
+        return render_template("profile.html", profile_Name=session["user"], user=current_user, recent_flights=recent_flights, admin_status=admin_status)
     else:
         return redirect(url_for("login"))
 
@@ -1206,6 +1211,8 @@ def email_2fa():
                     return redirect(url_for("admin"))
                 else:
                     return redirect(url_for("home"))
+            else:
+                flash("Entered code is wrong!")
 
         return render_template('email_2fa.html', email=attempted_email, user=user)
 
@@ -1260,17 +1267,42 @@ def admin():
             return redirect(url_for("home"))
         booking_list = bookings.query.join(users, users.id == bookings.bookingUserID).all()
         request_list = supportlogs.query.join(users, users.id == supportlogs.supportUser).all()
-        return render_template("admin.html", profile_Name=session["user"], booking_list=booking_list, request_list = request_list)
+        user_list = users.query.all()
+        return render_template("admin.html", profile_Name=session["user"], booking_list=booking_list, request_list = request_list, user_list=user_list)
     else:
         return redirect(url_for("login"))
 
 @app.route('/admin/<support_id>/<resolve_status>')
 def resolve_action(support_id, resolve_status):
-    if support_id and resolve_status:
-        supportRequest = supportlogs.query.filter_by(supportID = support_id).first()
-        supportRequest.resolveStatus = resolve_status
-        db.session.commit()
-    return redirect(url_for('admin'))
+    if "user" in session and session["user"] != "":
+        if users.query.filter(username = session["user"]).first().isAdmin:
+            if support_id and resolve_status:
+                supportRequest = supportlogs.query.filter_by(supportID = support_id).first()
+                supportRequest.resolveStatus = resolve_status
+                db.session.commit()
+            return redirect(url_for('admin'))
+        else:
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for("login"))
+
+@app.route('/admin/<user_id>')
+def delete_user(user_id):
+    if "user" in session and session["user"] != "":
+        admin_user = users.query.filter_by(username=session["user"]).first()
+        if admin_user and admin_user.isAdmin:
+            target_user = users.query.get(user_id)
+            if target_user:
+                if target_user.isAdmin:
+                    flash("Sorry but you are not authorised to remove this user (Admin)!")
+                else:
+                    db.session.delete(target_user)
+                    db.session.commit()
+                return redirect(url_for("admin"))
+        else:
+            return redirect(url_for("home"))
+    else:
+        return redirect(url_for("login"))
 
 if __name__ == "__main__":
     with app.app_context():
