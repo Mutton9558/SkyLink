@@ -251,6 +251,7 @@ body {
     gap: 10px;
     align-items: center;
     margin-bottom: 20px;
+    width: 91.5%;
 }
 
 .duplicateFields input,
@@ -437,7 +438,7 @@ body {
 
 #reg-title {
     display: flex;
-    height: 15%;
+    flex-direction: column;
     width: 100%;
     align-items: center;
     justify-content: center;
@@ -445,7 +446,7 @@ body {
 
 #reg-title img {
     width: 20%;
-    height: 100%;
+    margin-bottom: -1rem;
 }
 
 #redirect-cont {
@@ -814,6 +815,7 @@ footer {
     flex-direction: row;
     width: 30%;
     justify-content: center;
+    align-items: center;
     border-right: 2px gray solid;
 }
 
@@ -881,7 +883,6 @@ footer {
 
 #flight-list-right img {
     width: 120px;
-    height: 120px;
     margin-top: 1.4rem;
 }
 
