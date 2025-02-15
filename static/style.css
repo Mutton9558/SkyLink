@@ -437,7 +437,7 @@ body {
 
 #reg-title {
     display: flex;
-    height: 15%;
+    flex-direction: column;
     width: 100%;
     align-items: center;
     justify-content: center;
@@ -445,7 +445,7 @@ body {
 
 #reg-title img {
     width: 20%;
-    height: 100%;
+    margin-bottom: -1rem;
 }
 
 #redirect-cont {
