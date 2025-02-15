@@ -1,3 +1,5 @@
+# Use this to download all the modules/libraries below: pip install -r /path/to/requirements.txt
+# Change /path/to/requirements.txt to the path to requirements.txt file (for example: C:/Documents/Code/requirements.txt)
 from flask import *
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
