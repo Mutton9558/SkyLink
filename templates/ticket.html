@@ -16,6 +16,13 @@
             align-items: center;
             min-height: 100vh;
         }
+
+        #cont-page{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
     
         .ticket-container {
             max-width: 600px;
@@ -107,31 +114,70 @@
             margin-bottom: 20%;
         }
 
+        #return-home-btn{
+            margin-top: 2rem;
+            text-decoration: none;
+            color: black;
+            background-color: #82C26E;
+            border: 2px black solid;
+            border-radius: 10px;
+            width: 8rem;
+            height: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #branding {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+        #branding h1{
+            margin-left: 0.4rem;
+        }
+
     </style>    
 </head>
 <body>
-<div class="ticket-container">
-    <div class="ticket-header">
-        <h1>Boarding Pass</h1>
-    </div>
+    <div id="cont-page">
+        <div class="ticket-container">
+            <div class="ticket-header">
+                <h1>Boarding Pass</h1>
+            </div>
 
-    <div class="ticket-body">
-        <div class="ticket-info">
-            <h2>Flight: {{ booking.flightNum }}</h2>
-            <p><strong>Date:</strong> {{ booking.date }}</p>
-            <p><strong>Time:</strong> {{ booking.departureTime }}</p>
-            <p><strong>Seat:</strong> {{ booking.seatNum }}</p>
-            <p><strong>Boarding Ref:</strong> {{ booking.bookingNum }}</p>
-            <p><strong>Passenger:</strong> {{ booking.firstName }}</p>
+            <div class="ticket-body">
+                <div class="ticket-info">
+                    <div id="branding">
+                        <img src="{{ url_for('static', filename='img/logo.png') }}" width="100px" height="70px">
+                        <h1>SkyLink</h1>
+                    </div>
+                    <h2>Flight: {{ booking.flightNum }}</h2>
+                    <p><strong>Date:</strong> {{ booking.date }}</p>
+                    <p><strong>Time:</strong> {{ booking.departureTime }}</p>
+                    <p><strong>Seat:</strong> {{ booking.seatNum }}</p>
+                    <p><strong>Boarding Ref:</strong> {{ booking.bookingNum }}</p>
+                    <p><strong>Passenger:</strong> {{ booking.firstName }} {{ booking.surname}}</p>
+                </div>
+
+            <div class = "Download"> <button onclick="window.print()" class="button" aria-label="Download your boarding pass as a PDF">Download Boarding Pass</button> </div>
+            </div>
+
+            <div class="ticket-footer">
+                Please arrive at the gate 30 minutes before departure.
+            </div>
         </div>
-
-    <div class = "Download"> <button onclick="window.print()" class="button" aria-label="Download your boarding pass as a PDF">Download Boarding Pass</button> </div>
+        <a href="/" id="return-home-btn">Return to Home</a>
     </div>
-
-    <div class="ticket-footer">
-        Please arrive at the gate 30 minutes before departure.
-    </div>
-</div>
-
 </body>
+<script>
+    homeButton = document.querySelector('#return-home-btn');
+    window.addEventListener('beforeprint', ()=>{
+        homeButton.style.display = 'none';
+    });
+
+    window.addEventListener('afterprint', ()=>{
+        homeButton.style.display = 'flex';
+    });
+</script>
 </html>
