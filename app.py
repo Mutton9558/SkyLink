@@ -376,11 +376,11 @@ def logout():
 @app.route('/support', methods=["GET", "POST"])
 def support():
     if "user" in session and session["user"] != "":
+        user = users.query.filter_by(username=session["user"]).first()
+        admin_status = user.isAdmin
         if request.method == "POST":
-            user = users.query.filter_by(username=session["user"]).first()
             name = user.username
             email = user.email
-            admin_status = user.isAdmin
             message = request.form.get("message")
             today = date.today()
             today_str = today.strftime('%Y-%m-%d')
