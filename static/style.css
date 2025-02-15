@@ -623,8 +623,6 @@ footer {
     color: var(--text-light-mode);
     padding: 1rem;
     z-index: 5;
-    position: relative;
-    bottom: -7.21rem;
 }
 
 .footer-content {
