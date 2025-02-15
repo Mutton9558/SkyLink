@@ -632,36 +632,6 @@ footer {
     align-items: center;
 }
 
-#items-footer-left {
-    float: right;
-    margin-right: 12rem;
-    display: flex;
-    flex-direction: column;
-}
-
-#items-footer-right {
-    margin-left: 12rem;
-    display: flex;
-    flex-direction: column;
-}
-
-#items-footer-left h3,
-#items-footer-right h3 {
-    font-size: 28px;
-    cursor: default;
-}
-
-#items-footer-left a,
-#items-footer-right a {
-    color: #45435c;
-    text-decoration: none;
-    margin-bottom: 1ch;
-}
-
-.left-content-footer {
-    width: 50%;
-}
-
 #copyright-footer {
     width: 100vw;
     display: flex;
