@@ -798,159 +798,6 @@ footer {
     margin-top: 1em;
 }
 
-@media only screen and (max-width: 500px) {
-    #cont-login {
-        width: 20rem;
-        height: 30rem;
-    }
-
-    .link {
-        display: none;
-    }
-
-    .carousel {
-        height: fit-content;
-        top: 3em;
-        right: 0;
-        left: 0;
-    }
-
-    .booking-form {
-        margin: 10em auto 2rem auto;
-    }
-
-    .trip-options {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    .fields {
-        flex-direction: column-reverse;
-    }
-
-    .duplicateFields {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .add-stops-button {
-        font-size: small;
-    }
-
-    #image1,
-    #image2 {
-        height: 100%;
-    }
-
-    .title-profile {
-        top: 3rem;
-    }
-
-    #settings-main {
-        overflow: hidden;
-    }
-
-    .settings-content {
-        width: 100%;
-        height: 40em;
-        top: 3em;
-    }
-}
-
-@media only screen and (min-width: 501px) and (max-width: 650px) {
-    #cont-login {
-        width: 25rem;
-        height: 30rem;
-    }
-
-    .header-container {
-        padding: 0;
-    }
-
-    .carousel {
-        width: 650px;
-        height: fit-content;
-        top: 3em;
-        right: 0;
-        left: 0;
-    }
-
-    .booking-form {
-        margin: 13em auto auto;
-    }
-
-    .fields {
-        flex-direction: column;
-    }
-
-    .duplicateFields {
-        display: flex;
-        flex-direction: column;
-    }
-
-    #image1 {
-        background-image: url("__url_for('static',filename='img/promo1(650).png')");
-    }
-
-    #image2 {
-        background-image: url("__url_for('static',filename='img/promo2(650).png')");
-    }
-
-    .title-profile {
-        justify-content: flex-start;
-        top: 3rem;
-    }
-
-    .settings-content {
-        width: 100%;
-        left: 0;
-        top: 3em;
-    }
-}
-
-@media only screen and (min-width: 651px) and (max-width: 1399px) {
-    #cont-login {
-        width: 30rem;
-    }
-
-    .title-profile {
-        top: 3rem;
-    }
-
-    .settings-content {
-        top: 2em;
-    }
-
-    .booking-form {
-        width: 90%;
-        /* Adjust the width to fit within the specified range */
-        margin: 15em auto 2rem auto;
-        /* Adjust the margin to center the form */
-    }
-
-    .duplicateFields .fields {
-        width: 87.5%;
-    }
-
-    .fields input,
-    .fields select,
-    .duplicateFields input,
-    .duplicateFields select {
-        width: 90%;
-        /* Adjust the width of input fields and select elements */
-    }
-
-    .trip-options {
-        flex-direction: row;
-    }
-
-    .dates {
-        flex-direction: row;
-        justify-content: space-between;
-    }
-}
-
 .hidden-flight-list {
     position: absolute;
     top: -9999px;
@@ -1311,88 +1158,19 @@ body.dark-mode #flight-list-container {
 body.dark-mode .cheapest-price {
     color: lawngreen;
     text-shadow: 0 0 1px black;
-} 
-
-@media only screen and (max-width: 500px) {
-    #cont-login {
-        width: 20rem;
-    }
-
-    #image1 {
-        background-image: url("__url_for('static',filename='img/promo1(500).png')");
-    }
-
-    #image2 {
-        background-image: url("__url_for('static',filename='img/promo2(500).png')");
-    }
-
-    #journey-departure {
-        display: flex;
-        flex-direction: column;
-        font-size: 12px;
-    }
-
-    #date-departure-info {
-        font-size: 12px;
-    }
-
-    #passenger-departure-total {
-        font-size: 12px;
-    }
 }
 
-@media only screen and (min-width: 501px) and (max-width: 650px) {
-    #cont-login {
-        width: 25rem;
-    }
-
-    #image1 {
-        background-image: url("__url_for('static',filename='img/promo1(650).png')");
-    }
-
-    #image2 {
-        background-image: url("__url_for('static',filename='img/promo2(650).png')");
-    }
-
-    .footer {
-        width: 100%;
-    }
-
-    #journey-departure {
-        display: flex;
-        flex-direction: column;
-        font-size: 15px;
-    }
-
-    #date-departure-info {
-        font-size: 15px;
-    }
-
-    #passenger-departure-total {
-        font-size: 15px;
-    }
+body.dark-mode #admin-bookings,
+body.dark-mode #admin-bookings th,
+body.dark-mode #admin-bookings td,
+body.dark-mode #user-support-logs,
+body.dark-mode #user-support-logs th,
+body.dark-mode #user-support-logs td {
+    border: 2px white solid;
 }
 
-@media only screen and (min-width: 651px) and (max-width: 1399px) {
-    #cont-login {
-        width: 30rem;
-    }
-
-    #journey-departure {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        font-size: 18px;
-    }
-
-    #date-departure-info {
-        font-size: 18px;
-    }
-
-    #passenger-departure-total {
-        font-size: 18px;
-    }
+body.dark-mode .section-btn button {
+    border: 2px var(--text-dark-mode) solid;
 }
 
 #main-content-admin{
@@ -1426,6 +1204,7 @@ body.dark-mode .cheapest-price {
     border-radius: 10px;
     width: 8rem;
     height: 2.5rem;
+    cursor: pointer;
 }
 
 #content-sec-admin{
@@ -1481,3 +1260,201 @@ body.dark-mode .cheapest-price {
     color: var(--primary);
 }
 
+@media only screen and (max-width: 500px) {
+    #cont-login {
+        width: 20rem;
+    }
+
+    .header.show{
+        height: 100%;
+        width: 100%;
+    }
+
+    .header-container {
+        padding: 0 45px;
+    }
+
+    .logo {
+        justify-content: center;
+    }
+
+    .hamburger-option.show {
+        position: absolute;
+        top: 2.6%;
+        left: 9%;
+    }
+
+    .logo.show {
+        position: absolute;
+        top: -45.3%;
+        right: 37.8%;
+    }
+
+    .useful-links {
+        display: none;
+        width: 100%;
+        height: 100%;
+    }
+
+    .useful-links.show {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin: 1em 0;
+        text-align: center;
+    }
+
+    .header-container.show {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding-top: 5em;
+    }
+
+    .carousel {
+        height: fit-content;
+        top: 3em;
+        right: 0;
+        left: 0;
+    }
+
+    .booking-form {
+        margin: 10em auto 2rem auto;
+    }
+
+    .trip-options {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .fields {
+        flex-direction: column-reverse;
+    }
+
+    .duplicateFields {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .add-stops-button {
+        font-size: small;
+    }
+
+    #image1,
+    #image2 {
+        height: 100%;
+    }
+
+    .title-profile {
+        top: 3rem;
+    }
+
+    #settings-main {
+        overflow: hidden;
+    }
+
+    .settings-content {
+        width: 100%;
+        height: 40em;
+        top: 3em;
+    }
+}
+
+@media screen and (min-width: 501px) {
+    .hamburger-option {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 501px) and (max-width: 650px) {
+    #cont-login {
+        width: 25rem;
+    }
+
+    .header-container {
+        padding: 0;
+    }
+
+    .carousel {
+        width: 650px;
+        height: fit-content;
+        top: 3em;
+        right: 0;
+        left: 0;
+    }
+
+    .booking-form {
+        margin: 13em auto auto;
+    }
+
+    .fields {
+        flex-direction: column;
+    }
+
+    .duplicateFields {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #image1 {
+        background-image: url("__url_for('static',filename='img/promo1(650).png')");
+    }
+
+    #image2 {
+        background-image: url("__url_for('static',filename='img/promo2(650).png')");
+    }
+
+    .title-profile {
+        justify-content: flex-start;
+        top: 3rem;
+    }
+
+    .settings-content {
+        width: 100%;
+        left: 0;
+        top: 3em;
+    }
+}
+
+@media only screen and (min-width: 651px) and (max-width: 1399px) {
+    #cont-login {
+        width: 30rem;
+    }
+
+    .title-profile {
+        top: 3rem;
+    }
+
+    .settings-content {
+        top: 2em;
+    }
+
+    .booking-form {
+        width: 90%;
+        /* Adjust the width to fit within the specified range */
+        margin: 15em auto 2rem auto;
+        /* Adjust the margin to center the form */
+    }
+
+    .duplicateFields .fields {
+        width: 87.5%;
+    }
+
+    .fields input,
+    .fields select,
+    .duplicateFields input,
+    .duplicateFields select {
+        width: 90%;
+        /* Adjust the width of input fields and select elements */
+    }
+
+    .trip-options {
+        flex-direction: row;
+    }
+
+    .dates {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}

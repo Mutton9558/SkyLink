@@ -14,8 +14,13 @@
     <!-- Navbar with menu items -->
     <header class="header">
       <div class="header-container">
+        <div class="hamburger-option" style="cursor: pointer;">
+          <svg xmlns="http://www.w3.org/2000/svg" display="flex" width="25" fill="currentcolor" viewBox="0 0 448 512">
+            <path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/>
+          </svg>
+        </div>
         <div class="logo">
-          <a class="navbar-brand" href="/home">
+          <a class="navbar-brand" href="/home" style="cursor: pointer;">
             <img
               src="{{url_for('static', filename='img/logo.png')}}"
               height="80"
@@ -265,4 +270,21 @@
       </div>
     </footer>
   </body>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const hamburger = document.querySelector('.hamburger-option');
+      const usefulLinks = document.querySelector('.useful-links');
+      const headerContainer = document.querySelector('.header-container');
+      const header = document.querySelector('.header');
+      const logo = document.querySelector('.logo');
+
+      hamburger.addEventListener('click', function() {
+        usefulLinks.classList.toggle('show');
+        headerContainer.classList.toggle('show');
+        header.classList.toggle('show');
+        logo.classList.toggle('show');
+        hamburger.classList.toggle('show');
+      });
+    });
+  </script>
 </html>
