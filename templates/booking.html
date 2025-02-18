@@ -453,7 +453,7 @@
                         </div>
                     </div>
                 {% endfor %}
-                <button type="submit">Submit Booking</button>
+                <button type="submit" id="booking-submit">Submit Booking</button>
             </form>
         </div>
     {% elif tripType == "round-trip" %}
@@ -569,7 +569,7 @@
                     {% endfor %}
                 </div>
             {% endfor %}
-            <button type="submit">Submit Booking</button>
+            <button type="submit" id="booking-submit">Submit Booking</button>
         </form>
     </div>
 {% elif tripType == "multi-city" %}
@@ -657,7 +657,7 @@
                 {% endfor %}
             </div>
             {% endfor %}
-            <button type="submit">Submit Booking</button>
+            <button type="submit" id="booking-submit">Submit Booking</button>
         </form>
     </div>
 {% endif %}
@@ -666,6 +666,30 @@
         // Quadrants and seat disabling logic
         // const quadrantTaken = JSON.parse('{{ quadrant_taken_json | safe }}');
         // const takenSeats = JSON.parse('{{ taken_seats_json | safe }}');
+
+        // document.getElementById('booking-submit').addEventListener('click', function(event) {
+        //     event.preventDefault();
+        //     let ics = []
+        //     let uniqueIC = true;
+        //     icInputs = document.querySelectorAll('#ic_number');
+        //     icInputs.forEach((ic) => {
+        //         console.log(ic.value);  
+        //         ics.push(ic.value);
+        //         if (ics.length > 1){
+        //             for (let x = 1; x < ics.length; x++){
+        //                 if (ics[x] === ics[x-1]){
+        //                     console.log('more than 1 guy with same ic')
+        //                     uniqueIC = false;
+        //                     break;
+        //                 }
+        //             };
+        //         };
+        //     });
+        //     if (uniqueIC == true){
+        //         event.target.closest('form').submit();
+        //     };            
+        // });
+
         document.getElementById("form-booking").addEventListener("submit", function(event){
             let seatInput = document.querySelectorAll(".seat-input");
             let hasAlerted = false
