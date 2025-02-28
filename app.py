@@ -1277,7 +1277,7 @@ def admin():
 @app.route('/admin/<support_id>/<resolve_status>')
 def resolve_action(support_id, resolve_status):
     if "user" in session and session["user"] != "":
-        if users.query.filter(username = session["user"]).first().isAdmin:
+        if users.query.filter_by(username = session["user"]).first().isAdmin:
             if support_id and resolve_status:
                 supportRequest = supportlogs.query.filter_by(supportID = support_id).first()
                 supportRequest.resolveStatus = resolve_status
