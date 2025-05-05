@@ -11,6 +11,7 @@ from email.mime.multipart import MIMEMultipart
 import smtplib 
 import requests
 import time
+from flask_bcrypt import Bcrypt
 from flask_wtf.csrf import CSRFProtect
 import random
 import threading
@@ -24,6 +25,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = os.getenv('APP_SECRET_KEY')
 app.permanent_session_lifetime = timedelta(days=30)
 csrf = CSRFProtect(app)
+bcrypt = Bcrypt(app) 
 
 apiKey = os.getenv('AMADEUSAPIKEY')
 apiSecret = os.getenv('AMADEUSAPISECRET')
@@ -331,6 +333,7 @@ def register():
                     flash("Invalid email!")
                 isCode = new_hpNo[0]
                 if isCode == "+":
+                    new_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
                     if new_email == "skylinkcustomerservice@gmail.com":
                         new_user = users(icNumber=new_ic, name=new_name, phoneNumber=new_hpNo, email=new_email, username=new_username, password=new_password, two_factor_auth=False, isAdmin=True)
                     else:
@@ -351,8 +354,7 @@ def login():
         if request.method == "POST":
             usernameInput = request.form["login-username"]
             passwordInput = request.form["login-password"]
-
-            if users.query.filter_by(username = usernameInput).first() and users.query.filter_by(username = usernameInput).first().password == passwordInput:
+            if users.query.filter_by(username = usernameInput).first() and bcrypt.check_password_hash(users.query.filter_by(username = usernameInput).first().password, passwordInput):
                 if users.query.filter_by(username=usernameInput).first().two_factor_auth == True:
                     attempted_email = users.query.filter_by(username=usernameInput).first().email
                     return redirect(url_for("email_2fa", attempted_email=attempted_email))
@@ -1104,7 +1106,8 @@ def forgotpassword():
         if isUser:
             email = isUser.email
             newPass = "".join(str(random.randint(0,9)) for i in range(0,8))
-            isUser.password = newPass
+            hashedPass = bcrypt.generate_password_hash(newPass).decode('utf-8')
+            isUser.password = hashedPass
             db.session.commit()
 
             msg = MIMEMultipart()
